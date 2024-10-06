@@ -1,0 +1,88 @@
+{
+   "$jsonSchema": {
+       "bsonType": "object",
+       "required": [
+           "idTroqueur",
+           "idDestinataire",
+           "idFichier",
+           "dateFichier",
+           "MessageDemandeAutorisation",
+           "checksum"
+       ],
+       "properties": {
+           "checksum": {
+               "bsonType": "string",
+               "description": "String permettant la gestion des erreurs de transfert de donnees"
+           },
+           "idFichier": {
+               "bsonType": "string",
+               "pattern": "^g\\d\\.\\d+$",
+               "description": "Format obligatoire : 'g' suivi d'un seul chiffre, un point, et un nombre."
+           },
+           "dateFichier": {
+               "bsonType": "string",
+               "pattern": "^\\d{2}-\\d{2}-\\d{4}$",
+               "description": "Date au format jj-mm-yyyy."
+           },
+           "idDestinataire": {
+               "bsonType": "string",
+               "pattern": "^g\\d\\.\\d+$",
+               "description": "Doit etre un string representant le destinataire."
+           },
+           "idTroqueur": {
+               "bsonType": "string",
+               "pattern": "^g\\d\\.\\d+$",
+               "description": "Doit etre un string representant le destinataire."
+           },
+           "MessageDemandeAutorisation": {
+               "bsonType": "object",
+               "required": [
+                   "statutAutorisation",
+                   "date",
+                   "idMessage"
+               ],
+               "properties": {
+                   "coordonnees": {
+                       "bsonType": "object",
+                       "properties": {
+                           "mail": {
+                               "bsonType": "string",
+                               "description": "Adresse mail de l'utilisateur"
+                           },
+                           "telephone": {
+                               "bsonType": "string",
+                               "description": "Numéro de téléphone de l'utilisateur"
+                           },
+                           "nomAuteur":{
+                               "bsonType": "string",
+                               "description": "Nom de l'auteur du message"
+                           }
+                       },
+                       "description": "Coordonnées du troqueur"
+                   },
+                   "statutAutorisation": {
+                       "bsonType": "string",
+                       "enum": [
+                           "accepte",
+                           "refuse",
+                           "demande"
+                       ],
+                       "description": "Statut de la demande d'autorisation"
+                   },
+                   "date": {
+                       "bsonType": "string",
+                       "format": "date",
+                       "description": "Date à laquelle la demande a été effectuée"
+                   },
+                   "idMessage": {
+                       "bsonType": "string",
+                       "description": "Identifiant unique du message de demande d'autorisation"
+                   }
+               }
+           }
+       }
+   }
+}
+
+
+

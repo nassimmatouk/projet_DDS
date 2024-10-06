@@ -1,0 +1,27 @@
+{
+    "idTroqueur": "g1.1",
+    "idDestinataire": "g2.1",
+    "idFichier": "g3.1",
+    "dateFichier": "12-05-2023",
+    "checksum": "abc123checksum",
+    "messages": [
+        {
+            "dateMessage": "11-05-2023",
+            "statut": "accepte",
+            "listeObjet": [
+                {
+                    "titre": "Livre",
+                    "description": "Un roman captivant.",
+                    "qualite": 4,
+                    "quantite": 2
+                },
+                {
+                    "titre": "Stylo",
+                    "description": "Un stylo à bille noir.",
+                    "qualite": 5,
+                    "quantite": 10
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+{
+    "idTroqueur": "g4.2",
+    "idDestinataire": "g5.2",
+    "idFichier": "g6.2",
+    "dateFichier": "15-06-2023",
+    "checksum": "def456checksum",
+    "MessageDemandeAutorisation": {
+        "statutAutorisation": "refuse",
+        "date": "2023-06-15",
+        "idMessage": "msg456",
+        "coordonnees": {
+            "mail": "autreexemple@mail.com",
+            "telephone": "0987654321",
+            "nomAuteur": "Jane Smith"
+        }
+    }
+}

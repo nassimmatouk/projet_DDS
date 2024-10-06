@@ -23,8 +23,9 @@ public class Demo22Application implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception{
 
-		Path folderPath = Paths.get("C:/Users/pc/Desktop/test_spring/Nouveau dossier");
-		watchFolder(folderPath);
+		Path folderPath = Paths.get("C:/Users/userlocal/Desktop/M1/DS/jsonFiles");
+		
+        //watchFolder(folderPath);
 	}
 
 	private void watchFolder(Path folderPath){

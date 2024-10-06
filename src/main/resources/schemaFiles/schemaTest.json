@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "nom": {
+      "type": "string"
+    },
+    "âge": {
+      "type": "integer"
+    }
+  },
+  "required": ["nom", "âge"]
+}

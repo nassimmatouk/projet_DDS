@@ -1,0 +1,17 @@
+{
+    "idTroqueur": "g1.1",
+    "idDestinataire": "g2.1",
+    "idFichier": "g3.1",
+    "dateFichier": "12-05-2023",
+    "checksum": "abc123checksum",
+    "MessageDemandeAutorisation": {
+        "statutAutorisation": "accepte",
+        "date": "2023-05-12",
+        "idMessage": "msg123",
+        "coordonnees": {
+            "mail": "exemple@mail.com",
+            "telephone": "0123456789",
+            "nomAuteur": "John Doe"
+        }
+    }
+}

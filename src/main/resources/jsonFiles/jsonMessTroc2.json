@@ -1,0 +1,21 @@
+{
+    "idTroqueur": "g4.2",
+    "idDestinataire": "g5.2",
+    "idFichier": "g6.2",
+    "dateFichier": "15-06-2023",
+    "checksum": "def456checksum",
+    "messages": [
+        {
+            "dateMessage": "14-06-2023",
+            "statut": "valide",
+            "listeObjet": [
+                {
+                    "titre": "Chaise",
+                    "description": "Une chaise en bois.",
+                    "qualite": 3,
+                    "quantite": 1
+                }
+            ]
+        }
+    ]
+}
