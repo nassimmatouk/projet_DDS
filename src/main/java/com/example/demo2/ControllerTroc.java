@@ -11,9 +11,28 @@ public class ControllerTroc {
         return "accueil";
     }
 
+    //troc
+
+    @GetMapping("/troc")
+    public String troc() {
+        return "troc";
+    }
+
     @GetMapping("/demande-troc")
     public String demandeTroc() {
         return "demande_troc";
+    }
+
+    @GetMapping("/message-troc")
+    public String messageTroc() {
+        return "message_troc";
+    }
+
+    //autorisation
+
+    @GetMapping("/autorisation")
+    public String demande() {
+        return "autorisation";
     }
 
     @GetMapping("/demande-autorisation")
@@ -21,4 +40,8 @@ public class ControllerTroc {
         return "demande_autorisation";
     }
 
+    @GetMapping("/message-autorisation") 
+    public String messageAutorisation() {
+        return "message_autorisation";
+    }
 }
