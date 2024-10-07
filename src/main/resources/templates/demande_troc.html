@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Troc</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <h1>Formulaire message troc</h1>
+    <form id="jsonForm">
+        <h2>En-tête</h2>
+        <label for="idDestinataire">ID Destinataire (gX.X):</label>
+        <input type="text" id="idDestinataire" name="idDestinataire" pattern="^g\d\.\d+$" required><br><br>
+
+        <label for="idFichier">ID Fichier (gX.X):</label>
+        <input type="text" id="idFichier" name="idFichier" pattern="^g\d\.\d+$" required><br><br>
+
+        <h2>Messages</h2>
+        <div id="messagesContainer">
+            <div class="message">
+                <h3>Liste des objets</h3>
+                <div class="listeObjet">
+                    <label for="titre">Titre de l'objet:</label>
+                    <input type="text" name="titre" required><br><br>
+
+                    <label for="description">Description de l'objet:</label>
+                    <input type="text" name="description"><br><br>
+
+                    <label for="qualite">Qualité (0-5):</label>
+                    <input type="number" name="qualite" min="0" max="5" required><br><br>
+
+                    <label for="quantite">Quantité:</label>
+                    <input type="number" name="quantite" min="1" required><br><br>
+                </div>
+            </div>
+        </div>
+        <button type="button" onclick="addMessage()">Ajouter un message</button><br><br>
+        <button type="submit">Soumettre</button>
+    </form>
+    <script src="troc.js"></script>
+</body>
+
+</html>
