@@ -14,11 +14,12 @@
     <div class="container">
         <h1>Bienvenue dans l'Application de Troc</h1>
         <p>Que souhaitez-vous faire ?</p>
-        <div class="buttons">
-            <button th:onclick="|window.location.href='@{/demande-troc}'|">Faire une demande de troc</button>
-            <button th:onclick="|window.location.href='@{/demande-autorisation}'|">Faire une demande
-                d'autorisation</button>
-        </div>
+        <form action="/demande-autorisation" method="get">
+            <input type="submit" value="Demande d'autorisation">
+        </form>
+        <form action="/demande-troc" method="get">
+            <input type="submit" value="Demande de troc">
+        </form>
     </div>
 </body>
 

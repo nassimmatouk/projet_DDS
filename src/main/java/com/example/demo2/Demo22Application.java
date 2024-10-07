@@ -1,16 +1,21 @@
 package com.example.demo2;
 
-import org.hibernate.annotations.DialectOverride.OverridesAnnotation;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.util.Map;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.*;
-import java.util.Map;
 
 @SpringBootApplication
 public class Demo22Application implements CommandLineRunner {
@@ -22,7 +27,7 @@ public class Demo22Application implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        Path folderPath = Paths.get("C:/Users/pc/Desktop/test_spring/Nouveau dossier");
+        Path folderPath = Paths.get("/home/hugo/test");
         watchFolder(folderPath);
     }
 

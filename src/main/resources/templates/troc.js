@@ -15,6 +15,8 @@ function generateChecksum(data) {
     return "checksum_genere";
 }
 
+
+//Création du json de troc
 document.getElementById("jsonForm").onsubmit = function (event) {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -51,3 +53,17 @@ document.getElementById("jsonForm").onsubmit = function (event) {
 
     console.log(JSON.stringify(json, null, 2));
 };
+
+//Création du json d'autorisation
+document.getElementById("autor").onsubmit = function (event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const json = {
+        idTroqueur: "g1.1",
+        idDestinataire: formData.get("idDestinataire"),
+        idFichier: formData.get("idFichier"),
+        dateFichier: new Date().toLocaleDateString("fr-FR"),
+        checksum: generateChecksum(formData),
+        statut: "demande",
+    };
+}
