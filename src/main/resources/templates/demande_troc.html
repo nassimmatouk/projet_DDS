@@ -5,9 +5,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Envoi troc</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
 </head>
 
 <body>
@@ -18,7 +15,7 @@
     </header>
 
     <h1>Formulaire message troc</h1>
-    <form id="jsonForm">
+    <form id="jsonForm" onsubmit="return handleSubmit(event);">
         <h2>En-tête</h2>
         <label for="idDestinataire">ID Destinataire (gX.X):</label>
         <input type="text" id="idDestinataire" name="idDestinataire" pattern="^g\d\.\d+$" required><br><br>

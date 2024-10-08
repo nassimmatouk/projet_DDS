@@ -1,0 +1,103 @@
+{
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+            "idTroqueur",
+            "idDestinataire",
+            "idFichier",
+            "dateFichier",
+            "messages",
+            "checksum"
+        ],
+        "properties": {
+            "checksum": {
+                "bsonType": "string",
+                "description": "String permettant la gestion des erreurs de transfert de donnees"
+            },
+            "idTroqueur": {
+                "bsonType": "string",
+                "pattern": "^g\\d\\.\\d+$",
+                "description": "Doit etre un string representant l'expediteur."
+            },
+            "idDestinataire": {
+                "bsonType": "string",
+                "pattern": "^g\\d\\.\\d+$",
+                "description": "Doit etre un string representant le destinataire."
+            },
+            "idFichier": {
+                "bsonType": "string",
+                "pattern": "^g\\d\\.\\d+$",
+                "description": "Format obligatoire : 'g' suivi d'un seul chiffre, un point, et un nombre."
+            },
+            "dateFichier": {
+                "bsonType": "string",
+                "pattern": "^\\d{2}-\\d{2}-\\d{4}$",
+                "description": "Date au format jj-mm-yyyy."
+            },
+            "messages": {
+                "bsonType": "array",
+                "minItems": 1,
+                "items": {
+                    "bsonType": "object",
+                    "required": [
+                        "dateMessage",
+                        "statut",
+                        "listeObjet"
+                    ],
+                    "properties": {
+                        "dateMessage": {
+                            "bsonType": "string",
+                            "pattern": "^\\d{2}-\\d{2}-\\d{4}$",
+                            "description": "Date au format jj-mm-yyyy."
+                        },
+                        "statut": {
+                            "bsonType": "string",
+                            "enum": [
+                                "accepte",
+                                "valide",
+                                "annule",
+                                "refuse",
+                                "propose"
+                            ],
+                            "description": "Statut de la proposition : 'accepte', 'valide', 'annule', 'refuse' ou 'propose'."
+                        },
+                        "listeObjet": {
+                            "bsonType": "array",
+                            "items": {
+                                "bsonType": "object",
+                                "required": [
+                                    "titre",
+                                    "qualite",
+                                    "quantite"
+                                ],
+                                "properties": {
+                                    "titre": {
+                                        "bsonType": "string",
+                                        "description": "Le titre de l'objet."
+                                    },
+                                    "description": {
+                                        "bsonType": "string",
+                                        "description": "La description de l'objet."
+                                    },
+                                    "qualite": {
+                                        "bsonType": "int",
+                                        "minimum": 1,
+                                        "maximum": 5,
+                                        "description": "La qualite de l'objet entre 0 et 5."
+                                    },
+                                    "quantite": {
+                                        "bsonType": "int",
+                                        "minimum": 1,
+                                        "description": "Quantite de l'objet."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "validationAction": "error",
+    "validationLevel": "strict"
+}
