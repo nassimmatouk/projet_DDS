@@ -23,11 +23,6 @@ public class ControllerTroc {
         return "demande_troc";
     }
 
-    @GetMapping("/message-troc")
-    public String messageTroc() {
-        return "message_troc";
-    }
-
     //autorisation
 
     @GetMapping("/autorisation")
@@ -38,10 +33,5 @@ public class ControllerTroc {
     @GetMapping("/demande-autorisation")
     public String demandeAutorisation() {
         return "demande_autorisation";
-    }
-
-    @GetMapping("/message-autorisation") 
-    public String messageAutorisation() {
-        return "message_autorisation";
     }
 }

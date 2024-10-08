@@ -24,8 +24,11 @@ function handleSubmit(event) {
     const form = document.getElementById('jsonForm');
     const formData = new FormData(form);
     const data = {
+        idTroqueur: "g1.1",
         idDestinataire: formData.get('idDestinataire'),
         idFichier: formData.get('idFichier'),
+        dateFichier: new Date().toLocaleDateString("fr-FR"),
+        checksum: generateChecksum(formData),
         messages: []
     };
 
@@ -79,11 +82,13 @@ function saveJsonToFile(jsonString) {
         },
         body: jsonString
     })
-    .then(response => {
-        if (response.ok) {
+    .then(response => response.json())  // Convertir la réponse en JSON
+    .then(data => {
+        if (data.success) {
             alert('Fichier JSON enregistré avec succès.');
+            window.location.href = data.redirect;  // Rediriger vers l'URL fournie
         } else {
-            alert('Erreur lors de l\'enregistrement du fichier.');
+            alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
         }
     })
     .catch(error => {

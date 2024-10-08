@@ -1,13 +1,45 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Messages de troc</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-    </body>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Messages de Troc</title>
+</head>
+<body>
+    <header>
+        <a href="/">Accueil</a> |
+        <a href="/troc">Troc</a> |
+        <a href="/autorisation">Contacts</a>
+    </header>
+
+    <h1>Messages de Troc</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Troqueur</th>
+                <th>Titre</th>
+                <th>Description</th>
+                <th>Qualité</th>
+                <th>Quantité</th>
+                <th>Statut</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <th:block th:each="message : ${messages}">
+                <tr>
+                    <td th:text="${message.idTroqueur}"></td>
+                    <td th:text="${message.titre}"></td>
+                    <td th:text="${message.description}"></td>
+                    <td th:text="${message.qualite}"></td>
+                    <td th:text="${message.quantite}"></td>
+                    <td th:text="${message.statut}"></td>
+                    <td th:text="${message.date}"></td>
+                </tr>
+            </th:block>
+        </tbody>
+    </table>
+    <div th:if="${messageInfo}" th:text="${messageInfo}"></div>
+</body>
 </html>

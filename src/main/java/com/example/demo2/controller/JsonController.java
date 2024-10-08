@@ -26,7 +26,7 @@ public class JsonController {
                 jsonDir.mkdir();
             }
 
-            // Créer un fichier avec un nom unique (ou tu peux utiliser un nom basé sur l'utilisateur, etc.)
+            // Créer un fichier avec un nom unique
             File jsonFile = new File(jsonDir, "demande_troc_" + System.currentTimeMillis() + ".json");
 
             // Écrire les données dans le fichier
@@ -34,9 +34,10 @@ public class JsonController {
                 fileWriter.write(jsonData);
             }
 
-            return new ResponseEntity<>("Fichier JSON enregistré avec succès.", HttpStatus.OK);
+            // Renvoyer une réponse JSON avec l'URL de redirection
+            return new ResponseEntity<>("{\"success\": true, \"redirect\": \"/troc\"}", HttpStatus.OK);
         } catch (IOException e) {
-            return new ResponseEntity<>("Erreur lors de l'enregistrement du fichier JSON.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("{\"success\": false, \"message\": \"Erreur lors de l'enregistrement.\"}", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

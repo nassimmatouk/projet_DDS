@@ -1,13 +1,37 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Messages d'autorisations</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-    </body>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Messages d'Autorisations</title>
+</head>
+<body>
+    <header>
+        <a href="/">Accueil</a> |
+        <a href="/troc">Troc</a> |
+        <a href="/autorisation">Contacts</a>
+    </header>
+
+    <h1>Messages de Troc</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Troqueur</th>
+                <th>Statut</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <th:block th:each="message : ${Amessages}">
+                <tr>
+                    <td th:text="${Amessage.idTroqueur}"></td>
+                    <td th:text="${Amessage.statut}"></td>
+                    <td th:text="${Amessage.date}"></td>
+                </tr>
+            </th:block>
+        </tbody>
+    </table>
+    <div th:if="${AmessageInfo}" th:text="${AmessageInfo}"></div>
+</body>
 </html>
