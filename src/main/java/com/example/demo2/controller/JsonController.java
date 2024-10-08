@@ -69,7 +69,7 @@ public class JsonController {
 
             // Chemin du dossier local où les fichiers JSON seront enregistrés
             File jsonDir = new File("src/main/resources/json/message_envoi");
-            String fileName = generateFileName("troc", "g1.1", idDestinataire);
+            String fileName = generateFileName("autor", "g1.1", idDestinataire);
 
             // Assure-toi que le dossier "json" existe, sinon crée-le
             if (!jsonDir.exists()) {

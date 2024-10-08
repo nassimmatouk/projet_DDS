@@ -16,8 +16,8 @@ function generateChecksum(data) {
 }
 
 function formatDate(date) {
-    const day = String(date.getDate()).padStart(2, '0'); 
-    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
 
     return `${day}-${month}-${year}`;
@@ -26,7 +26,7 @@ function formatDate(date) {
 
 //Création du json de troc
 function handleSubmit(event) {
-    event.preventDefault(); 
+    event.preventDefault();
 
     // Récupération des données du formulaire
     const form = document.getElementById('jsonForm');
@@ -82,19 +82,27 @@ function handleSubmitA(event) {
         idFichier: formData.get("idFichier"),
         dateFichier: formatDate(new Date()),
         checksum: generateChecksum(formData),
-        statut: "demande",
         MessageDemandeAutorisation: {
-            statutAutorisation: "demande", 
-            date: formatDate(new Date()), 
+            statutAutorisation: "demande",
+            date: formatDate(new Date()),
             idMessage: "msg_" + Date.now(),
-            coordonnees: {
-                mail: formData.get("email"),
-                telephone: formData.get("telephone"),
-                nomAuteur: formData.get("nomAuteur")
-            }
+            coordonnees: {}
         }
     };
+    
+    const email = formData.get("email");
+    const telephone = formData.get("telephone");
+    const nomAuteur = formData.get("nomAuteur");
 
+    if (email) {
+        data.MessageDemandeAutorisation.coordonnees.mail = email;
+    }
+    if (telephone) {
+        data.MessageDemandeAutorisation.coordonnees.telephone = telephone;
+    }
+    if (nomAuteur) {
+        data.MessageDemandeAutorisation.coordonnees.nomAuteur = nomAuteur;
+    }
     const jsonString = JSON.stringify(data, null, 2);
     saveJsonToFileA(jsonString);
 }

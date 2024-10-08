@@ -4,6 +4,30 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Messages de Troc</title>
+    <style>
+        /* Ajout de styles pour séparer visuellement les messages */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        tr.message-row {
+            background-color: #f9f9f9;
+        }
+        tr.objet-row {
+            background-color: #fff;
+        }
+        tr.message-separator td {
+            padding: 0;
+            border: none;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -18,28 +42,40 @@
         <thead>
             <tr>
                 <th>Troqueur</th>
-                <th>Titre</th>
-                <th>Description</th>
-                <th>Qualité</th>
-                <th>Quantité</th>
                 <th>Statut</th>
                 <th>Date</th>
+                <th>Objets</th> <!-- Nouvelle colonne pour les objets -->
             </tr>
         </thead>
         <tbody>
+            <!-- Boucle pour afficher chaque message de troc -->
             <th:block th:each="message : ${messages}">
-                <tr>
+                <tr class="message-row">
                     <td th:text="${message.idTroqueur}"></td>
-                    <td th:text="${message.titre}"></td>
-                    <td th:text="${message.description}"></td>
-                    <td th:text="${message.qualite}"></td>
-                    <td th:text="${message.quantite}"></td>
                     <td th:text="${message.statut}"></td>
-                    <td th:text="${#dates.format(message.date, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${message.dateMessage}"></td>
+                    <td>
+                        <!-- Boucle pour afficher les objets associés au message -->
+                        <ul>
+                            <th:block th:each="objet : ${message.objets}">
+                                <li>
+                                    <strong th:text="${objet.titre}"></strong> - 
+                                    <span th:text="${objet.description}"></span> 
+                                    (Qualité: <span th:text="${objet.qualite}"></span>, 
+                                    Quantité: <span th:text="${objet.quantite}"></span>)
+                                </li>
+                            </th:block>
+                        </ul>
+                    </td>
+                </tr>
+                <!-- Séparateur visuel entre les messages -->
+                <tr class="message-separator">
+                    <td colspan="4"></td>
                 </tr>
             </th:block>
         </tbody>
     </table>
+
     <div th:if="${messageInfo}" th:text="${messageInfo}"></div>
 </body>
 </html>

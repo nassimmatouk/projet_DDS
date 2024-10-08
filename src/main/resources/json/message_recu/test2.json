@@ -1,0 +1,17 @@
+{
+    "idTroqueur": "g1.1",
+    "idDestinataire": "g2.1",
+    "idFichier": "fichier_123",
+    "dateFichier": "15-10-2024",
+    "MessageDemandeAutorisation": {
+      "statutAutorisation": "invalide", 
+      "date": "32-13-2024", 
+      "idMessage": "msg_123456789",
+      "coordonnees": {
+        "mail": "exemple@domaine.com",
+        "telephone": "+33123456789"
+      }
+    },
+    "checksum": "abc123"
+  }
+  

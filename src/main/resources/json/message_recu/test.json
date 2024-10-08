@@ -1,0 +1,25 @@
+{
+    "idTroqueur": "g1.2",  
+    "idDestinataire": "g1.3",
+    "idFichier": "fichier_123",
+    "dateFichier": "12-31-2023",  
+    "messages": [
+        {
+            "dateMessage": "10-08-2024",  
+            "statut": "accepte",  
+            "listeObjet": [
+                {
+                    "titre": "Objet 1",
+                    "qualite": 6,  
+                    "quantite": 2
+                },
+                {
+                    "titre": "Objet 2",
+                    "qualite": 3,
+                    "quantite": 0 
+                }
+            ]
+        }
+    ],
+    "checksum": "abcd1234"
+}
