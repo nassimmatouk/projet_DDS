@@ -71,8 +71,8 @@
                     },
                     "date": {
                         "bsonType": "string",
-                        "format": "date",
-                        "description": "Date à laquelle la demande a été effectuée"
+                        "pattern": "^\\d{2}-\\d{2}-\\d{4}$",
+                        "description": "Date au format jj-mm-yyyy à laquelle le demande a été effectuée"
                     },
                     "idMessage": {
                         "bsonType": "string",

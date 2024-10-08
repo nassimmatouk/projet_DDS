@@ -15,10 +15,18 @@ function generateChecksum(data) {
     return "3";
 }
 
+function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0'); 
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+    const year = date.getFullYear();
+
+    return `${day}-${month}-${year}`;
+}
+
 
 //Création du json de troc
 function handleSubmit(event) {
-    event.preventDefault(); // Empêche la soumission du formulaire
+    event.preventDefault(); 
 
     // Récupération des données du formulaire
     const form = document.getElementById('jsonForm');
@@ -27,7 +35,7 @@ function handleSubmit(event) {
         idTroqueur: "g1.1",
         idDestinataire: formData.get('idDestinataire'),
         idFichier: formData.get('idFichier'),
-        dateFichier: new Date().toLocaleDateString("fr-FR"),
+        dateFichier: formatDate(new Date()),
         checksum: generateChecksum(formData),
         messages: []
     };
@@ -35,64 +43,110 @@ function handleSubmit(event) {
     // Récupération des messages
     const messagesContainer = document.getElementById('messagesContainer');
     const messages = messagesContainer.getElementsByClassName('message');
-    
+
     for (let message of messages) {
         const titre = message.querySelector('input[name="titre"]').value;
         const description = message.querySelector('input[name="description"]').value;
         const qualite = message.querySelector('input[name="qualite"]').value;
         const quantite = message.querySelector('input[name="quantite"]').value;
 
+        // Ajout du message dans le format attendu
         data.messages.push({
-            titre: titre,
-            description: description,
-            qualite: qualite,
-            quantite: quantite
+            dateMessage: formatDate(new Date()), // Date du message au format jj-mm-aaaa
+            statut: "propose",
+            listeObjet: [
+                {
+                    titre: titre,
+                    description: description,
+                    qualite: parseInt(qualite), // Assure que c'est un nombre
+                    quantite: parseInt(quantite) // Assure que c'est un nombre
+                }
+            ]
         });
     }
 
-    // Création du fichier JSON
+    // Conversion en JSON et sauvegarde
     const jsonString = JSON.stringify(data, null, 2);
-
-    // Enregistrement du fichier JSON
     saveJsonToFile(jsonString);
 }
 
-/*
+
 //Création du json d'autorisation
-document.getElementById("autor").onsubmit = function (event) {
-    event.preventDefault();
+function handleSubmitA(event) {
+    event.preventDefault(); // Empêche la soumission du formulaire
+
     const formData = new FormData(event.target);
-    const json = {
+    const data = {
         idTroqueur: "g1.1",
         idDestinataire: formData.get("idDestinataire"),
         idFichier: formData.get("idFichier"),
-        dateFichier: new Date().toLocaleDateString("fr-FR"),
+        dateFichier: formatDate(new Date()),
         checksum: generateChecksum(formData),
         statut: "demande",
+        MessageDemandeAutorisation: {
+            statutAutorisation: "demande", 
+            date: formatDate(new Date()), 
+            idMessage: "msg_" + Date.now(),
+            coordonnees: {
+                mail: formData.get("email"),
+                telephone: formData.get("telephone"),
+                nomAuteur: formData.get("nomAuteur")
+            }
+        }
     };
+
+    const jsonString = JSON.stringify(data, null, 2);
+    saveJsonToFileA(jsonString);
 }
-    */
+
 
 //Enregistrement du json dans le dossier
+
+//le troc
 function saveJsonToFile(jsonString) {
-    fetch('/api/save-json', {
+    fetch('/api/save-troc', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: jsonString
     })
-    .then(response => response.json())  // Convertir la réponse en JSON
-    .then(data => {
-        if (data.success) {
-            alert('Fichier JSON enregistré avec succès.');
-            window.location.href = data.redirect;  // Rediriger vers l'URL fournie
-        } else {
-            alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
-        }
+        .then(response => response.json())  // Convertir la réponse en JSON
+        .then(data => {
+            if (data.success) {
+                alert('Fichier JSON enregistré avec succès.');
+                window.location.href = data.redirect;  // Rediriger vers l'URL fournie
+            } else {
+                alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors de la tentative d\'enregistrement du fichier.');
+        });
+}
+
+
+//l'autorisation
+function saveJsonToFileA(jsonString) {
+    fetch('/api/save-autor', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: jsonString
     })
-    .catch(error => {
-        console.error('Erreur:', error);
-        alert('Une erreur est survenue lors de la tentative d\'enregistrement du fichier.');
-    });
+        .then(response => response.json())  // Convertir la réponse en JSON
+        .then(data => {
+            if (data.success) {
+                alert('Fichier JSON enregistré avec succès.');
+                window.location.href = data.redirect;  // Rediriger vers l'URL fournie
+            } else {
+                alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors de la tentative d\'enregistrement du fichier.');
+        });
 }

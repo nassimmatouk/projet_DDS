@@ -5,9 +5,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Envoi autorisation</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
 </head>
 
 <body>
@@ -18,13 +15,24 @@
     </header>
 
     <h1>Formulaire message autorisation</h1>
-    <form id="autor">
+    <form id="jsonForm" onsubmit="return handleSubmitA(event);">
+        <input type="hidden" name="typeDemande" value="autorisation">
         <h2>En-tête</h2>
         <label for="idDestinataire">ID Destinataire (gX.X):</label>
         <input type="text" id="idDestinataire" name="idDestinataire" pattern="^g\d\.\d+$" required><br><br>
 
         <label for="idFichier">ID Fichier (gX.X):</label>
         <input type="text" id="idFichier" name="idFichier" pattern="^g\d\.\d+$" required><br><br>
+
+        <h2>Coordonnées</h2>
+        <label for="nomAuteur">Nom de l'auteur:</label>
+        <input type="text" id="nomAuteur" name="nomAuteur"><br><br>
+
+        <label for="email">Adresse e-mail:</label>
+        <input type="email" id="email" name="email"><br><br>
+
+        <label for="telephone">Numéro de téléphone:</label>
+        <input type="tel" id="telephone" name="telephone" pattern="[0-9]{10}" placeholder="0123456789"><br><br>
 
         <button type="submit">Soumettre</button>
     </form>

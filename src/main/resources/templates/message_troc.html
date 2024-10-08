@@ -35,7 +35,7 @@
                     <td th:text="${message.qualite}"></td>
                     <td th:text="${message.quantite}"></td>
                     <td th:text="${message.statut}"></td>
-                    <td th:text="${message.date}"></td>
+                    <td th:text="${#dates.format(message.date, 'yyyy-MM-dd HH:mm')}"></td>
                 </tr>
             </th:block>
         </tbody>

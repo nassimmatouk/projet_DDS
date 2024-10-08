@@ -16,6 +16,7 @@
 
     <h1>Formulaire message troc</h1>
     <form id="jsonForm" onsubmit="return handleSubmit(event);">
+        <input type="hidden" name="typeDemande" value="troc">
         <h2>En-tête</h2>
         <label for="idDestinataire">ID Destinataire (gX.X):</label>
         <input type="text" id="idDestinataire" name="idDestinataire" pattern="^g\d\.\d+$" required><br><br>
@@ -34,8 +35,8 @@
                     <label for="description">Description de l'objet:</label>
                     <input type="text" name="description"><br><br>
 
-                    <label for="qualite">Qualité (0-5):</label>
-                    <input type="number" name="qualite" min="0" max="5" required><br><br>
+                    <label for="qualite">Qualité (1-5):</label>
+                    <input type="number" name="qualite" min="1" max="5" required><br><br>
 
                     <label for="quantite">Quantité:</label>
                     <input type="number" name="quantite" min="1" required><br><br>

@@ -83,7 +83,7 @@
                                         "bsonType": "int",
                                         "minimum": 1,
                                         "maximum": 5,
-                                        "description": "La qualite de l'objet entre 0 et 5."
+                                        "description": "La qualite de l'objet entre 1 et 5."
                                     },
                                     "quantite": {
                                         "bsonType": "int",
