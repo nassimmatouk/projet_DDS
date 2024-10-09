@@ -1,15 +1,86 @@
+//Ajout de messages et d'objets dans le troc
+
+function isObjetValid(objet) {
+    const titre = objet.querySelector('input[name="titre"]').value.trim();
+    const qualite = objet.querySelector('input[name="qualite"]').value.trim();
+    const quantite = objet.querySelector('input[name="quantite"]').value.trim();
+
+    return titre !== '' && qualite !== '' && quantite !== '';
+}
+
 function addMessage() {
     const messagesContainer = document.getElementById("messagesContainer");
-    const newMessage = document.querySelector(".message").cloneNode(true);
+    const lastMessage = messagesContainer.lastElementChild;
 
-    newMessage.querySelector("input[name='titre']").value = '';
-    newMessage.querySelector("input[name='description']").value = '';
-    newMessage.querySelector("input[name='qualite']").value = '';
-    newMessage.querySelector("input[name='quantite']").value = '';
+    const objets = lastMessage.querySelectorAll('.listeObjet');
+
+    for (let objet of objets) {
+        if (!isObjetValid(objet)) {
+            alert('Veuillez remplir tous les champs de l\'objet avant d\'ajouter un nouveau message.');
+            return;
+        }
+    }
+
+    const newMessage = lastMessage.cloneNode(true);
+
+    newMessage.querySelectorAll("input").forEach(input => {
+        input.value = '';
+    });
+
+    const objetsContainer = newMessage.querySelector('.objetsContainer');
+    const objetsList = objetsContainer.querySelectorAll('.listeObjet');
+    
+    for (let i = 1; i < objetsList.length; i++) {
+        objetsList[i].remove();
+    }
 
     messagesContainer.appendChild(newMessage);
 }
 
+function addObjet(button) {
+    const objetsContainer = button.parentNode.querySelector(".objetsContainer");
+    const lastObjet = objetsContainer.lastElementChild;
+
+    if (!isObjetValid(lastObjet)) {
+        alert('Veuillez remplir tous les champs de l\'objet avant d\'ajouter un nouvel objet.');
+        return;
+    }
+
+    const newObjet = document.querySelector(".listeObjet").cloneNode(true);
+
+    newObjet.querySelectorAll("input").forEach(input => input.value = '');
+
+    objetsContainer.appendChild(newObjet);
+}
+
+//Supression d'un objet ou message
+
+function removeObjet(button) {
+    const objetsContainer = button.parentNode.parentNode; // Accéder au container des objets
+    const objets = objetsContainer.querySelectorAll('.listeObjet');
+
+    if (objets.length > 1) {
+        button.parentNode.remove(); 
+    } else {
+        alert("Vous ne pouvez pas supprimer le dernier objet.");
+    }
+}
+
+function removeMessage(button) {
+    const messagesContainer = document.getElementById('messagesContainer');
+    const messages = messagesContainer.querySelectorAll('.message');
+
+    // Ne pas supprimer si c'est le seul message restant
+    if (messages.length > 1) {
+        button.parentNode.remove(); // Supprimer le parent de ce bouton, donc le message en question
+    } else {
+        alert("Vous ne pouvez pas supprimer le dernier message.");
+    }
+}
+
+
+
+//Génération du checksum et formatage de la date
 function generateChecksum(data) {
     // Logique de génération du checksum ici
     return "3";
@@ -42,26 +113,40 @@ function handleSubmit(event) {
 
     // Récupération des messages
     const messagesContainer = document.getElementById('messagesContainer');
-    const messages = messagesContainer.getElementsByClassName('message');
+    const messageElements = messagesContainer.getElementsByClassName('message');
 
-    for (let message of messages) {
-        const titre = message.querySelector('input[name="titre"]').value;
-        const description = message.querySelector('input[name="description"]').value;
-        const qualite = message.querySelector('input[name="qualite"]').value;
-        const quantite = message.querySelector('input[name="quantite"]').value;
+    // Boucle pour chaque message
+    for (let messageElement of messageElements) {
+        const titre = messageElement.querySelector('input[name="titre"]').value;
+        const description = messageElement.querySelector('input[name="description"]').value;
 
-        // Ajout du message dans le format attendu
+        // Créer un tableau pour stocker les objets de ce message
+        const listeObjet = [];
+
+        // Récupération des objets pour ce message
+        const objetsContainer = messageElement.querySelector('.objetsContainer');
+        const objetElements = objetsContainer.getElementsByClassName('listeObjet');
+
+        for (let objetElement of objetElements) {
+            const titre = objetElement.querySelector('input[name="titre"]').value;
+            const description = objetElement.querySelector('input[name="description"]').value;
+            const qualite = objetElement.querySelector('input[name="qualite"]').value;
+            const quantite = objetElement.querySelector('input[name="quantite"]').value;
+
+            // Ajout de l'objet au tableau listeObjet
+            listeObjet.push({
+                titre: titre,
+                description: description,
+                qualite: parseInt(qualite), // Assure que c'est un nombre
+                quantite: parseInt(quantite) // Assure que c'est un nombre
+            });
+        }
+
+        // Ajout du message avec la liste des objets
         data.messages.push({
             dateMessage: formatDate(new Date()), // Date du message au format jj-mm-aaaa
             statut: "propose",
-            listeObjet: [
-                {
-                    titre: titre,
-                    description: description,
-                    qualite: parseInt(qualite), // Assure que c'est un nombre
-                    quantite: parseInt(quantite) // Assure que c'est un nombre
-                }
-            ]
+            listeObjet: listeObjet // Liste des objets pour ce message
         });
     }
 
@@ -69,6 +154,8 @@ function handleSubmit(event) {
     const jsonString = JSON.stringify(data, null, 2);
     saveJsonToFile(jsonString);
 }
+
+
 
 
 //Création du json d'autorisation

@@ -1,34 +1,87 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Messages de Troc</title>
     <style>
-        /* Ajout de styles pour séparer visuellement les messages */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        header a {
+            text-decoration: none;
+            color: #007bff;
+            margin-right: 10px;
+        }
+
+        header a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
+
         th, td {
             padding: 10px;
             border: 1px solid #ddd;
+            text-align: left;
         }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
         tr.message-row {
             background-color: #f9f9f9;
         }
-        tr.objet-row {
-            background-color: #fff;
-        }
+
         tr.message-separator td {
             padding: 0;
             border: none;
         }
-        h1 {
-            margin-bottom: 20px;
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin: 5px 0;
+        }
+
+        .message-info {
+            margin-top: 20px;
+            background-color: #e7f3fe;
+            border-left: 6px solid #007bff;
+            padding: 10px;
+            border-radius: 4px;
         }
     </style>
 </head>
+
 <body>
     <header>
         <a href="/">Accueil</a> |
@@ -76,6 +129,7 @@
         </tbody>
     </table>
 
-    <div th:if="${messageInfo}" th:text="${messageInfo}"></div>
+    <div th:if="${messageInfo}" class="message-info" th:text="${messageInfo}"></div>
 </body>
+
 </html>

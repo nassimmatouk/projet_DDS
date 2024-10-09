@@ -1,25 +1,34 @@
 {
-    "idTroqueur": "g1.2",  
-    "idDestinataire": "g1.3",
-    "idFichier": "fichier_123",
-    "dateFichier": "12-31-2023",  
+    "idTroqueur": "g1.1",
+    "idDestinataire": "g1.1",
+    "idFichier": "g2.2",
+    "dateFichier": "08-10-2024",
+    "checksum": "3",
     "messages": [
-        {
-            "dateMessage": "10-08-2024",  
-            "statut": "accepte",  
-            "listeObjet": [
-                {
-                    "titre": "Objet 1",
-                    "qualite": 6,  
-                    "quantite": 2
-                },
-                {
-                    "titre": "Objet 2",
-                    "qualite": 3,
-                    "quantite": 0 
-                }
-            ]
-        }
-    ],
-    "checksum": "abcd1234"
-}
+      {
+        "dateMessage": "09-10-2024",
+        "statut": "propose",
+        "listeObjet": [
+          {
+            "titre": "Objet 1",
+            "description": "Description de l'objet 1",
+            "qualite": 4,
+            "quantite": 2
+          },
+          {
+            "titre": "Objet 2",
+            "description": "Description de l'objet 2",
+            "qualite": 5,
+            "quantite": 1
+          },
+          {
+            "titre": "Objet 3",
+            "description": "Description de l'objet 3",
+            "qualite": 3,
+            "quantite": 5
+          }
+        ]
+      }
+    ]
+  }
+  

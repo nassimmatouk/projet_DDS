@@ -4,7 +4,77 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Envoi autorisation</title>
+    <title>Envoi Autorisation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        header {
+            margin-bottom: 20px;
+        }
+
+        header a {
+            text-decoration: none;
+            color: #007bff;
+            margin-right: 10px;
+        }
+
+        header a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        form {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+
+        h2 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"] {
+            width: calc(100% - 22px);
+            padding: 8px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 8px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 
 <body>
@@ -16,23 +86,22 @@
 
     <h1>Formulaire message autorisation</h1>
     <form id="jsonForm" onsubmit="return handleSubmitA(event);">
-        <input type="hidden" name="typeDemande" value="autorisation">
         <h2>En-tête</h2>
         <label for="idDestinataire">ID Destinataire (gX.X):</label>
-        <input type="text" id="idDestinataire" name="idDestinataire" pattern="^g\d\.\d+$" required><br><br>
+        <input type="text" id="idDestinataire" name="idDestinataire" pattern="^g\d\.\d+$" required>
 
         <label for="idFichier">ID Fichier (gX.X):</label>
-        <input type="text" id="idFichier" name="idFichier" pattern="^g\d\.\d+$" required><br><br>
+        <input type="text" id="idFichier" name="idFichier" pattern="^g\d\.\d+$" required>
 
         <h2>Coordonnées</h2>
         <label for="nomAuteur">Nom de l'auteur:</label>
-        <input type="text" id="nomAuteur" name="nomAuteur"><br><br>
+        <input type="text" id="nomAuteur" name="nomAuteur">
 
         <label for="email">Adresse e-mail:</label>
-        <input type="email" id="email" name="email"><br><br>
+        <input type="email" id="email" name="email">
 
         <label for="telephone">Numéro de téléphone:</label>
-        <input type="tel" id="telephone" name="telephone" pattern="[0-9]{10}" placeholder="0123456789"><br><br>
+        <input type="tel" id="telephone" name="telephone" pattern="[0-9]{10}" placeholder="0123456789">
 
         <button type="submit">Soumettre</button>
     </form>
