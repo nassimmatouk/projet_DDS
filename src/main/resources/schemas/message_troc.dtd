@@ -1,0 +1,16 @@
+<!ELEMENT MessageTroc (checksum, idTroqueur, idDestinataire, idFichier, dateFichier, messages)>
+<!ELEMENT checksum (#PCDATA)>
+<!ELEMENT idTroqueur (#PCDATA)>
+<!ELEMENT idDestinataire (#PCDATA)>
+<!ELEMENT idFichier (#PCDATA)>
+<!ELEMENT dateFichier (#PCDATA)>
+<!ELEMENT messages (message+)>
+<!ELEMENT message (dateMessage, listeObjet)>
+<!ELEMENT dateMessage (#PCDATA)>
+<!ATTLIST message statut #REQUIRED (accepte | valide | annule | refuse | propose) >
+<!ELEMENT listeObjet (objet+)>
+<!ELEMENT objet (titre, description, qualite, quantite)>
+<!ELEMENT titre (#PCDATA)>
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT qualite (#PCDATA)>
+<!ELEMENT quantite (#PCDATA)>

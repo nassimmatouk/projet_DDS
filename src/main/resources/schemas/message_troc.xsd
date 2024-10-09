@@ -1,0 +1,80 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+    <xsd:element name="fichier">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="idTroqueur" type="idType" />
+                <xsd:element name="idDestinataire" type="idType" />
+                <xsd:element name="idFichier" type="idType" />
+                <xsd:element name="dateFichier" type="dateType" />
+                <xsd:element name="messages" type="messagesType" />
+                <xsd:element name="checksum" type="xsd:string" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+    <xsd:simpleType name="idType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="g\d\.\d+" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="dateType">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="\d{2}-\d{2}-\d{4}" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="messagesType">
+        <xsd:sequence>
+            <xsd:element name="message" type="messageType" maxOccurs="unbounded" minOccurs="1" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="messageType">
+        <xsd:sequence>
+            <xsd:element name="dateMessage" type="dateType" />
+            <xsd:element name="statut" type="statutType" />
+            <xsd:element name="listeObjet" type="listeObjetType" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:simpleType name="statutType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="accepte" />
+            <xsd:enumeration value="valide" />
+            <xsd:enumeration value="annule" />
+            <xsd:enumeration value="refuse" />
+            <xsd:enumeration value="propose" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="listeObjetType">
+        <xsd:sequence>
+            <xsd:element name="objet" type="objetType" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="objetType">
+        <xsd:sequence>
+            <xsd:element name="titre" type="xsd:string" />
+            <xsd:element name="description" type="xsd:string" minOccurs="0" />
+            <xsd:element name="qualite">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:int">
+                        <xsd:minInclusive value="1" />
+                        <xsd:maxInclusive value="5" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            <xsd:element name="quantite">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:int">
+                        <xsd:minInclusive value="1" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+
+</xsd:schema>

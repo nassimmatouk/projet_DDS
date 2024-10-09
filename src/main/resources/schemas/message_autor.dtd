@@ -1,0 +1,14 @@
+<!ELEMENT MessageAutorisation (checksum, idTroqueur, idDestinataire, idFichier, dateFichier, MessageDemandeAutorisation)>
+<!ELEMENT checksum (#PCDATA)>
+<!ELEMENT idTroqueur (#PCDATA)>
+<!ELEMENT idDestinataire (#PCDATA)>
+<!ELEMENT idFichier (#PCDATA)>
+<!ELEMENT dateFichier (#PCDATA)>
+<!ELEMENT MessageDemandeAutorisation (coordonnees, date, idMessage)>
+<!ELEMENT coordonnees (mail, telephone, nomAuteur)>
+<!ELEMENT mail (#PCDATA)>
+<!ELEMENT telephone (#PCDATA)>
+<!ELEMENT nomAuteur (#PCDATA)>
+<!ATTLIST MessageDemandeAutorisation statutAutorisation #REQUIRED (accepte | refuse | demande)>
+<!ELEMENT date (#PCDATA)>
+<!ELEMENT idMessage (#PCDATA)>

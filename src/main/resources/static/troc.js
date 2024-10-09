@@ -1,5 +1,4 @@
-//Ajout de messages et d'objets dans le troc
-
+/****************************** Ajout messages et objets dans troc ******************************/
 function isObjetValid(objet) {
     const titre = objet.querySelector('input[name="titre"]').value.trim();
     const qualite = objet.querySelector('input[name="qualite"]').value.trim();
@@ -53,10 +52,10 @@ function addObjet(button) {
     objetsContainer.appendChild(newObjet);
 }
 
-//Supression d'un objet ou message
 
+/****************************** Supression d'un objet ou message ******************************/
 function removeObjet(button) {
-    const objetsContainer = button.parentNode.parentNode; // Accéder au container des objets
+    const objetsContainer = button.parentNode.parentNode; 
     const objets = objetsContainer.querySelectorAll('.listeObjet');
 
     if (objets.length > 1) {
@@ -70,19 +69,16 @@ function removeMessage(button) {
     const messagesContainer = document.getElementById('messagesContainer');
     const messages = messagesContainer.querySelectorAll('.message');
 
-    // Ne pas supprimer si c'est le seul message restant
     if (messages.length > 1) {
-        button.parentNode.remove(); // Supprimer le parent de ce bouton, donc le message en question
+        button.parentNode.remove(); 
     } else {
         alert("Vous ne pouvez pas supprimer le dernier message.");
     }
 }
 
 
-
-//Génération du checksum et formatage de la date
+/****************************** Génération checksum et formatage date ******************************/
 function generateChecksum(data) {
-    // Logique de génération du checksum ici
     return "3";
 }
 
@@ -95,11 +91,11 @@ function formatDate(date) {
 }
 
 
-//Création du json de troc
+/****************************** Création des json ******************************/
+//Troc
 function handleSubmit(event) {
     event.preventDefault();
 
-    // Récupération des données du formulaire
     const form = document.getElementById('jsonForm');
     const formData = new FormData(form);
     const data = {
@@ -111,19 +107,15 @@ function handleSubmit(event) {
         messages: []
     };
 
-    // Récupération des messages
     const messagesContainer = document.getElementById('messagesContainer');
     const messageElements = messagesContainer.getElementsByClassName('message');
 
-    // Boucle pour chaque message
     for (let messageElement of messageElements) {
         const titre = messageElement.querySelector('input[name="titre"]').value;
         const description = messageElement.querySelector('input[name="description"]').value;
 
-        // Créer un tableau pour stocker les objets de ce message
         const listeObjet = [];
 
-        // Récupération des objets pour ce message
         const objetsContainer = messageElement.querySelector('.objetsContainer');
         const objetElements = objetsContainer.getElementsByClassName('listeObjet');
 
@@ -133,34 +125,28 @@ function handleSubmit(event) {
             const qualite = objetElement.querySelector('input[name="qualite"]').value;
             const quantite = objetElement.querySelector('input[name="quantite"]').value;
 
-            // Ajout de l'objet au tableau listeObjet
             listeObjet.push({
                 titre: titre,
                 description: description,
-                qualite: parseInt(qualite), // Assure que c'est un nombre
-                quantite: parseInt(quantite) // Assure que c'est un nombre
+                qualite: parseInt(qualite), 
+                quantite: parseInt(quantite) 
             });
         }
 
-        // Ajout du message avec la liste des objets
         data.messages.push({
-            dateMessage: formatDate(new Date()), // Date du message au format jj-mm-aaaa
+            dateMessage: formatDate(new Date()), 
             statut: "propose",
-            listeObjet: listeObjet // Liste des objets pour ce message
+            listeObjet: listeObjet 
         });
     }
 
-    // Conversion en JSON et sauvegarde
     const jsonString = JSON.stringify(data, null, 2);
     saveJsonToFile(jsonString);
 }
 
-
-
-
-//Création du json d'autorisation
+//Autorisation
 function handleSubmitA(event) {
-    event.preventDefault(); // Empêche la soumission du formulaire
+    event.preventDefault(); 
 
     const formData = new FormData(event.target);
     const data = {
@@ -195,9 +181,8 @@ function handleSubmitA(event) {
 }
 
 
-//Enregistrement du json dans le dossier
-
-//le troc
+/****************************** Enregistrement json dans dossier ******************************/
+//Troc
 function saveJsonToFile(jsonString) {
     fetch('/api/save-troc', {
         method: 'POST',
@@ -206,11 +191,11 @@ function saveJsonToFile(jsonString) {
         },
         body: jsonString
     })
-        .then(response => response.json())  // Convertir la réponse en JSON
+        .then(response => response.json())  
         .then(data => {
             if (data.success) {
                 alert('Fichier JSON enregistré avec succès.');
-                window.location.href = data.redirect;  // Rediriger vers l'URL fournie
+                window.location.href = data.redirect;  
             } else {
                 alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
             }
@@ -222,7 +207,7 @@ function saveJsonToFile(jsonString) {
 }
 
 
-//l'autorisation
+//Autorisation
 function saveJsonToFileA(jsonString) {
     fetch('/api/save-autor', {
         method: 'POST',
@@ -231,11 +216,11 @@ function saveJsonToFileA(jsonString) {
         },
         body: jsonString
     })
-        .then(response => response.json())  // Convertir la réponse en JSON
+        .then(response => response.json())  
         .then(data => {
             if (data.success) {
                 alert('Fichier JSON enregistré avec succès.');
-                window.location.href = data.redirect;  // Rediriger vers l'URL fournie
+                window.location.href = data.redirect;  
             } else {
                 alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
             }
