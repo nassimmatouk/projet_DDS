@@ -9,27 +9,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class TrocValidator {
 
-    // Regex patterns pour les validations
     private static final String ID_PATTERN = "^g\\d\\.\\d+$";
     private static final String DATE_PATTERN = "^\\d{2}-\\d{2}-\\d{4}$";
     private static final String STATUS_PATTERN = "^(accepte|valide|annule|refuse|propose)$";
 
     public boolean validateJson(JSONObject json) {
-        // Vérification des champs requis
         if (!json.has("idTroqueur") || !json.has("idDestinataire") || !json.has("idFichier") ||
                 !json.has("dateFichier") || !json.has("messages") || !json.has("checksum")) {
-            return false; // Un ou plusieurs champs requis manquent
+            return false; 
         }
 
-        // Validation des champs
         if (!isValidId(json.getString("idTroqueur")) ||
                 !isValidId(json.getString("idDestinataire")) ||
                 !isValidId(json.getString("idFichier")) ||
                 !isValidDate(json.getString("dateFichier"))) {
-            return false; // Un ou plusieurs champs ont un format invalide
+            return false; 
         }
-        // Validation du tableau messages
-        // JSON valide
 
         return validateMessages(json.getJSONArray("messages"));
     }
@@ -61,20 +56,19 @@ public class TrocValidator {
 
     private boolean validateMessages(JSONArray messages) {
         if (messages.length() < 1) {
-            return false; // Doit avoir au moins un message
+            return false;
         }
 
         for (int i = 0; i < messages.length(); i++) {
             JSONObject message = messages.getJSONObject(i);
             if (!message.has("dateMessage") || !message.has("statut") || !message.has("listeObjet")) {
-                return false; // Champs requis manquants dans le message
+                return false; 
             }
 
-            // Validation des champs dans le message
             if (!isValidDate(message.getString("dateMessage")) ||
                     !Pattern.matches(STATUS_PATTERN, message.getString("statut")) ||
                     !validateListeObjet(message.getJSONArray("listeObjet"))) {
-                return false; // Un ou plusieurs champs du message sont invalides
+                return false; 
             }
         }
         return true;
@@ -84,14 +78,13 @@ public class TrocValidator {
         for (int i = 0; i < listeObjet.length(); i++) {
             JSONObject objet = listeObjet.getJSONObject(i);
             if (!objet.has("titre") || !objet.has("qualite") || !objet.has("quantite")) {
-                return false; // Champs requis manquants dans l'objet
+                return false; 
             }
 
-            // Validation des champs de l'objet
             if (!objet.getString("titre").isEmpty() &&
                     (objet.getInt("qualite") < 1 || objet.getInt("qualite") > 5) &&
                     (objet.getInt("quantite") < 1)) {
-                return false; // Qualité ou quantité invalide
+                return false; 
             }
         }
         return true;

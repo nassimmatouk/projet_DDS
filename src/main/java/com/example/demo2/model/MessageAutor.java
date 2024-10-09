@@ -17,17 +17,14 @@ public class MessageAutor {
     private String idFichier;
     private String dateFichier;
 
-    // Champs pour l'objet MessageDemandeAutorisation
     private String statutAutorisation; 
     private String date; 
     private String idMessage; 
 
-    // Champs pour les coordonnées
     private String mail; 
     private String telephone; 
     private String nomAuteur; 
 
-    // Getters et Setters
     public Long getId() {
         return id;
     }

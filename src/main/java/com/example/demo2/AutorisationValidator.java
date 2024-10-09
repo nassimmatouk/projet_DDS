@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class AutorisationValidator {
 
-    // Regex patterns pour les validations
     private static final String ID_PATTERN = "^g\\d\\.\\d+$";
     private static final String DATE_PATTERN = "^\\d{2}-\\d{2}-\\d{4}$";
     private static final String STATUT_AUTORISATION_PATTERN = "^(accepte|refuse|demande)$";
@@ -16,23 +15,19 @@ public class AutorisationValidator {
     private static final String TELEPHONE_PATTERN = "^\\+?[0-9]{10,15}$";
 
     public boolean validateJson(JSONObject json) {
-        // Vérification des champs requis
         if (!json.has("idTroqueur") || !json.has("idDestinataire") || !json.has("idFichier") ||
                 !json.has("dateFichier") || !json.has("MessageDemandeAutorisation") || !json.has("checksum")) {
-            return false; // Un ou plusieurs champs requis manquent
+            return false; 
         }
 
-        // Validation des champs
         if (!isValidId(json.getString("idTroqueur")) ||
                 !isValidId(json.getString("idDestinataire")) ||
                 !isValidId(json.getString("idFichier")) ||
                 !isValidDate(json.getString("dateFichier"))) {
-            return false; // Un ou plusieurs champs ont un format invalide
+            return false; 
         }
 
-        // Validation de MessageDemandeAutorisation
         JSONObject messageDemandeAutorisation = json.getJSONObject("MessageDemandeAutorisation");
-        // JSON valide
         return validateMessageDemandeAutorisation(messageDemandeAutorisation);
     }
 
@@ -61,18 +56,15 @@ public class AutorisationValidator {
     }
 
     private boolean validateMessageDemandeAutorisation(JSONObject message) {
-        // Vérification des champs requis
         if (!message.has("statutAutorisation") || !message.has("date") || !message.has("idMessage")) {
-            return false; // Un ou plusieurs champs requis manquent
+            return false; 
         }
 
-        // Validation des champs dans MessageDemandeAutorisation
         if (!Pattern.matches(STATUT_AUTORISATION_PATTERN, message.getString("statutAutorisation")) ||
                 !isValidDate(message.getString("date"))) {
-            return false; // Un ou plusieurs champs ont un format invalide
+            return false; 
         }
 
-        // Vérification des coordonnées si elles existent
         if (message.has("coordonnees")) {
             JSONObject coordonnees = message.getJSONObject("coordonnees");
             if (!validateCoordonnees(coordonnees)) {
