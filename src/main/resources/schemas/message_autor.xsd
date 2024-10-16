@@ -1,18 +1,5 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
-    <xsd:element name="fichier">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="idTroqueur" type="idType" />
-                <xsd:element name="idDestinataire" type="idType" />
-                <xsd:element name="idFichier" type="idType" />
-                <xsd:element name="dateFichier" type="dateType" />
-                <xsd:element name="MessageDemandeAutorisation" type="MessageDemandeAutorisationType" />
-                <xsd:element name="checksum" type="xsd:string" />
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
-
     <xsd:simpleType name="idType">
         <xsd:restriction base="xsd:string">
             <xsd:pattern value="g\d\.\d+" />
@@ -24,16 +11,6 @@
             <xsd:pattern value="\d{2}-\d{2}-\d{4}" />
         </xsd:restriction>
     </xsd:simpleType>
-
-
-    <xsd:complexType name="MessageDemandeAutorisationType">
-        <xsd:sequence>
-            <xsd:element name="statutAutorisation" type="statutAutorisationType" />
-            <xsd:element name="date" type="dateType" />
-            <xsd:element name="idMessage" type="xsd:string" />
-            <xsd:element name="coordonnees" type="coordonneesType" minOccurs="0" />
-        </xsd:sequence>
-    </xsd:complexType>
 
     <xsd:simpleType name="statutAutorisationType">
         <xsd:restriction base="xsd:string">
@@ -50,5 +27,27 @@
             <xsd:element name="nomAuteur" type="xsd:string" minOccurs="0" />
         </xsd:sequence>
     </xsd:complexType>
+
+    <xsd:complexType name="MessageDemandeAutorisationType">
+        <xsd:sequence>
+            <xsd:element name="statutAutorisation" type="statutAutorisationType" />
+            <xsd:element name="date" type="dateType" />
+            <xsd:element name="idMessage" type="xsd:string" />
+            <xsd:element name="coordonnees" type="coordonneesType" minOccurs="0" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:element name="fichier">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="idTroqueur" type="idType" />
+                <xsd:element name="idDestinataire" type="idType" />
+                <xsd:element name="idFichier" type="idType" />
+                <xsd:element name="dateFichier" type="dateType" />
+                <xsd:element name="MessageDemandeAutorisation" type="MessageDemandeAutorisationType" />
+                <xsd:element name="checksum" type="xsd:string" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
 
 </xsd:schema>
