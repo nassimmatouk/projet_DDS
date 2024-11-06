@@ -7,11 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.example.demo2.model.MessageAutor;
-import com.example.demo2.repository.ContactRepository;
-import com.example.demo2.service.ContactService;
-import com.example.demo2.service.MessageAutorService;
 import com.example.demo2.model.Contact;
+import com.example.demo2.service.ContactService;
 
 @Controller
 public class ControllerTroc {
@@ -37,11 +34,6 @@ public class ControllerTroc {
     }
 
     //autorisation
-    /*
-    @GetMapping("/autorisation")
-    public String demande() {
-        return "autorisation";
-    }*/
     @GetMapping("/autorisation")
     public String showContact(Model model) {
         List<Contact> contacts = contactService.getAllMessages();

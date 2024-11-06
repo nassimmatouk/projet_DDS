@@ -17,9 +17,6 @@ public class MessageAutorService {
     public List<MessageAutor> getAllMessages() {
         return messageAutorRepository.findAll();
     }
-
-
-
     
     public MessageAutor getMessageById(Long id) {
         return messageAutorRepository.findById(id).orElse(null);
