@@ -31,7 +31,7 @@
             color: #007bff;
             margin-bottom: 20px;
         }
-
+        /*
         table {
             width: 100%;
             border-collapse: collapse;
@@ -68,7 +68,80 @@
             border-left: 6px solid #007bff;
             padding: 10px;
             border-radius: 4px;
+        }*/
+
+
+
+
+        /* ---------------------------------- */
+        .messages {
+            display: flex;
+            flex-wrap: wrap; /* Les boîtes passeront à la ligne si nécessaire */
+            gap: 1rem; /* Espace entre les boîtes */
+            padding: 1rem;
+
+            width: 100%;
         }
+
+        .message {
+            list-style: none; /* Retire les puces de liste */
+            width: 200px; /* Largeur fixe pour chaque boîte */
+            border: 1px solid #ddd;
+            border-radius: 5px; /* Coins arrondis */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Légère ombre */
+            padding: 10px;
+            background-color: #f9f9f9; /* Couleur de fond de la boîte */
+            display: flex;
+            flex-direction: column; /* Les éléments enfants sont alignés verticalement */
+        }
+
+        .message .titre {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            padding: 10px;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            margin-bottom: 10px; /* Espace en dessous du titre */
+            text-align: center;
+        }
+
+        .message li {
+            padding: 5px 0; /* Espace vertical entre les items */
+            font-size: 14px; /* Taille du texte */
+        }
+
+        .message .titre span {
+            font-weight: normal; /* Pour différencier le label du contenu */
+        }
+
+
+        .buttons {
+            display: flex;
+            flex-direction: row; /* Alignement vertical */
+            justify-content: space-between; /* Espacement entre les boutons */
+            height: 35px; /*100%;  Prendre toute la hauteur de l'élément parent */
+        }
+
+        .accepte, .refuse {
+            color: white; /* Couleur du texte blanche */
+            border: none; /* Supprime la bordure */
+            padding: 5px; /* Espacement intérieur */
+            border-radius: 3px; /* Coins arrondis */
+            cursor: pointer; /* Change le curseur au survol */
+            /*margin-bottom: 10px;  Espace en dessous du bouton "Accepté" */
+            text-align: center; /* Centrer le texte */
+            width: 80px;
+        }
+
+        .accepte {
+            background-color: rgb(49, 185, 49); /* Couleur de fond verte */
+        }
+
+        .refuse {
+            background-color: red; /* Couleur de fond rouge */
+        }
+
     </style>
 </head>
 
@@ -81,6 +154,7 @@
 
     <h1>Messages d'Autorisations</h1>
 
+    <!--
     <table>
         <thead>
             <tr>
@@ -93,7 +167,7 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Boucle pour afficher chaque message d'autorisation -->
+            
             <th:block th:each="message : ${Amessage}">
                 <tr class="message-row">
                     <td th:text="${message.idTroqueur}"></td>
@@ -103,7 +177,7 @@
                     <td th:text="${#strings.isEmpty(message.mail) ? 'Non renseigné' : message.mail}"></td>
                     <td th:text="${#strings.isEmpty(message.telephone) ? 'Non renseigné' : message.telephone}"></td>
                 </tr>
-                <!-- Séparateur visuel entre les messages -->
+                
                 <tr class="message-separator">
                     <td colspan="6"></td>
                 </tr>
@@ -112,6 +186,62 @@
     </table>
 
     <div th:if="${AmessageInfo}" class="message-info" th:text="${AmessageInfo}"></div>
+    -->
+
+
+    <div class="messages">
+        <th:block th:each="message : ${Amessage}">
+            <ul class="message" id="message-${message.id}">
+                <li class="titre"><span th:text="${#strings.isEmpty(message.nomAuteur) ? 'Non renseigné' : message.nomAuteur}"></span></li>
+                <li>Troqueur : <span th:text="${message.idTroqueur}"></span></li>
+                <li>Statut : <span th:text="${message.statutAutorisation}"></span></li>
+                <li>Date : <span th:text="${message.date}"></span></li>
+                <li>Mail : <span th:text="${#strings.isEmpty(message.mail) ? 'Non renseigné' : message.mail}"></span></li>
+                <li>Téléphone : <span th:text="${#strings.isEmpty(message.telephone) ? 'Non renseigné' : message.telephone}"></span></li>
+                
+                <div class="buttons">
+                    <!--
+                    <button class="accepte" onclick="gererMessage('${message.id}', 'accepter')">Accepté</button>
+                    <button class="refuse" onclick="gererMessage('${message.id}', 'refuser')">Réfusé</button>
+                    -->
+                    <button class="accepte" th:onclick="'gererMessage(' + ${message.id} + ', \'accepter\')'">Accepté</button>
+                    <button class="refuse" th:onclick="'gererMessage(' + ${message.id} + ', \'refuser\')'">Réfusé</button>
+
+
+                </div>
+            </ul>
+        </th:block>
+    </div>
+
+    <div th:if="${AmessageInfo}" class="message-info" th:text="${AmessageInfo}"></div>
+
+
+<script>
+    function gererMessage(messageId, action) {
+        const url = action === 'accepter' ? '/accepter-message' : '/refuser-message';
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `id=${messageId}`
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+            // Supprimer l'élément du DOM si l'opération est réussie
+            const messageElement = document.getElementById(`message-${messageId}`);
+            if (messageElement) {
+                messageElement.remove();
+            }
+
+            location.reload(); // recharger la page
+        })
+        .catch(error => console.error('Erreur:', error));
+    }
+</script>
+    
+    
 </body>
 
 </html>

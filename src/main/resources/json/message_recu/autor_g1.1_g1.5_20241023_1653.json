@@ -1,0 +1,17 @@
+{
+  "idTroqueur": "g1.1",
+  "idDestinataire": "g1.5",
+  "idFichier": "g1.10",
+  "dateFichier": "23-10-2024",
+  "checksum": "3",
+  "MessageDemandeAutorisation": {
+    "statutAutorisation": "demande",
+    "date": "23-10-2024",
+    "idMessage": "msg_1729695191074",
+    "coordonnees": {
+      "mail": "groupe1@dds.com",
+      "telephone": "1122334455",
+      "nomAuteur": "groupe1"
+    }
+  }
+}

@@ -42,7 +42,8 @@
             color: #007bff;
         }
 
-        input[type="submit"] {
+        /*input[type="submit"] {*/
+        .submit-faireDem, .submit-msgAtt {
             padding: 10px;
             background-color: #007bff;
             color: white;
@@ -53,8 +54,61 @@
             width: 100%;
         }
 
+        .submit-dem {
+            width: 100%;
+            background-color: #fff;
+            border: 0px;
+            color : #231050;
+            font-size: normal;
+        }
+        /*
         input[type="submit"]:hover {
             background-color: #0056b3;
+        }*/
+        .submit-faireDem:hover, .submit-msgAtt:hover {
+            background-color: #0056b3;
+        }
+
+
+
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr.contact-row {
+            background-color: #f9f9f9;
+        }
+
+        tr.contact-separator td {
+            padding: 0;
+            border: none;
+        }
+
+        .contact-info {
+            margin-top: 20px;
+            background-color: #e7f3fe;
+            border-left: 6px solid #007bff;
+            padding: 10px;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -66,14 +120,55 @@
         <a href="/autorisation">Contacts</a>
     </header>
 
+
+    <table>
+        <thead>
+            <tr>
+                <th>Auteur</th>
+                <th>Mail</th>
+                <th>Téléphone</th>
+                <th>Date</th>
+                <th colspan="2">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <th:block th:each="contact : ${Acontact}">
+                <tr class="contact-row">
+                    <td th:text="${#strings.isEmpty(contact.nomAuteur) ? 'Non renseigné' : contact.nomAuteur}"></td>
+                    <td th:text="${#strings.isEmpty(contact.mail) ? 'Non renseigné' : contact.mail}"></td>
+                    <td th:text="${#strings.isEmpty(contact.telephone) ? 'Non renseigné' : contact.telephone}"></td>
+                    <td th:text="${contact.date}"></td>
+                    <td>Supprimer</td>
+                    <td>
+                        <form action="/demande-troc" method="get">
+                            <input type="hidden" value="th:text='${#strings.isEmpty(contact.nomAuteur) ? \'Non renseigné\' : contact.nomAuteur}'">
+                            <input type="hidden" value="th:text='${#strings.isEmpty(contact.mail) ? \'Non renseigné\' : contact.mail}'">
+                            <input type="hidden" value="th:text='${#strings.isEmpty(contact.telephone) ? \'Non renseigné\' : contact.telephone}'">
+                            <input type="hidden" value="th:text='${contact.date}'">
+                            <input class="submit-dem" type="submit" value="Demander">
+                        </form>
+                    </td>
+                </tr>
+                
+                <tr class="contact-separator">
+                    <td colspan="6"></td>
+                </tr>
+            </th:block>
+        </tbody>
+    </table>
+
+    <div th:if="${AcontactInfo}" class="contact-info" th:text="${AcontactInfo}"></div>
+
+
     <div class="container">
         <h1>Page de contacts</h1>
         <p>Que souhaitez-vous faire ?</p>
         <form action="/message-autorisation" method="get">
-            <input type="submit" value="Voir vos messages en attente">
+            <input class="submit-msgAtt" type="submit" value="Voir vos messages en attente">
         </form>
         <form action="/demande-autorisation" method="get">
-            <input type="submit" value="Faire une demande">
+            <input class="submit-faireDem" type="submit" value="Faire une demande">
         </form>
     </div>
 </body>

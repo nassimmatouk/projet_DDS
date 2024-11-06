@@ -1,0 +1,21 @@
+{
+  "idTroqueur": "g1.1",
+  "idDestinataire": "g1.6",
+  "idFichier": "g1.12",
+  "dateFichier": "23-10-2024",
+  "checksum": "3",
+  "messages": [
+    {
+      "dateMessage": "23-10-2024",
+      "statut": "propose",
+      "listeObjet": [
+        {
+          "titre": "clavier",
+          "description": "Clavier neuf, apple",
+          "qualite": 5,
+          "quantite": 1
+        }
+      ]
+    }
+  ]
+}
