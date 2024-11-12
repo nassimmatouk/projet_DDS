@@ -78,7 +78,7 @@ public class MessageTroc {
         this.objets = objets;
     }
 
-    @Embeddable
+    @Embeddable // indique que cette classe peut être intégrée dans une autre entité JPA
     public static class ObjetTroc {
         private String titre;
         private String description;

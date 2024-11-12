@@ -54,7 +54,7 @@
             width: 100%;
         }
 
-        .submit-dem {
+        .submit-dem, .supprimer {
             width: 100%;
             background-color: #fff;
             border: 0px;
@@ -139,7 +139,7 @@
                     <td th:text="${#strings.isEmpty(contact.mail) ? 'Non renseigné' : contact.mail}"></td>
                     <td th:text="${#strings.isEmpty(contact.telephone) ? 'Non renseigné' : contact.telephone}"></td>
                     <td th:text="${contact.date}"></td>
-                    <td>Supprimer</td>
+                    <td><button class="supprimer" th:onclick="'supprimerContact(' + ${contact.id} +')'">Supprimer</button></td>
                     <td>
                         <form action="/demande-troc" method="get">
                             <input type="hidden" value="th:text='${#strings.isEmpty(contact.nomAuteur) ? \'Non renseigné\' : contact.nomAuteur}'">
@@ -171,5 +171,26 @@
             <input class="submit-faireDem" type="submit" value="Faire une demande">
         </form>
     </div>
+
+
+    <script>
+        function supprimerContact(contactId) {
+            const url = '/supprimer-contact';
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `id=${contactId}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log("Contact supprimer avec succès.");
+
+                location.reload(); // recharger la page
+            })
+            .catch(error => console.error('Erreur:', error));
+        }
+    </script>
 </body>
 </html>

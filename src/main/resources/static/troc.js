@@ -230,3 +230,33 @@ function saveJsonToFileA(jsonString) {
             alert('Une erreur est survenue lors de la tentative d\'enregistrement du fichier.');
         });
 }
+
+
+/*************************** Mettre à jour le statut d'un fichier ****************************** */
+/*
+function updateStatut(idTroqueur, idFichier, idMessage, nouveauStatut) {
+    fetch('/api/update-statut', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            idTroqueur: idTroqueur,
+            idFichier: idFichier,
+            idMessage: idMessage,
+            nouveauStatut: nouveauStatut
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Statut mis à jour avec succès.");
+            location.reload(); // Rafraîchit la page pour afficher le nouveau statut
+        } else {
+            alert("Échec de la mise à jour du statut.");
+        }
+    })
+    .catch(error => console.error('Erreur:', error));
+}*/
+
+

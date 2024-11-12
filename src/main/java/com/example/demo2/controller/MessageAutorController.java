@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo2.model.MessageAutor;
-import com.example.demo2.model.Contact;
 import com.example.demo2.service.ContactService;
 import com.example.demo2.service.MessageAutorService;
 
@@ -37,23 +36,12 @@ public class MessageAutorController {
     }
 
 
-
-
-
-    @PostMapping("/accepter-message")
+    @PostMapping("/supprimer-contact")
     @ResponseBody
-    public String accepterMessage(@RequestParam Long id) { 
-        MessageAutor m = messageAutorService.getMessageById(id); System.out.println("\n\nIN ACCEPT MSG .........\n\n");
-        Contact c = new Contact(m.getId(), m.getNomAuteur(), m.getMail(), m.getTelephone(), m.getDate());
-        contactService.ajouterContact(c);  // Ajoute le message dans la liste de contacts
-        messageAutorService.supprimerMessage(id);  // Supprime le message de la base
-        return "Message accepté et ajouté aux contacts";
+    public String supprimerContact(@RequestParam Long id) { 
+        contactService.supprimerContact(id);
+        System.out.println("Le contact ayant l'id suivant à été supprimer avec succès : " + id);
+        return "Contact supprimer avec succès";
     }
 
-    @PostMapping("/refuser-message")
-    @ResponseBody
-    public String refuserMessage(@RequestParam Long id) { System.out.println("\n\nIN REFUSE MSG ....\n\n");
-        messageAutorService.supprimerMessage(id);  // Supprime le message de la base
-        return "Message refusé et supprimé";
-    }
 }

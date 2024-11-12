@@ -1,10 +1,12 @@
 package com.example.demo2.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo2.model.Contact;
 import com.example.demo2.model.MessageAutor;
 import com.example.demo2.repository.MessageAutorRepository;
 
@@ -28,4 +30,5 @@ public class MessageAutorService {
     public void supprimerMessage(Long id) {
         messageAutorRepository.deleteById(id);
     }
+    
 }
