@@ -1,0 +1,17 @@
+{
+    "idDestinataire": "g2.1",
+    "idTroqueur": "g1.1",
+    "MessageDemandeAutorisation": {
+        "date": "08-10-2024",
+        "idMessage": "msg_1728413446782",
+        "statutAutorisation": "accepte",
+        "coordonnees": {
+            "mail": "h.uibiu@gmail.com",
+            "telephone": "0123456789",
+            "nomAuteur": "hugo chataigner"
+        }
+    },
+    "dateFichier": "08-10-2024",
+    "checksum": "3",
+    "idFichier": "g3.4"
+}
