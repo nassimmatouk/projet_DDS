@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api")
-public class APIController {
+public class JsonController {
 
     @Autowired
     private MessageTrocService messageTrocService;
