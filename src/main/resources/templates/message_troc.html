@@ -1,135 +1,269 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Messages de Troc</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f9;
-            color: #333;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f9;
+        color: #333;
+      }
 
-        header {
-            margin-bottom: 20px;
-        }
+      header {
+        margin-bottom: 20px;
+      }
 
-        header a {
-            text-decoration: none;
-            color: #007bff;
-            margin-right: 10px;
-        }
+      header a {
+        text-decoration: none;
+        color: #007bff;
+        margin-right: 10px;
+      }
 
-        header a:hover {
-            text-decoration: underline;
-        }
+      header a:hover {
+        text-decoration: underline;
+      }
 
-        h1 {
-            color: #007bff;
-            margin-bottom: 20px;
-        }
+      h1 {
+        color: #007bff;
+        margin-bottom: 20px;
+      }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
 
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
 
-        th {
-            background-color: #007bff;
-            color: white;
-        }
+      th {
+        background-color: #007bff;
+        color: white;
+      }
 
-        tr.message-row {
-            background-color: #f9f9f9;
-        }
+      tr.message-row {
+        background-color: #f9f9f9;
+      }
 
-        tr.message-separator td {
-            padding: 0;
-            border: none;
-        }
+      tr.message-separator td {
+        padding: 0;
+        border: none;
+      }
 
-        ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
 
-        li {
-            margin: 5px 0;
-        }
+      li {
+        margin: 5px 0;
+      }
 
-        .message-info {
-            margin-top: 20px;
-            background-color: #e7f3fe;
-            border-left: 6px solid #007bff;
-            padding: 10px;
-            border-radius: 4px;
-        }
+      .message-info {
+        margin-top: 20px;
+        background-color: #e7f3fe;
+        border-left: 6px solid #007bff;
+        padding: 10px;
+        border-radius: 4px;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      button:hover {
+        opacity: 0.8;
+      }
+
+      .delete-btn {
+        background-color: #e74c3c; /* Red */
+        color: white;
+      }
+
+      .delete-btn:hover {
+        background-color: #c0392b; /* Darker red */
+      }
+
+      .edit-btn {
+        background-color: transparent;
+        color: #7f8c8d; /* Gray */
+        border: 1px solid #bdc3c7; /* Light gray border */
+      }
+
+      .edit-btn:hover {
+        background-color: #ecf0f1; /* Light gray hover */
+        color: #34495e; /* Darker gray */
+      }
+
+      .send-btn {
+        background-color: #3498db; /* Blue */
+        color: white;
+      }
+
+      .send-btn:hover {
+        background-color: #2980b9; /* Darker blue */
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <a href="/">Accueil</a> |
-        <a href="/troc">Troc</a> |
-        <a href="/autorisation">Contacts</a>
+      <a href="/">Accueil</a> | <a href="/troc">Troc</a> |
+      <a href="/autorisation">Contacts</a>
     </header>
 
     <h1>Messages de Troc</h1>
 
+    <h2>Messages reçus</h2>
     <table>
-        <thead>
-            <tr>
-                <th>Troqueur</th>
-                <th>Statut</th>
-                <th>Date</th>
-                <th>Objets</th> <!-- Nouvelle colonne pour les objets -->
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Boucle pour afficher chaque message de troc -->
-            <th:block th:each="message : ${messages}">
-                <tr class="message-row">
-                    <td th:text="${message.idTroqueur}"></td>
-                    <td th:text="${message.statut}"></td>
-                    <td th:text="${message.dateMessage}"></td>
-                    <td>
-                        <!-- Boucle pour afficher les objets associés au message -->
-                        <ul>
-                            <th:block th:each="objet : ${message.objets}">
-                                <li>
-                                    <strong th:text="${objet.titre}"></strong> - 
-                                    <span th:text="${objet.description}"></span> 
-                                    (Qualité: <span th:text="${objet.qualite}"></span>, 
-                                    Quantité: <span th:text="${objet.quantite}"></span>)
-                                </li>
-                            </th:block>
-                        </ul>
-                    </td>
-                </tr>
-                <!-- Séparateur visuel entre les messages -->
-                <tr class="message-separator">
-                    <td colspan="4"></td>
-                </tr>
-            </th:block>
-        </tbody>
+      <thead>
+        <tr>
+          <th>Troqueur</th>
+          <th>Destinataire</th>
+          <th>Statut</th>
+          <th>Date</th>
+          <th>Objets</th>
+        </tr>
+      </thead>
+      <tbody>
+        <th:block th:each="message : ${messages}">
+          <tr class="message-row">
+            <td th:text="${message.idTroqueur}"></td>
+            <td th:text="${message.idDestinataire}"></td>
+            <td th:text="${message.statut}"></td>
+            <td th:text="${message.dateMessage}"></td>
+            <td>
+              <ul>
+                <th:block th:each="objet : ${message.objets}">
+                  <li>
+                    <strong th:text="${objet.titre}"></strong> -
+                    <span th:text="${objet.description}"></span>
+                    (Qualité: <span th:text="${objet.qualite}"></span>,
+                    Quantité: <span th:text="${objet.quantite}"></span>)
+                  </li>
+                </th:block>
+              </ul>
+            </td>
+          </tr>
+          <!-- Séparateur visuel entre les messages -->
+          <tr class="message-separator">
+            <td colspan="4"></td>
+          </tr>
+        </th:block>
+      </tbody>
     </table>
+    <div
+      th:if="${messageInfo}"
+      class="message-info"
+      th:text="${messageInfo}"
+    ></div>
 
-    <div th:if="${messageInfo}" class="message-info" th:text="${messageInfo}"></div>
-</body>
+    <!--..................................BROUILLONS..................................-->
 
+    <h2>Brouillons</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>
+            <input type="checkbox" id="selectAll" onclick="checkAll()" />
+          </th>
+          <th>Troqueur</th>
+          <th>Destinataire</th>
+          <th>Statut</th>
+          <th>Date</th>
+          <th>Objets</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <th:block th:each="message : ${brouillons}">
+          <tr class="message-row">
+            <td>
+              <input
+                type="checkbox"
+                class="selectMessage"
+                name="selectedMessages"
+                value="[[${message.id}]]"
+              />
+            </td>
+            <td th:text="${message.idTroqueur}"></td>
+            <td th:text="${message.idDestinataire}"></td>
+            <td th:text="${message.statut}"></td>
+            <td th:text="${message.dateMessage}"></td>
+            <td>
+              <ul>
+                <th:block th:each="objet : ${message.objets}">
+                  <li>
+                    <strong th:text="${objet.titre}"></strong> -
+                    <span th:text="${objet.description}"></span>
+                    (Qualité: <span th:text="${objet.qualite}"></span>,
+                    Quantité: <span th:text="${objet.quantite}"></span>)
+                  </li>
+                </th:block>
+              </ul>
+            </td>
+            <td>
+              <form action="/api/delete-brouillon" method="post">
+                <input
+                  type="hidden"
+                  name="idMessage"
+                  th:value="${message.id}"
+                />
+                <button class="delete-btn" type="submit">Supprimer</button>
+              </form>
+              <form action="/edit" method="get">
+                <input
+                  type="hidden"
+                  name="idMessage"
+                  th:value="${message.id}"
+                />
+                <button class="edit-btn" type="submit">Modifier</button>
+              </form>
+              <button
+                class="send-btn"
+                type="button"
+                th:onclick="sendSingleMessage([[${message.id}]])"
+              >
+                Envoyer
+              </button>
+            </td>
+          </tr>
+          <tr class="message-separator">
+            <td colspan="7"></td>
+          </tr>
+        </th:block>
+      </tbody>
+    </table>
+    <div
+      th:if="${brouillonInfo}"
+      class="message-info"
+      th:text="${brouillonInfo}"
+    ></div>
+    <button class="delete-btn" type="button" onclick="deleteSelectedMessages()">
+      Supprimer sélectionnés
+    </button>
+    <button class="send-btn" type="button" onclick="sendSelectedMessages()">
+      Envoyer sélectionnés
+    </button>
+
+    <script src="troc.js"></script>
+  </body>
 </html>

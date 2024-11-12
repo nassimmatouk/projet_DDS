@@ -1,20 +1,28 @@
 package com.example.demo2.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo2.model.Contact;
+import com.example.demo2.model.MessageTroc;
+import com.example.demo2.repository.MessageTrocRepository;
 import com.example.demo2.service.ContactService;
+
 
 @Controller
 public class ControllerTroc {
 
     @Autowired
     private ContactService contactService;
+
+    @Autowired
+    private MessageTrocRepository messageTrocRepository;
 
     @GetMapping("/")
     public String accueil() {
@@ -26,11 +34,6 @@ public class ControllerTroc {
     @GetMapping("/troc")
     public String troc() {
         return "troc";
-    }
-
-    @GetMapping("/demande-troc")
-    public String demandeTroc() {
-        return "demande_troc";
     }
 
     //autorisation
@@ -49,5 +52,20 @@ public class ControllerTroc {
     @GetMapping("/demande-autorisation")
     public String demandeAutorisation() {
         return "demande_autorisation";
+    }
+
+    @GetMapping("/edit")
+    public String edit(@RequestParam(value = "idMessage", required = false) Long idMessage, Model model) {
+        if (idMessage != null) {
+            Optional<MessageTroc> messageTroc = messageTrocRepository.findById(idMessage);
+            if (messageTroc.isPresent()) {
+                model.addAttribute("message", messageTroc.get());
+            } else {
+                model.addAttribute("error", "Message de troc non trouvé");
+            }
+            return "/edit";
+        } else {
+            return "/demande_troc";
+        }
     }
 }

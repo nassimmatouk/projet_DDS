@@ -134,6 +134,7 @@
         name="idDestinataire"
         pattern="^g\d\.\d+$"
         required
+        th:value="${message.idDestinataire != null ? message.idDestinataire : ''}"
       /><br /><br />
 
       <h2>Messages</h2>
@@ -141,14 +142,24 @@
         <div class="message">
           <h3>Liste des objets</h3>
           <div class="objetsContainer">
-            <div class="listeObjet">
+            <div class="listeObjet" th:each="objet : ${message.objets}">
               <label><strong>Objet</strong></label
               ><br />
+
               <label for="titre">Titre de l'objet:</label>
-              <input type="text" name="titre" required /><br /><br />
+              <input
+                type="text"
+                name="titre"
+                required
+                th:value="${objet.titre != null ? objet.titre : ''}"
+              /><br /><br />
 
               <label for="description">Description de l'objet:</label>
-              <input type="text" name="description" /><br /><br />
+              <input
+                type="text"
+                name="description"
+                th:value="${objet.description != null ? objet.description : ''}"
+              /><br /><br />
 
               <label for="qualite">Qualité (1-5):</label>
               <input
@@ -157,6 +168,7 @@
                 min="1"
                 max="5"
                 required
+                th:value="${objet.qualite != null ? objet.qualite : ''}"
               /><br /><br />
 
               <label for="quantite">Quantité:</label>
@@ -165,6 +177,7 @@
                 name="quantite"
                 min="1"
                 required
+                th:value="${objet.quantite != null ? objet.quantite : ''}"
               /><br /><br />
 
               <button type="button" onclick="removeObjet(this)">
@@ -175,17 +188,15 @@
           <button type="button" onclick="addObjet(this)">
             Ajouter un objet</button
           ><br /><br />
-          <button type="button" onclick="removeMessage(this)">
-            Supprimer ce message</button
-          ><br /><br />
         </div>
       </div>
-      <button type="button" onclick="addMessage()">Ajouter un message</button
-      ><br /><br />
-      <button type="submit">Envoyer message</button>
-      <button type="button" onclick="saveMessage()">Enregistrer message</button>
-    </form>
 
+      <br /><br />
+      <button type="submit">Envoyer message</button>
+      <button type="button" th:onclick="updateMessage([[${message.id}]], [[${message.dateFichier}]])">
+        Enregistrer message
+      </button>
+    </form>
     <script src="troc.js"></script>
   </body>
 </html>

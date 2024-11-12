@@ -14,7 +14,20 @@ public class MessageTrocService {
     @Autowired
     private MessageTrocRepository messageTrocRepository;
 
-    public List<MessageTroc> getAllMessages() {
-        return messageTrocRepository.findAll();
+    public MessageTroc saveBrouillon(MessageTroc messageTroc) {
+        messageTroc.setBrouillon(true);
+        return messageTrocRepository.save(messageTroc);
+    }
+
+    public List<MessageTroc> getAllMessagesRecus() {
+        return messageTrocRepository.findByBrouillonFalse();
+    }
+
+    public List<MessageTroc> getAllBrouillons() {
+        return messageTrocRepository.findByBrouillonTrue();
+    }
+
+    public void deleteBrouillon(Long idMessage) {
+        messageTrocRepository.deleteById(idMessage);
     }
 }

@@ -28,7 +28,7 @@ function addMessage() {
 
     const objetsContainer = newMessage.querySelector('.objetsContainer');
     const objetsList = objetsContainer.querySelectorAll('.listeObjet');
-    
+
     for (let i = 1; i < objetsList.length; i++) {
         objetsList[i].remove();
     }
@@ -55,11 +55,11 @@ function addObjet(button) {
 
 /****************************** Supression d'un objet ou message ******************************/
 function removeObjet(button) {
-    const objetsContainer = button.parentNode.parentNode; 
+    const objetsContainer = button.parentNode.parentNode;
     const objets = objetsContainer.querySelectorAll('.listeObjet');
 
     if (objets.length > 1) {
-        button.parentNode.remove(); 
+        button.parentNode.remove();
     } else {
         alert("Vous ne pouvez pas supprimer le dernier objet.");
     }
@@ -70,7 +70,7 @@ function removeMessage(button) {
     const messages = messagesContainer.querySelectorAll('.message');
 
     if (messages.length > 1) {
-        button.parentNode.remove(); 
+        button.parentNode.remove();
     } else {
         alert("Vous ne pouvez pas supprimer le dernier message.");
     }
@@ -93,7 +93,7 @@ function formatDate(date) {
 
 /****************************** Création des json ******************************/
 //Troc
-function handleSubmit(event) {
+function sendMessage(event) {
     event.preventDefault();
 
     const form = document.getElementById('jsonForm');
@@ -101,7 +101,7 @@ function handleSubmit(event) {
     const data = {
         idTroqueur: "g1.1",
         idDestinataire: formData.get('idDestinataire'),
-        idFichier: formData.get('idFichier'),
+        idFichier: "g1.1",
         dateFichier: formatDate(new Date()),
         checksum: generateChecksum(formData),
         messages: []
@@ -125,18 +125,19 @@ function handleSubmit(event) {
             const qualite = objetElement.querySelector('input[name="qualite"]').value;
             const quantite = objetElement.querySelector('input[name="quantite"]').value;
 
+
             listeObjet.push({
                 titre: titre,
                 description: description,
-                qualite: parseInt(qualite), 
-                quantite: parseInt(quantite) 
+                qualite: parseInt(qualite),
+                quantite: parseInt(quantite)
             });
         }
 
         data.messages.push({
-            dateMessage: formatDate(new Date()), 
+            dateMessage: formatDate(new Date()),
             statut: "propose",
-            listeObjet: listeObjet 
+            listeObjet: listeObjet
         });
     }
 
@@ -146,13 +147,13 @@ function handleSubmit(event) {
 
 //Autorisation
 function handleSubmitA(event) {
-    event.preventDefault(); 
+    event.preventDefault();
 
     const formData = new FormData(event.target);
     const data = {
         idTroqueur: "g1.1",
         idDestinataire: formData.get("idDestinataire"),
-        idFichier: formData.get("idFichier"),
+        idFichier: "g1.1",
         dateFichier: formatDate(new Date()),
         checksum: generateChecksum(formData),
         MessageDemandeAutorisation: {
@@ -162,7 +163,7 @@ function handleSubmitA(event) {
             coordonnees: {}
         }
     };
-    
+
     const email = formData.get("email");
     const telephone = formData.get("telephone");
     const nomAuteur = formData.get("nomAuteur");
@@ -191,11 +192,11 @@ function saveJsonToFile(jsonString) {
         },
         body: jsonString
     })
-        .then(response => response.json())  
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
                 alert('Fichier JSON enregistré avec succès.');
-                window.location.href = data.redirect;  
+                window.location.href = data.redirect;
             } else {
                 alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
             }
@@ -216,11 +217,11 @@ function saveJsonToFileA(jsonString) {
         },
         body: jsonString
     })
-        .then(response => response.json())  
+        .then(response => response.json())
         .then(data => {
             if (data.success) {
                 alert('Fichier JSON enregistré avec succès.');
-                window.location.href = data.redirect;  
+                window.location.href = data.redirect;
             } else {
                 alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
             }
@@ -228,5 +229,213 @@ function saveJsonToFileA(jsonString) {
         .catch(error => {
             console.error('Erreur:', error);
             alert('Une erreur est survenue lors de la tentative d\'enregistrement du fichier.');
+        });
+}
+
+
+/****************************** Gestion des brouillons ******************************/
+//Sauvegarde en bdd
+function saveMessage(event) {
+
+    const form = document.getElementById('jsonForm');
+    const formData = new FormData(form);
+    const data = {
+        idTroqueur: "g1.1",
+        idDestinataire: formData.get('idDestinataire'),
+        idFichier: "g1.1",
+        dateFichier: formatDate(new Date()),
+        checksum: generateChecksum(formData),
+        messages: []
+    };
+
+    const messagesContainer = document.getElementById('messagesContainer');
+    const messageElements = messagesContainer.getElementsByClassName('message');
+
+    for (let messageElement of messageElements) {
+        const titre = messageElement.querySelector('input[name="titre"]').value;
+        const description = messageElement.querySelector('input[name="description"]').value;
+
+        const listeObjet = [];
+
+        const objetsContainer = messageElement.querySelector('.objetsContainer');
+        const objetElements = objetsContainer.getElementsByClassName('listeObjet');
+
+        for (let objetElement of objetElements) {
+            const titre = objetElement.querySelector('input[name="titre"]').value;
+            const description = objetElement.querySelector('input[name="description"]').value;
+            const qualite = objetElement.querySelector('input[name="qualite"]').value;
+            const quantite = objetElement.querySelector('input[name="quantite"]').value;
+
+            listeObjet.push({
+                titre: titre,
+                description: description,
+                qualite: parseInt(qualite),
+                quantite: parseInt(quantite)
+            });
+        }
+
+        data.messages.push({
+            dateMessage: formatDate(new Date()),
+            statut: "brouillon",  // Statut "brouillon" pour les messages enregistrés
+            listeObjet: listeObjet
+        });
+    }
+
+    // Envoi des données pour être enregistrées en BDD
+    fetch('/api/save-troc-draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Brouillon enregistré avec succès.');
+                window.location.href = data.redirect;
+            } else {
+                alert('Erreur lors de l\'enregistrement du brouillon.');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors de l\'enregistrement du brouillon.');
+        });
+}
+
+
+function checkAll() {
+    const checkboxes = document.querySelectorAll('.selectMessage');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = checkbox.checked ? false : true;
+    });
+}
+
+
+//gestion d'un seul message
+function editMessage(messageId) {
+    alert("on va modifier gamin");
+    console.log(messageId);
+    return;
+    window.location.href = `/edit-troc/${messageId}`;
+}
+
+
+function sendSingleMessage(messageId) {
+    alert("on va envoyer gamin");
+    console.log(messageId);
+    return;
+    const messageData = { id: messageId };
+
+    fetch('/api/send-single-message', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(messageData),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Message envoyé avec succès.');
+                window.location.reload();  // Recharge la page pour afficher les messages mis à jour
+            } else {
+                alert('Erreur lors de l\'envoi du message.');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors de l\'envoi du message.');
+        });
+}
+
+
+//gestion de plusieurs messages
+function sendSelectedMessages() {
+    const selectedMessages = getSelectedMessageIds();
+    if (selectedMessages.length === 0) {
+        alert("wsh selectione un message gros");
+    }
+    else {
+        alert("vas-y on envoiiiiiiiiiiiiiie");
+    }
+}
+
+
+function getSelectedMessageIds() {
+    return Array.from(document.querySelectorAll('.selectMessage:checked'))
+        .map(checkbox => checkbox.value);
+}
+
+
+//Update
+function updateMessage(idMessage, dateF) {
+    console.log(idMessage);
+    const form = document.getElementById('jsonForm');
+    const formData = new FormData(form);
+    const data = {
+        idTroqueur: "g1.1",
+        idDestinataire: formData.get('idDestinataire'),
+        idFichier: "g1.1",
+        dateFichier: dateF,
+        checksum: generateChecksum(formData),
+        messages: []
+    };
+
+    const messagesContainer = document.getElementById('messagesContainer');
+    const messageElements = messagesContainer.getElementsByClassName('message');
+
+    for (let messageElement of messageElements) {
+        const titre = messageElement.querySelector('input[name="titre"]').value;
+        const description = messageElement.querySelector('input[name="description"]').value;
+
+        const listeObjet = [];
+
+        const objetsContainer = messageElement.querySelector('.objetsContainer');
+        const objetElements = objetsContainer.getElementsByClassName('listeObjet');
+
+        for (let objetElement of objetElements) {
+            const titre = objetElement.querySelector('input[name="titre"]').value;
+            const description = objetElement.querySelector('input[name="description"]').value;
+            const qualite = objetElement.querySelector('input[name="qualite"]').value;
+            const quantite = objetElement.querySelector('input[name="quantite"]').value;
+
+            listeObjet.push({
+                titre: titre,
+                description: description,
+                qualite: parseInt(qualite),
+                quantite: parseInt(quantite)
+            });
+        }
+
+        data.messages.push({
+            dateMessage: formatDate(new Date()),
+            statut: "brouillon",  // Statut "brouillon" pour les messages enregistrés
+            listeObjet: listeObjet
+        });
+    }
+
+    console.log(data);
+
+    // Requête fetch pour envoyer les données au backend
+    fetch(`/api/update/${idMessage}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(responseData => {
+            console.log('Message mis à jour :', responseData);
+            if (responseData.success) {
+                alert("Mise à jour du message réussi");
+                window.location.href = responseData.redirectUrl;
+            } else {
+                alert("Erreur lors de la mise à jour du message.");
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la mise à jour du message :', error);
+            alert("Erreur lors de la mise à jour du message.");
         });
 }

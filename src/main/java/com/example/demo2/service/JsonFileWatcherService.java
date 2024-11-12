@@ -86,26 +86,28 @@ public class JsonFileWatcherService {
             String idTroqueur = json.getString("idTroqueur");
             String idFichier = json.getString("idFichier");
             String dateFichier = json.getString("dateFichier");
-    
+            String idDestinataire = json.getString("idDestinataire");
+
             JSONArray messagesArray = json.getJSONArray("messages");
-    
+
             for (int i = 0; i < messagesArray.length(); i++) {
                 JSONObject messageJson = messagesArray.getJSONObject(i);
-    
+
                 MessageTroc messageTroc = new MessageTroc();
-                messageTroc.setIdTroqueur(idTroqueur);  
-                messageTroc.setIdFichier(idFichier);    
-                messageTroc.setDateFichier(dateFichier); 
+                messageTroc.setIdTroqueur(idTroqueur);
+                messageTroc.setIdDestinataire(idDestinataire);
+                messageTroc.setIdFichier(idFichier);
+                messageTroc.setDateFichier(dateFichier);
                 messageTroc.setDateMessage(messageJson.getString("dateMessage"));
                 messageTroc.setStatut(messageJson.getString("statut"));
-    
+
                 JSONArray objetsArray = messageJson.getJSONArray("listeObjet");
                 List<MessageTroc.ObjetTroc> objetsTroc = new ArrayList<>();
-    
+
                 for (int j = 0; j < objetsArray.length(); j++) {
                     JSONObject objetJson = objetsArray.getJSONObject(j);
                     MessageTroc.ObjetTroc objetTroc = new MessageTroc.ObjetTroc();
-    
+
                     objetTroc.setTitre(objetJson.getString("titre"));
                     objetTroc.setDescription(objetJson.getString("description"));
                     objetTroc.setQualite(objetJson.getInt("qualite"));
@@ -113,16 +115,16 @@ public class JsonFileWatcherService {
                     objetsTroc.add(objetTroc);
                 }
                 messageTroc.setObjets(objetsTroc);
+                messageTroc.setBrouillon(false);
                 trocRepository.save(messageTroc);
-    
+
                 System.out.println("Message Troc ajouté à la base de données : " + messageTroc.getId());
             }
-    
+
         } catch (JSONException e) {
             System.err.println("Erreur lors du traitement du fichier JSON : " + e.getMessage());
         }
     }
-    
 
     private void addAutorBDD(JSONObject json) {
 

@@ -18,13 +18,20 @@ public class MessageTrocController {
 
     @GetMapping("/message-troc")
     public String showMessages(Model model) {
-        List<MessageTroc> messages = messageTrocService.getAllMessages();
+        List<MessageTroc> messages = messageTrocService.getAllMessagesRecus();
+        List<MessageTroc> brouillons = messageTrocService.getAllBrouillons();
 
         if (messages.isEmpty()) {
             model.addAttribute("messageInfo", "Aucun message de troc disponible.");
         }
+        if (brouillons.isEmpty()) {
+            model.addAttribute("brouillonInfo", "Aucun brouillon disponible.");
+        }
 
         model.addAttribute("messages", messages);
+        model.addAttribute("brouillons", brouillons);
         return "message_troc";
     }
+
+    
 }

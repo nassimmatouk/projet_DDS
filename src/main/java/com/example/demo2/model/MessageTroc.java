@@ -18,10 +18,12 @@ public class MessageTroc {
     private Long id;
 
     private String idTroqueur;
+    private String idDestinataire;
     private String idFichier;
     private String statut;
     private String dateFichier;
     private String dateMessage; 
+    private boolean brouillon;
 
     @ElementCollection
     private List<ObjetTroc> objets;
@@ -45,6 +47,13 @@ public class MessageTroc {
     }
     public void setIdTroqueur(String idTroqueur) {
         this.idTroqueur = idTroqueur;
+    }
+
+    public String getIdDestinataire() {
+        return idDestinataire;
+    }
+    public void setIdDestinataire(String idDestinataire) {
+        this.idDestinataire = idDestinataire;
     }
     
     public String getStatut() {
@@ -76,6 +85,14 @@ public class MessageTroc {
 
     public void setObjets(List<ObjetTroc> objets) {
         this.objets = objets;
+    }
+
+    public boolean isBrouillon() {
+        return brouillon;
+    }
+
+    public void setBrouillon(boolean brouillon) {
+        this.brouillon = brouillon;
     }
 
     @Embeddable
