@@ -311,13 +311,23 @@ function checkAll() {
 }
 
 
-//gestion d'un seul message
-function editMessage(messageId) {
-    alert("on va modifier gamin");
-    console.log(messageId);
-    return;
-    window.location.href = `/edit-troc/${messageId}`;
+function getSelectedMessageIds() {
+    return Array.from(document.querySelectorAll('.selectMessage:checked'))
+        .map(checkbox => checkbox.value);
 }
+
+
+document.getElementById('deleteSelectedButton').addEventListener('click', function (event) {
+    const selectedMessageIds = getSelectedMessageIds();
+
+    if (selectedMessageIds.length > 0) {
+        document.getElementById('selectedMessages').value = selectedMessageIds.join(',');
+    } else {
+        event.preventDefault();
+        alert("Aucun message sélectionné");
+    }
+});
+
 
 
 function sendSingleMessage(messageId) {
@@ -358,12 +368,6 @@ function sendSelectedMessages() {
     else {
         alert("vas-y on envoiiiiiiiiiiiiiie");
     }
-}
-
-
-function getSelectedMessageIds() {
-    return Array.from(document.querySelectorAll('.selectMessage:checked'))
-        .map(checkbox => checkbox.value);
 }
 
 

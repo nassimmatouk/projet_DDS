@@ -5,10 +5,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -213,6 +215,20 @@ public class JsonController {
                 .build();
     }
 
+    @PostMapping("/delete-selected-brouillon")
+    public ResponseEntity<Void> deleteSelectedBrouillons(@RequestParam("idMessages") String idMessages) {
+        // Séparer la chaîne des IDs sélectionnés et les convertir en une liste de Long
+        List<Long> selectedMessageIds = Arrays.stream(idMessages.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+
+        selectedMessageIds.forEach(messageTrocService::deleteBrouillon);
+
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header("Location", "/message-troc")
+                .build();
+    }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateMessage(@PathVariable Long id, @RequestBody String jsonString) {
         Optional<MessageTroc> optionalMessage = messageTrocRepository.findById(id); // Trouver l'entité
@@ -264,10 +280,8 @@ public class JsonController {
         }
     }
 
-
-    
     @PostMapping("/update-statut")
-    public ResponseEntity<String> updateStatut(@RequestBody Map<String, String> requestData) { 
+    public ResponseEntity<String> updateStatut(@RequestBody Map<String, String> requestData) {
         String idTroqueur = requestData.get("idTroqueur");
         String idFichier = requestData.get("idFichier");
         String idMessage = requestData.get("idMessage");
@@ -276,30 +290,30 @@ public class JsonController {
         String msgId = requestData.get("msgId");
 
         // Mettre à jour le statut dans le fichier JSON
-        boolean updateSuccess = jsonFileWatcherService.updateStatutAutorisation(idTroqueur, idFichier, idMessage, nouveauStatut);
-        
-        if (updateSuccess) { 
+        boolean updateSuccess = jsonFileWatcherService.updateStatutAutorisation(idTroqueur, idFichier, idMessage,
+                nouveauStatut);
+
+        if (updateSuccess) {
             // Si le statut est "accepte", ajouter le message dans les contacts
             if ("accepte".equals(nouveauStatut)) {
                 MessageAutor m = messageAutorService.getMessageById(Long.valueOf(msgId));
-                
-                if (m != null) { 
-                    Contact contact = new Contact(m.getId(), m.getNomAuteur(), m.getMail(), m.getTelephone(), m.getDate());
+
+                if (m != null) {
+                    Contact contact = new Contact(m.getId(), m.getNomAuteur(), m.getMail(), m.getTelephone(),
+                            m.getDate());
                     contactService.ajouterContact(contact); // Ajoute le message dans les contacts
                     messageAutorService.supprimerMessage(Long.valueOf(msgId)); // Supprime le message de la base
                     System.out.println("Message accepté et ajouté aux contacts.");
                 }
-            }
-            else if("refuse".equals(nouveauStatut)){
+            } else if ("refuse".equals(nouveauStatut)) {
                 messageAutorService.supprimerMessage(Long.valueOf(msgId)); // Supprime le message de la base
                 System.out.println("Message refusé et supprimer des msg_autorisations.");
             }
             return new ResponseEntity<>("{\"success\": true, \"message\": \"Statut mis à jour.\"}", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("{\"success\": false, \"message\": \"Échec de la mise à jour du statut.\"}", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("{\"success\": false, \"message\": \"Échec de la mise à jour du statut.\"}",
+                    HttpStatus.NOT_FOUND);
         }
     }
-
-
 
 }

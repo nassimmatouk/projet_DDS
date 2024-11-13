@@ -27,6 +27,9 @@ import jakarta.annotation.PostConstruct;
 public class JsonFileWatcherService {
 
     private static final String DIRECTORY_PATH = "src/main/resources/json/message_recu";
+    private static final String DIRECTORY_PATH_INVALIDES = "src/main/resources/json/messages_invalides";
+    private static final String DIRECTORY_PATH_TROC_VALIDES = "src/main/resources/json/troc_valides";
+    private static final String DIRECTORY_PATH_AUTOR_VALIDES = "src/main/resources/json/autor_valides";
 
     @Autowired
     private TrocValidator trocValidator;
@@ -59,20 +62,25 @@ public class JsonFileWatcherService {
                         if (trocValidator.validateJson(json)) {
                             System.out.println("Le JSON " + file.getName() + " est valide selon TrocValidator.");
                             addTrocBDD(json);
+                            moveFileToDirectory(file, DIRECTORY_PATH_TROC_VALIDES);
                         } else {
                             System.out.println("Le JSON " + file.getName() + " est invalide selon TrocValidator.");
+                            moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
                         }
                     } else if (json.has("MessageDemandeAutorisation")) {
                         if (autorisationValidator.validateJson(json)) {
                             System.out
                                     .println("Le JSON " + file.getName() + " est valide selon AutorisationValidator.");
-                            addAutorBDD(json); 
+                            addAutorBDD(json);
+                            moveFileToDirectory(file, DIRECTORY_PATH_AUTOR_VALIDES);
                         } else {
                             System.out.println(
                                     "Le JSON " + file.getName() + " est invalide selon AutorisationValidator.");
+                            moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
                         }
                     } else {
                         System.err.println("Le JSON " + file.getName() + " ne correspond à aucun schéma");
+                        moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
                     }
                 } catch (IOException e) {
                     System.err.println("Erreur dans l'accès aux fichiers json");
@@ -119,26 +127,75 @@ public class JsonFileWatcherService {
                 messageTroc.setObjets(objetsTroc);
                 messageTroc.setBrouillon(false);
                 trocRepository.save(messageTroc);
-    
-                System.out.println("\nMessage Troc ajouté à la base de données : " + messageTroc.getId()+"\n");
+
+                System.out.println("\nMessage Troc ajouté à la base de données : " + messageTroc.getId() + "\n");
             }
 
         } catch (JSONException e) {
             System.err.println("Erreur lors du traitement du fichier JSON : " + e.getMessage());
         }
     }
-    
+
     /*
+     * private void addAutorBDD(JSONObject json) {
+     * 
+     * MessageAutor autorisation = new MessageAutor();
+     * autorisation.setIdTroqueur(json.getString("idTroqueur"));
+     * autorisation.setIdFichier(json.getString("idFichier"));
+     * autorisation.setDateFichier(json.getString("dateFichier"));
+     * autorisation.setStatutAutorisation(
+     * json.getJSONObject("MessageDemandeAutorisation").getString(
+     * "statutAutorisation"));
+     * autorisation.setDate(json.getJSONObject("MessageDemandeAutorisation").
+     * getString("date"));
+     * autorisation.setIdMessage(json.getJSONObject("MessageDemandeAutorisation").
+     * getString("idMessage"));
+     * 
+     * if (json.getJSONObject("MessageDemandeAutorisation").has("coordonnees")) {
+     * JSONObject coordonnees =
+     * json.getJSONObject("MessageDemandeAutorisation").getJSONObject("coordonnees")
+     * ;
+     * autorisation.setMail(coordonnees.optString("mail", null));
+     * autorisation.setTelephone(coordonnees.optString("telephone", null));
+     * autorisation.setNomAuteur(coordonnees.optString("nomAuteur", null));
+     * }
+     * 
+     * autorisationRepository.save(autorisation);
+     * System.out.println("\nAutorisation ajoutée à la base de données : " +
+     * autorisation+"\n");
+     * }
+     */
+
     private void addAutorBDD(JSONObject json) {
 
+        String idTroqueur = json.getString("idTroqueur");
+        String idFichier = json.getString("idFichier");
+        String idMessage = json.getJSONObject("MessageDemandeAutorisation").getString("idMessage");
+
+        String statut = "";
+        // Vérification de l'existence dans la base de données
+        Optional<MessageAutor> existingAutor = autorisationRepository
+                .findByIdTroqueurAndIdFichierAndIdMessage(idTroqueur, idFichier, idMessage);
+
+        if (existingAutor.isPresent()) {
+            System.out.println("\nAutorisation déjà présente dans la base de données : " + existingAutor.get());
+            return; // Sortir de la méthode pour éviter une duplication
+            // statut = "acceptORref"; // ce que le msg à été accepté ou réfusé
+        }
+
+        statut = ("".equals(statut))
+                ? (json.getJSONObject("MessageDemandeAutorisation").getString("statutAutorisation"))
+                : statut;
+        // Création d'un nouvel enregistrement si aucune correspondance n'est trouvée
         MessageAutor autorisation = new MessageAutor();
-        autorisation.setIdTroqueur(json.getString("idTroqueur"));
-        autorisation.setIdFichier(json.getString("idFichier"));
+        autorisation.setIdTroqueur(idTroqueur);
+        autorisation.setIdFichier(idFichier);
         autorisation.setDateFichier(json.getString("dateFichier"));
         autorisation.setStatutAutorisation(
                 json.getJSONObject("MessageDemandeAutorisation").getString("statutAutorisation"));
+        // autorisation.setStatutAutorisation(statut);
         autorisation.setDate(json.getJSONObject("MessageDemandeAutorisation").getString("date"));
-        autorisation.setIdMessage(json.getJSONObject("MessageDemandeAutorisation").getString("idMessage"));
+        autorisation.setIdMessage(idMessage);
 
         if (json.getJSONObject("MessageDemandeAutorisation").has("coordonnees")) {
             JSONObject coordonnees = json.getJSONObject("MessageDemandeAutorisation").getJSONObject("coordonnees");
@@ -148,79 +205,44 @@ public class JsonFileWatcherService {
         }
 
         autorisationRepository.save(autorisation);
-        System.out.println("\nAutorisation ajoutée à la base de données : " + autorisation+"\n");
-    }*/
-    
-    private void addAutorBDD(JSONObject json) {
-
-        String idTroqueur = json.getString("idTroqueur");
-        String idFichier = json.getString("idFichier");
-        String idMessage = json.getJSONObject("MessageDemandeAutorisation").getString("idMessage");
-        
-        String statut = "";
-        // Vérification de l'existence dans la base de données
-        Optional<MessageAutor> existingAutor = autorisationRepository.findByIdTroqueurAndIdFichierAndIdMessage(idTroqueur, idFichier, idMessage);
-        
-        if (existingAutor.isPresent()) {
-            System.out.println("\nAutorisation déjà présente dans la base de données : " + existingAutor.get());
-            return; // Sortir de la méthode pour éviter une duplication
-            //statut = "acceptORref"; // ce que le msg à été accepté ou réfusé
-        }
-        
-        statut = ("".equals(statut)) ? (json.getJSONObject("MessageDemandeAutorisation").getString("statutAutorisation")) : statut;
-        // Création d'un nouvel enregistrement si aucune correspondance n'est trouvée
-        MessageAutor autorisation = new MessageAutor();
-        autorisation.setIdTroqueur(idTroqueur);
-        autorisation.setIdFichier(idFichier); 
-        autorisation.setDateFichier(json.getString("dateFichier"));
-        autorisation.setStatutAutorisation(json.getJSONObject("MessageDemandeAutorisation").getString("statutAutorisation"));
-        //autorisation.setStatutAutorisation(statut);
-        autorisation.setDate(json.getJSONObject("MessageDemandeAutorisation").getString("date"));
-        autorisation.setIdMessage(idMessage);
-    
-        if (json.getJSONObject("MessageDemandeAutorisation").has("coordonnees")) {
-            JSONObject coordonnees = json.getJSONObject("MessageDemandeAutorisation").getJSONObject("coordonnees");
-            autorisation.setMail(coordonnees.optString("mail", null));
-            autorisation.setTelephone(coordonnees.optString("telephone", null));
-            autorisation.setNomAuteur(coordonnees.optString("nomAuteur", null));
-        }
-    
-        autorisationRepository.save(autorisation); 
-        System.out.println("\nAutorisation ajoutée à la base de données : " + autorisation.getStatutAutorisation() + "\n");
+        System.out.println(
+                "\nAutorisation ajoutée à la base de données : " + autorisation.getStatutAutorisation() + "\n");
     }
-    
-    public boolean updateStatutAutorisation(String idTroqueur, String idFichier, String idMessage, String nouveauStatut) {
+
+    public boolean updateStatutAutorisation(String idTroqueur, String idFichier, String idMessage,
+            String nouveauStatut) {
         File jsonDir = new File(DIRECTORY_PATH);
         File[] files = jsonDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
-        
+
         if (files == null) {
             System.err.println("Aucun fichier JSON trouvé dans le répertoire : " + DIRECTORY_PATH);
             return false;
         }
-    
+
         for (File file : files) {
             try {
                 // Lire le contenu du fichier JSON
                 String content = new String(Files.readAllBytes(file.toPath()));
                 JSONObject json = new JSONObject(content);
-    
-                // Vérifier si le JSON contient une demande d'autorisation et si les identifiants correspondent
+
+                // Vérifier si le JSON contient une demande d'autorisation et si les
+                // identifiants correspondent
                 if (json.has("MessageDemandeAutorisation")) {
                     JSONObject messageJson = json.getJSONObject("MessageDemandeAutorisation");
-                    
+
                     // Comparer les identifiants pour trouver le bon fichier
                     if (json.getString("idTroqueur").equals(idTroqueur) &&
-                        json.getString("idFichier").equals(idFichier) &&
-                        messageJson.getString("idMessage").equals(idMessage)) {
-    
+                            json.getString("idFichier").equals(idFichier) &&
+                            messageJson.getString("idMessage").equals(idMessage)) {
+
                         // Mettre à jour le statutAutorisation
                         messageJson.put("statutAutorisation", nouveauStatut);
-    
+
                         // Sauvegarder les modifications dans le fichier
                         try (FileWriter fileWriter = new FileWriter(file)) {
                             fileWriter.write(json.toString(4)); // Sauvegarde avec une indentation de 4 espaces
                         }
-                        
+
                         System.out.println("Statut autorisation mis à jour dans le fichier : " + file.getName());
                         return true; // Modification réussie
                     }
@@ -232,6 +254,20 @@ public class JsonFileWatcherService {
         System.out.println("Fichier ou message non trouvé pour la mise à jour du statut.");
         return false; // Modification non effectuée
     }
-    
 
+    // deplacer les fichiers pour eviter de les reafficher a chaque fois
+    private void moveFileToDirectory(File file, String targetDirectory) {
+        File targetDir = new File(targetDirectory);
+        if (!targetDir.exists()) {
+            targetDir.mkdirs(); // Créer le dossier s'il n'existe pas encore
+        }
+
+        File targetFile = new File(targetDir, file.getName());
+        if (file.renameTo(targetFile)) {
+            System.out.println("Fichier déplacé vers : " + targetFile.getAbsolutePath() + "\n");
+        } else {
+            System.err.println("Échec du déplacement du fichier : " + file.getName() + "\n");
+        }
+
+    }
 }

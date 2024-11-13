@@ -201,7 +201,7 @@
                 type="checkbox"
                 class="selectMessage"
                 name="selectedMessages"
-                value="[[${message.id}]]"
+                th:value="${message.id}"
               />
             </td>
             <td th:text="${message.idTroqueur}"></td>
@@ -257,9 +257,12 @@
       class="message-info"
       th:text="${brouillonInfo}"
     ></div>
-    <button class="delete-btn" type="button" onclick="deleteSelectedMessages()">
-      Supprimer sélectionnés
-    </button>
+    <form action="/api/delete-selected-brouillon" method="post">
+      <input type="hidden" name="idMessages" id="selectedMessages" />
+      <button class="delete-btn" type="submit" id="deleteSelectedButton">
+        Supprimer sélectionnés
+      </button>
+    </form>
     <button class="send-btn" type="button" onclick="sendSelectedMessages()">
       Envoyer sélectionnés
     </button>
