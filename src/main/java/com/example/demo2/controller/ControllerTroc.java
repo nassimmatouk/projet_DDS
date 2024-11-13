@@ -14,7 +14,6 @@ import com.example.demo2.model.MessageTroc;
 import com.example.demo2.repository.MessageTrocRepository;
 import com.example.demo2.service.ContactService;
 
-
 @Controller
 public class ControllerTroc {
 
@@ -29,14 +28,14 @@ public class ControllerTroc {
         return "accueil";
     }
 
-    //troc
+    // troc
 
     @GetMapping("/troc")
     public String troc() {
         return "troc";
     }
 
-    //autorisation
+    // autorisation
     @GetMapping("/autorisation")
     public String showContact(Model model) {
         List<Contact> contacts = contactService.getAllMessages();
@@ -55,7 +54,8 @@ public class ControllerTroc {
     }
 
     @GetMapping("/edit")
-    public String edit(@RequestParam(value = "idMessage", required = false) Long idMessage, Model model) {
+    public String edit(@RequestParam(value = "idMessage", required = false) Long idMessage,
+            @RequestParam(value = "idDestinataire", required = false) String idDestinataire, Model model) {
         if (idMessage != null) {
             Optional<MessageTroc> messageTroc = messageTrocRepository.findById(idMessage);
             if (messageTroc.isPresent()) {
@@ -64,6 +64,9 @@ public class ControllerTroc {
                 model.addAttribute("error", "Message de troc non trouvé");
             }
             return "/edit";
+        } else if (idDestinataire != null) {
+            model.addAttribute("idDestinataire", idDestinataire);
+            return "/demande_troc";
         } else {
             return "/demande_troc";
         }

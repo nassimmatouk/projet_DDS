@@ -4,7 +4,7 @@
     "MessageDemandeAutorisation": {
         "date": "23-10-2024",
         "idMessage": "msg_1729695191074",
-        "statutAutorisation": "demande",
+        "statutAutorisation": "refuse",
         "coordonnees": {
             "mail": "groupe1@dds.com",
             "telephone": "1122334455",

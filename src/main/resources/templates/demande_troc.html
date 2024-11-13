@@ -134,6 +134,7 @@
         name="idDestinataire"
         pattern="^g\d\.\d+$"
         required
+        th:value="${idDestinataire != null ? idDestinataire : ''}"
       /><br /><br />
 
       <h2>Messages</h2>

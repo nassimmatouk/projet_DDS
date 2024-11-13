@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -65,7 +67,8 @@ public class JsonController {
     /* Envoi simple de troc/autorisation */
 
     @PostMapping("/save-troc")
-    public ResponseEntity<String> saveTroc(@RequestBody String jsonData) {
+    public ResponseEntity<String> saveTroc(@RequestBody String jsonData,
+            @RequestParam(value = "idMessage", required = false) Long idMessage) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(jsonData);
@@ -83,6 +86,43 @@ public class JsonController {
 
             try (FileWriter fileWriter = new FileWriter(jsonFile)) {
                 fileWriter.write(jsonData);
+            }
+
+            if (idMessage != null) {
+                try {
+                    MessageTroc message = messageTrocRepository.findById(idMessage)
+                            .orElseThrow(() -> new Exception("Message non trouvé"));
+                    message.setBrouillon(false);
+                    message.setEnvoyer(true);
+                    messageTrocRepository.save(message);
+                } catch (Exception e) {
+                    System.err.println(e);
+                }
+
+            } else {
+                MessageTroc newMessage = new MessageTroc();
+                newMessage.setIdDestinataire(idDestinataire);
+                newMessage.setIdTroqueur("g1.1");
+                newMessage.setIdFichier("g1.1");
+                newMessage.setDateFichier(rootNode.get("dateFichier").asText());
+                newMessage.setDateMessage(rootNode.get("messages").get(0).get("dateMessage").asText());
+                newMessage.setStatut("propose");
+                newMessage.setBrouillon(false);
+                newMessage.setEnvoyer(true);
+
+                // Remplir la liste des objets
+                List<MessageTroc.ObjetTroc> objets = new ArrayList<>();
+                for (JsonNode objetNode : rootNode.get("messages").get(0).get("listeObjet")) {
+                    MessageTroc.ObjetTroc objet = new MessageTroc.ObjetTroc();
+                    objet.setTitre(objetNode.get("titre").asText());
+                    objet.setDescription(objetNode.get("description").asText());
+                    objet.setQualite(objetNode.get("qualite").asInt());
+                    objet.setQuantite(objetNode.get("quantite").asInt());
+                    objets.add(objet);
+                }
+                newMessage.setObjets(objets);
+
+                messageTrocRepository.save(newMessage);
             }
 
             String redirectUrl = "/troc";
@@ -299,7 +339,7 @@ public class JsonController {
                 MessageAutor m = messageAutorService.getMessageById(Long.valueOf(msgId));
 
                 if (m != null) {
-                    Contact contact = new Contact(m.getId(), m.getNomAuteur(), m.getMail(), m.getTelephone(),
+                    Contact contact = new Contact(m.getId(), m.getIdTroqueur(), m.getNomAuteur(), m.getMail(), m.getTelephone(),
                             m.getDate());
                     contactService.ajouterContact(contact); // Ajoute le message dans les contacts
                     messageAutorService.supprimerMessage(Long.valueOf(msgId)); // Supprime le message de la base
@@ -316,4 +356,21 @@ public class JsonController {
         }
     }
 
+    @GetMapping("/get-message-info/{messageId}")
+    public ResponseEntity<Map<String, Object>> getMessageInfo(@PathVariable Long messageId) {
+        try {
+            MessageTroc message = messageTrocRepository.findById(messageId)
+                    .orElseThrow(() -> new Exception("Message non trouvé"));
+
+            // Préparer les données
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", message);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", e.getMessage()));
+        }
+    }
 }

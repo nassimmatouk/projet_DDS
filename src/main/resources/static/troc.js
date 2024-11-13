@@ -93,9 +93,9 @@ function formatDate(date) {
 
 /****************************** Création des json ******************************/
 //Troc
-function sendMessage(event) {
+function sendMessage(event, idMessage) {
     event.preventDefault();
-
+    console.log(idMessage);
     const form = document.getElementById('jsonForm');
     const formData = new FormData(form);
     const data = {
@@ -125,7 +125,6 @@ function sendMessage(event) {
             const qualite = objetElement.querySelector('input[name="qualite"]').value;
             const quantite = objetElement.querySelector('input[name="quantite"]').value;
 
-
             listeObjet.push({
                 titre: titre,
                 description: description,
@@ -142,7 +141,7 @@ function sendMessage(event) {
     }
 
     const jsonString = JSON.stringify(data, null, 2);
-    saveJsonToFile(jsonString);
+    saveJsonToFile(jsonString, idMessage);
 }
 
 //Autorisation
@@ -184,8 +183,9 @@ function handleSubmitA(event) {
 
 /****************************** Enregistrement json dans dossier ******************************/
 //Troc
-function saveJsonToFile(jsonString) {
-    fetch('/api/save-troc', {
+function saveJsonToFile(jsonString, idMessage) {
+    const url = idMessage ? `/api/save-troc?idMessage=${idMessage}` : '/api/save-troc';
+    fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -331,43 +331,78 @@ document.getElementById('deleteSelectedButton').addEventListener('click', functi
 
 
 function sendSingleMessage(messageId) {
-    alert("on va envoyer gamin");
-    console.log(messageId);
-    return;
-    const messageData = { id: messageId };
-
-    fetch('/api/send-single-message', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(messageData),
-    })
+    fetch(`/api/get-message-info/${messageId}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Message envoyé avec succès.');
-                window.location.reload();  // Recharge la page pour afficher les messages mis à jour
+                // Préparer les données du message
+                const messageData = {
+                    idTroqueur: "g1.1",  // Autres données nécessaires
+                    idDestinataire: data.message.idDestinataire,
+                    idFichier: "g1.1",  // Autres informations nécessaires
+                    dateFichier: data.message.dateFichier,
+                    checksum: generateChecksum(data.message),
+                    messages: []
+                };
+
+                var idDest = data.message.idDestinataire;
+                var bool = true;
+                if (!idDest || idDest.trim() === '') {
+                    alert("Le message n'a pas de destinataire valide");
+                    bool = false;
+                }
+
+                // Récupérer tous les objets du message et les ajouter à la liste
+                const listeObjet = [];
+                data.message.objets.forEach(objet => {
+                    const titre = objet.titre ? objet.titre.trim() : '';
+                    const qualite = objet.qualite ? objet.qualite : '';
+                    const quantite = objet.quantite ? objet.quantite : '';
+
+                    if (titre === '' || qualite === '' || qualite == 0 || quantite === '' || quantite == 0) {
+                        alert("Il manque un des champs suivant à l'objet : Titre, Qualité ou Quantité");
+                        bool = false;
+                    }
+
+                    listeObjet.push({
+                        titre: titre,
+                        description: objet.description,
+                        qualite: parseInt(qualite),
+                        quantite: parseInt(quantite)
+                    });
+                });
+
+                // Ajouter le message avec la liste des objets dans le tableau de messages
+                messageData.messages.push({
+                    dateMessage: data.message.dateMessage,
+                    statut: "propose",
+                    listeObjet: listeObjet
+                });
+
+                // Appeler saveJsonToFile avec les données JSON du message
+                if (bool == true) {
+                    const jsonString = JSON.stringify(messageData, null, 2);
+                    saveJsonToFile(jsonString, messageId);
+                }
+                else {
+                    return;
+                }
             } else {
-                alert('Erreur lors de l\'envoi du message.');
+                alert('Erreur lors de la récupération du message.');
             }
         })
         .catch(error => {
             console.error('Erreur:', error);
-            alert('Une erreur est survenue lors de l\'envoi du message.');
+            alert('Une erreur est survenue.');
         });
 }
+
+
 
 
 //gestion de plusieurs messages
 function sendSelectedMessages() {
     const selectedMessages = getSelectedMessageIds();
-    if (selectedMessages.length === 0) {
-        alert("wsh selectione un message gros");
-    }
-    else {
-        alert("vas-y on envoiiiiiiiiiiiiiie");
-    }
 }
 
 

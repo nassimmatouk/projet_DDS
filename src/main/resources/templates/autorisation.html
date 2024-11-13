@@ -127,6 +127,7 @@
                 <th>Auteur</th>
                 <th>Mail</th>
                 <th>Téléphone</th>
+                <th>ID</th>
                 <th>Date</th>
                 <th colspan="2">Action</th>
             </tr>
@@ -138,14 +139,12 @@
                     <td th:text="${#strings.isEmpty(contact.nomAuteur) ? 'Non renseigné' : contact.nomAuteur}"></td>
                     <td th:text="${#strings.isEmpty(contact.mail) ? 'Non renseigné' : contact.mail}"></td>
                     <td th:text="${#strings.isEmpty(contact.telephone) ? 'Non renseigné' : contact.telephone}"></td>
+                    <td th:text="${contact.idTroqueur}"></td>
                     <td th:text="${contact.date}"></td>
                     <td><button class="supprimer" th:onclick="'supprimerContact(' + ${contact.id} +')'">Supprimer</button></td>
                     <td>
-                        <form action="/demande-troc" method="get">
-                            <input type="hidden" value="th:text='${#strings.isEmpty(contact.nomAuteur) ? \'Non renseigné\' : contact.nomAuteur}'">
-                            <input type="hidden" value="th:text='${#strings.isEmpty(contact.mail) ? \'Non renseigné\' : contact.mail}'">
-                            <input type="hidden" value="th:text='${#strings.isEmpty(contact.telephone) ? \'Non renseigné\' : contact.telephone}'">
-                            <input type="hidden" value="th:text='${contact.date}'">
+                        <form action="/edit" method="get">
+                            <input type="hidden" name="idDestinataire" th:value="${contact.idTroqueur}">
                             <input class="submit-dem" type="submit" value="Demander">
                         </form>
                     </td>

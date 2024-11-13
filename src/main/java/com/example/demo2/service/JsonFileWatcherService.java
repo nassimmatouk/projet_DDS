@@ -126,6 +126,7 @@ public class JsonFileWatcherService {
                 }
                 messageTroc.setObjets(objetsTroc);
                 messageTroc.setBrouillon(false);
+                messageTroc.setEnvoyer(false);
                 trocRepository.save(messageTroc);
 
                 System.out.println("\nMessage Troc ajouté à la base de données : " + messageTroc.getId() + "\n");
@@ -211,7 +212,7 @@ public class JsonFileWatcherService {
 
     public boolean updateStatutAutorisation(String idTroqueur, String idFichier, String idMessage,
             String nouveauStatut) {
-        File jsonDir = new File(DIRECTORY_PATH);
+        File jsonDir = new File(DIRECTORY_PATH_AUTOR_VALIDES);
         File[] files = jsonDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
 
         if (files == null) {

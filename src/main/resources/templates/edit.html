@@ -125,7 +125,7 @@
     </header>
 
     <h1>Formulaire message troc</h1>
-    <form id="jsonForm" onsubmit="return sendMessage(event);">
+    <form id="jsonForm" th:onsubmit="return sendMessage(event, [[${message.id}]]);">
       <h2>En-tête</h2>
       <label for="idDestinataire">ID Destinataire (gX.X):</label>
       <input

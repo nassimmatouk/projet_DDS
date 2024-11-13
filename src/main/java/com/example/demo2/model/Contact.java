@@ -19,6 +19,7 @@ public class Contact {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String idTroqueur;
     private String nomAuteur;
     private String mail;
     private String telephone;

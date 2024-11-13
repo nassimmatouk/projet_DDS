@@ -8,5 +8,8 @@ import com.example.demo2.model.MessageTroc;
 
 public interface MessageTrocRepository extends JpaRepository<MessageTroc, Long> {
     List<MessageTroc> findByBrouillonTrue(); 
+
     List<MessageTroc> findByBrouillonFalse();
+
+    List<MessageTroc> findByBrouillonFalseAndEnvoyerFalse();
 }

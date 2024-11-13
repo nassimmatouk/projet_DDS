@@ -24,6 +24,7 @@ public class MessageTroc {
     private String dateFichier;
     private String dateMessage; 
     private boolean brouillon;
+    private boolean envoyer;
 
     @ElementCollection
     private List<ObjetTroc> objets;
@@ -93,6 +94,14 @@ public class MessageTroc {
 
     public void setBrouillon(boolean brouillon) {
         this.brouillon = brouillon;
+    }
+
+    public boolean isEnvoyer() {
+        return envoyer;
+    }
+
+    public void setEnvoyer(boolean envoyer) {
+        this.envoyer = envoyer;
     }
 
     @Embeddable // indique que cette classe peut être intégrée dans une autre entité JPA

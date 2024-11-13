@@ -20,7 +20,7 @@ public class MessageTrocService {
     }
 
     public List<MessageTroc> getAllMessagesRecus() {
-        return messageTrocRepository.findByBrouillonFalse();
+        return messageTrocRepository.findByBrouillonFalseAndEnvoyerFalse();
     }
 
     public List<MessageTroc> getAllBrouillons() {
