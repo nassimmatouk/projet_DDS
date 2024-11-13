@@ -137,43 +137,12 @@ public class JsonFileWatcherService {
         }
     }
 
-    /*
-     * private void addAutorBDD(JSONObject json) {
-     * 
-     * MessageAutor autorisation = new MessageAutor();
-     * autorisation.setIdTroqueur(json.getString("idTroqueur"));
-     * autorisation.setIdFichier(json.getString("idFichier"));
-     * autorisation.setDateFichier(json.getString("dateFichier"));
-     * autorisation.setStatutAutorisation(
-     * json.getJSONObject("MessageDemandeAutorisation").getString(
-     * "statutAutorisation"));
-     * autorisation.setDate(json.getJSONObject("MessageDemandeAutorisation").
-     * getString("date"));
-     * autorisation.setIdMessage(json.getJSONObject("MessageDemandeAutorisation").
-     * getString("idMessage"));
-     * 
-     * if (json.getJSONObject("MessageDemandeAutorisation").has("coordonnees")) {
-     * JSONObject coordonnees =
-     * json.getJSONObject("MessageDemandeAutorisation").getJSONObject("coordonnees")
-     * ;
-     * autorisation.setMail(coordonnees.optString("mail", null));
-     * autorisation.setTelephone(coordonnees.optString("telephone", null));
-     * autorisation.setNomAuteur(coordonnees.optString("nomAuteur", null));
-     * }
-     * 
-     * autorisationRepository.save(autorisation);
-     * System.out.println("\nAutorisation ajoutée à la base de données : " +
-     * autorisation+"\n");
-     * }
-     */
-
     private void addAutorBDD(JSONObject json) {
 
         String idTroqueur = json.getString("idTroqueur");
         String idFichier = json.getString("idFichier");
         String idMessage = json.getJSONObject("MessageDemandeAutorisation").getString("idMessage");
 
-        String statut = "";
         // Vérification de l'existence dans la base de données
         Optional<MessageAutor> existingAutor = autorisationRepository
                 .findByIdTroqueurAndIdFichierAndIdMessage(idTroqueur, idFichier, idMessage);
@@ -184,9 +153,6 @@ public class JsonFileWatcherService {
             // statut = "acceptORref"; // ce que le msg à été accepté ou réfusé
         }
 
-        statut = ("".equals(statut))
-                ? (json.getJSONObject("MessageDemandeAutorisation").getString("statutAutorisation"))
-                : statut;
         // Création d'un nouvel enregistrement si aucune correspondance n'est trouvée
         MessageAutor autorisation = new MessageAutor();
         autorisation.setIdTroqueur(idTroqueur);
@@ -194,7 +160,6 @@ public class JsonFileWatcherService {
         autorisation.setDateFichier(json.getString("dateFichier"));
         autorisation.setStatutAutorisation(
                 json.getJSONObject("MessageDemandeAutorisation").getString("statutAutorisation"));
-        // autorisation.setStatutAutorisation(statut);
         autorisation.setDate(json.getJSONObject("MessageDemandeAutorisation").getString("date"));
         autorisation.setIdMessage(idMessage);
 
