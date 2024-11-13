@@ -125,7 +125,7 @@
     </header>
 
     <h1>Formulaire message troc</h1>
-    <form id="jsonForm" th:onsubmit="return sendMessage(event, [[${message.id}]]);">
+    <form id="jsonForm" th:onsubmit="event.preventDefault(); majSend([[${message.id}]], [[${message.dateFichier}]]);">
       <h2>En-tête</h2>
       <label for="idDestinataire">ID Destinataire (gX.X):</label>
       <input
@@ -193,7 +193,7 @@
 
       <br /><br />
       <button type="submit">Envoyer message</button>
-      <button type="button" th:onclick="updateMessage([[${message.id}]], [[${message.dateFichier}]])">
+      <button type="button" th:onclick="updateMessage([[${message.id}]], [[${message.dateFichier}]], false)">
         Enregistrer message
       </button>
     </form>

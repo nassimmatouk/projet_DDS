@@ -94,6 +94,7 @@ public class JsonController {
                             .orElseThrow(() -> new Exception("Message non trouvé"));
                     message.setBrouillon(false);
                     message.setEnvoyer(true);
+                    message.setStatut("propose");
                     messageTrocRepository.save(message);
                 } catch (Exception e) {
                     System.err.println(e);

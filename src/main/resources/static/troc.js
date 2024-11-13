@@ -328,13 +328,23 @@ document.getElementById('deleteSelectedButton').addEventListener('click', functi
     }
 });
 
+function majSend(messageId, dateF) {
+    updateMessage(messageId, dateF, true).then(() => {
+        sendSingleMessage(messageId);
+    }).catch((error) => {
+        console.error('Erreur lors de la mise à jour :', error);
+        alert('Impossible de mettre à jour le message avant l\'envoi.');
+    });
+}
 
 
 function sendSingleMessage(messageId) {
+    console.log("Début de sendSingleMessage");
     fetch(`/api/get-message-info/${messageId}`)
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                console.log("On rentre dans l'envoi");
                 // Préparer les données du message
                 const messageData = {
                     idTroqueur: "g1.1",  // Autres données nécessaires
@@ -407,7 +417,7 @@ function sendSelectedMessages() {
 
 
 //Update
-function updateMessage(idMessage, dateF) {
+function updateMessage(idMessage, dateF, envoi) {
     console.log(idMessage);
     const form = document.getElementById('jsonForm');
     const formData = new FormData(form);
@@ -456,53 +466,30 @@ function updateMessage(idMessage, dateF) {
     console.log(data);
 
     // Requête fetch pour envoyer les données au backend
-    fetch(`/api/update/${idMessage}`, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data)
-    })
-        .then(response => response.json())
-        .then(responseData => {
-            console.log('Message mis à jour :', responseData);
-            if (responseData.success) {
-                alert("Mise à jour du message réussi");
-                window.location.href = responseData.redirectUrl;
-            } else {
+    return new Promise((resolve, reject) => {
+        fetch(`/api/update/${idMessage}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(responseData => {
+                console.log('Message mis à jour :', responseData);
+                if (responseData.success) {
+                    if (!envoi) {
+                        alert("Mise à jour du message réussi");
+                        window.location.href = responseData.redirectUrl;
+                    }
+                    resolve();
+                } else {
+                    alert("Erreur lors de la mise à jour du message.");
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de la mise à jour du message :', error);
                 alert("Erreur lors de la mise à jour du message.");
-            }
-        })
-        .catch(error => {
-            console.error('Erreur lors de la mise à jour du message :', error);
-            alert("Erreur lors de la mise à jour du message.");
-        });
+            });
+    });
 }
-/*************************** Mettre à jour le statut d'un fichier ****************************** */
-/*
-function updateStatut(idTroqueur, idFichier, idMessage, nouveauStatut) {
-    fetch('/api/update-statut', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            idTroqueur: idTroqueur,
-            idFichier: idFichier,
-            idMessage: idMessage,
-            nouveauStatut: nouveauStatut
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert("Statut mis à jour avec succès.");
-            location.reload(); // Rafraîchit la page pour afficher le nouveau statut
-        } else {
-            alert("Échec de la mise à jour du statut.");
-        }
-    })
-    .catch(error => console.error('Erreur:', error));
-}*/
-
-
