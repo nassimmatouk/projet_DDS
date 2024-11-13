@@ -1,0 +1,57 @@
+{
+  "idTroqueur": "g1.1",
+  "idDestinataire": "g3.4",
+  "idFichier": "g1.1",
+  "dateFichier": "13-11-2024",
+  "checksum": "3",
+  "messages": [
+    {
+      "dateMessage": "13-11-2024",
+      "statut": "propose",
+      "listeObjet": [
+        {
+          "titre": "velo",
+          "description": "velo",
+          "qualite": 2,
+          "quantite": 1
+        },
+        {
+          "titre": "chaise",
+          "description": "paille",
+          "qualite": 4,
+          "quantite": 5
+        }
+      ]
+    },
+    {
+      "dateMessage": "13-11-2024",
+      "statut": "propose",
+      "listeObjet": [
+        {
+          "titre": "guitare",
+          "description": "cher",
+          "qualite": 5,
+          "quantite": 1
+        }
+      ]
+    },
+    {
+      "dateMessage": "13-11-2024",
+      "statut": "propose",
+      "listeObjet": [
+        {
+          "titre": "stylo mont blanc",
+          "description": "bon etat",
+          "qualite": 5,
+          "quantite": 1
+        },
+        {
+          "titre": "chaise",
+          "description": "bois",
+          "qualite": 4,
+          "quantite": 6
+        }
+      ]
+    }
+  ]
+}

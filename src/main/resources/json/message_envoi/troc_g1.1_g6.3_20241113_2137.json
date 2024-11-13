@@ -1,0 +1,105 @@
+{
+  "idTroqueur": "g1.1",
+  "idDestinataire": "g6.3",
+  "idFichier": "g1.1",
+  "dateFichier": "13-11-2024",
+  "checksum": "3",
+  "messages": [
+    {
+      "dateMessage": "13-11-2024",
+      "statut": "propose",
+      "listeObjet": [
+        {
+          "titre": "guitare",
+          "description": "corde",
+          "qualite": 1,
+          "quantite": 1
+        },
+        {
+          "titre": "chaise",
+          "description": "bois",
+          "qualite": 5,
+          "quantite": 12
+        },
+        {
+          "titre": "stylo mont blanc",
+          "description": "bon etat",
+          "qualite": 5,
+          "quantite": 1
+        }
+      ]
+    },
+    {
+      "dateMessage": "13-11-2024",
+      "statut": "propose",
+      "listeObjet": [
+        {
+          "titre": "guitare",
+          "description": "electrique",
+          "qualite": 5,
+          "quantite": 1
+        }
+      ]
+    },
+    {
+      "dateMessage": "13-11-2024",
+      "statut": "propose",
+      "listeObjet": [
+        {
+          "titre": "biere",
+          "description": "paix dieu",
+          "qualite": 5,
+          "quantite": 12
+        },
+        {
+          "titre": "table",
+          "description": "bois",
+          "qualite": 5,
+          "quantite": 1
+        }
+      ]
+    },
+    {
+      "dateMessage": "13-11-2024",
+      "statut": "propose",
+      "listeObjet": [
+        {
+          "titre": "guitare",
+          "description": "seche corde cassée",
+          "qualite": 3,
+          "quantite": 1
+        },
+        {
+          "titre": "batterie",
+          "description": "neuve",
+          "qualite": 5,
+          "quantite": 1
+        }
+      ]
+    },
+    {
+      "dateMessage": "13-11-2024",
+      "statut": "propose",
+      "listeObjet": [
+        {
+          "titre": "piano",
+          "description": "pas accorde",
+          "qualite": 4,
+          "quantite": 1
+        },
+        {
+          "titre": "tabouret",
+          "description": "bancal",
+          "qualite": 2,
+          "quantite": 1
+        },
+        {
+          "titre": "tapis",
+          "description": "",
+          "qualite": 5,
+          "quantite": 1
+        }
+      ]
+    }
+  ]
+}

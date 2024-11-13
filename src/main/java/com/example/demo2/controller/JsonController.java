@@ -99,35 +99,42 @@ public class JsonController {
                 } catch (Exception e) {
                     System.err.println(e);
                 }
-
             } else {
-                MessageTroc newMessage = new MessageTroc();
-                newMessage.setIdDestinataire(idDestinataire);
-                newMessage.setIdTroqueur("g1.1");
-                newMessage.setIdFichier("g1.1");
-                newMessage.setDateFichier(rootNode.get("dateFichier").asText());
-                newMessage.setDateMessage(rootNode.get("messages").get(0).get("dateMessage").asText());
-                newMessage.setStatut("propose");
-                newMessage.setBrouillon(false);
-                newMessage.setEnvoyer(true);
+                System.out.println("avant de rentrer dans la boucle");
+                int i = 1;
+                int j = 1;
+                for (JsonNode messageNode : rootNode.get("messages")) {
+                    System.out.println("message : " + i);
+                    MessageTroc newMessage = new MessageTroc();
+                    newMessage.setIdDestinataire(idDestinataire);
+                    newMessage.setIdTroqueur("g1.1");
+                    newMessage.setIdFichier("g1.1");
+                    newMessage.setDateFichier(rootNode.get("dateFichier").asText());
+                    newMessage.setDateMessage(messageNode.get("dateMessage").asText());
+                    newMessage.setStatut("propose");
+                    newMessage.setBrouillon(false);
+                    newMessage.setEnvoyer(true);
 
-                // Remplir la liste des objets
-                List<MessageTroc.ObjetTroc> objets = new ArrayList<>();
-                for (JsonNode objetNode : rootNode.get("messages").get(0).get("listeObjet")) {
-                    MessageTroc.ObjetTroc objet = new MessageTroc.ObjetTroc();
-                    objet.setTitre(objetNode.get("titre").asText());
-                    objet.setDescription(objetNode.get("description").asText());
-                    objet.setQualite(objetNode.get("qualite").asInt());
-                    objet.setQuantite(objetNode.get("quantite").asInt());
-                    objets.add(objet);
+                    // Remplir la liste des objets
+                    List<MessageTroc.ObjetTroc> objets = new ArrayList<>();
+                    for (JsonNode objetNode : messageNode.get("listeObjet")) {
+                        MessageTroc.ObjetTroc objet = new MessageTroc.ObjetTroc();
+                        objet.setTitre(objetNode.get("titre").asText());
+                        objet.setDescription(objetNode.get("description").asText());
+                        objet.setQualite(objetNode.get("qualite").asInt());
+                        objet.setQuantite(objetNode.get("quantite").asInt());
+                        objets.add(objet);
+                        System.out.println("objet : " +j);
+                        j++;
+                    }
+                    newMessage.setObjets(objets);
+
+                    messageTrocRepository.save(newMessage);
+                    i++;
                 }
-                newMessage.setObjets(objets);
-
-                messageTrocRepository.save(newMessage);
             }
 
             String redirectUrl = "/troc";
-
             return new ResponseEntity<>("{\"success\": true, \"redirect\": \"" + redirectUrl + "\"}", HttpStatus.OK);
         } catch (IOException e) {
             return new ResponseEntity<>("{\"success\": false, \"message\": \"Erreur lors de l'enregistrement.\"}",

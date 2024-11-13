@@ -93,9 +93,8 @@ function formatDate(date) {
 
 /****************************** Création des json ******************************/
 //Troc
-function sendMessage(event, idMessage) {
+function sendMessage(event) {
     event.preventDefault();
-    console.log(idMessage);
     const form = document.getElementById('jsonForm');
     const formData = new FormData(form);
     const data = {
@@ -139,9 +138,9 @@ function sendMessage(event, idMessage) {
             listeObjet: listeObjet
         });
     }
-
+    console.log(JSON.stringify(data, null, 2));
     const jsonString = JSON.stringify(data, null, 2);
-    saveJsonToFile(jsonString, idMessage);
+    saveJsonToFile(jsonString);
 }
 
 //Autorisation
