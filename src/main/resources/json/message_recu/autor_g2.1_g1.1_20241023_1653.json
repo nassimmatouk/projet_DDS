@@ -1,6 +1,6 @@
 {
-    "idDestinataire": "g1.5",
-    "idTroqueur": "g1.1",
+    "idDestinataire": "g1.1",
+    "idTroqueur": "g2.1",
     "MessageDemandeAutorisation": {
         "date": "23-10-2024",
         "idMessage": "msg_1729695191074",
@@ -8,7 +8,7 @@
         "coordonnees": {
             "mail": "groupe1@dds.com",
             "telephone": "1122334455",
-            "nomAuteur": "groupe1"
+            "nomAuteur": "groupe2"
         }
     },
     "dateFichier": "23-10-2024",

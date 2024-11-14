@@ -1,13 +1,13 @@
 {
-    "idDestinataire": "g2.1",
-    "idTroqueur": "g1.1",
+    "idDestinataire": "g1.1",
+    "idTroqueur": "g3.1",
     "MessageDemandeAutorisation": {
         "date": "09-10-2024",
         "idMessage": "msg_1728477557964",
         "statutAutorisation": "demande",
         "coordonnees": {
-            "mail": "h.chagneu@gmail.com",
-            "telephone": "0789546450",
+            "mail": "mailhugo@gmail.com",
+            "telephone": "0123456789",
             "nomAuteur": "hugo chataigner"
         }
     },

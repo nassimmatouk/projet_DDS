@@ -183,7 +183,11 @@ function handleSubmitA(event) {
 /****************************** Enregistrement json dans dossier ******************************/
 //Troc
 function saveJsonToFile(jsonString, idMessage) {
+    const params = idMessage && idMessage.length > 0 ? `${idMessage.join(",")}` : '';
     const url = idMessage ? `/api/save-troc?idMessage=${idMessage}` : '/api/save-troc';
+
+    console.log(url);
+    
     fetch(url, {
         method: 'POST',
         headers: {
@@ -410,8 +414,95 @@ function sendSingleMessage(messageId) {
 
 
 //gestion de plusieurs messages
-function sendSelectedMessages() {
+async function sendSelectedMessages() {
     const selectedMessages = getSelectedMessageIds();
+    if (selectedMessages.length === 0) {
+        alert("Aucun message sélectionné.");
+        return;
+    }
+
+    const messagesInfo = [];
+    const idMessagesFalse = [];
+    const idMessagesToSend = [];
+
+    for (const messageId of selectedMessages) {
+        try {
+            const response = await fetch(`/api/get-message-info/${messageId}`);
+            if (!response.ok) {
+                throw new Error("Erreur lors de la récupération du message.");
+            }
+            const data = await response.json();
+            if (data.success) {
+                messagesInfo.push(data.message);
+            } else {
+                console.error("Erreur:", data.message);
+            }
+        } catch (error) {
+            console.error("Erreur:", error.message);
+        }
+    }
+
+    for (const message of messagesInfo) {
+        var bool = true;
+        if (!message.idDestinataire || message.idDestinataire == '') {
+            bool = false;
+        }
+        for (const objet of message.objets) {
+            if (!objet.titre || objet.titre == '' || !objet.qualite || !objet.quantite || objet.qualite == 0 || objet.quantite == 0) {
+                bool = false;
+            }
+        }
+
+        if (bool) {
+            idMessagesToSend.push(message.id);
+        } else {
+            idMessagesFalse.push(message.id);
+        }
+    }
+
+    const messagesByDestinataire = {};
+
+    for (const message of messagesInfo) {
+        if (idMessagesToSend.includes(message.id)) {
+            if (!messagesByDestinataire[message.idDestinataire]) {
+                messagesByDestinataire[message.idDestinataire] = [];
+            }
+            messagesByDestinataire[message.idDestinataire].push(message);
+        }
+    }
+
+    for (const [idDestinataire, messages] of Object.entries(messagesByDestinataire)) {
+        const messageData = {
+            idTroqueur: "g1.1",
+            idDestinataire: idDestinataire,
+            idFichier: "g1.1",
+            dateFichier: formatDate(new Date()),
+            checksum: generateChecksum(messages),
+            messages: []
+        };
+
+        const messageIds = [];
+
+        messages.forEach((message) => {
+            messageIds.push(message.id);
+
+            const listeObjet = message.objets.map(objet => ({
+                titre: objet.titre.trim(),
+                description: objet.description,
+                qualite: parseInt(objet.qualite),
+                quantite: parseInt(objet.quantite)
+            }));
+
+            messageData.messages.push({
+                dateMessage: message.dateMessage,
+                statut: "propose",
+                listeObjet: listeObjet
+            });
+        });
+
+        const jsonString = JSON.stringify(messageData, null, 2);
+        saveJsonToFile(jsonString, messageIds);
+    }
 }
 
 

@@ -68,7 +68,7 @@ public class JsonController {
 
     @PostMapping("/save-troc")
     public ResponseEntity<String> saveTroc(@RequestBody String jsonData,
-            @RequestParam(value = "idMessage", required = false) Long idMessage) {
+            @RequestParam(value = "idMessage", required = false) List<Long> idMessages) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode rootNode = mapper.readTree(jsonData);
@@ -88,16 +88,18 @@ public class JsonController {
                 fileWriter.write(jsonData);
             }
 
-            if (idMessage != null) {
-                try {
-                    MessageTroc message = messageTrocRepository.findById(idMessage)
-                            .orElseThrow(() -> new Exception("Message non trouvé"));
-                    message.setBrouillon(false);
-                    message.setEnvoyer(true);
-                    message.setStatut("propose");
-                    messageTrocRepository.save(message);
-                } catch (Exception e) {
-                    System.err.println(e);
+            if (idMessages != null && !idMessages.isEmpty()) {
+                for (Long idMessage : idMessages) {
+                    try {
+                        MessageTroc message = messageTrocRepository.findById(idMessage)
+                                .orElseThrow(() -> new Exception("Message non trouvé"));
+                        message.setBrouillon(false);
+                        message.setEnvoyer(true);
+                        message.setStatut("propose");
+                        messageTrocRepository.save(message);
+                    } catch (Exception e) {
+                        System.err.println(e);
+                    }
                 }
             } else {
                 System.out.println("avant de rentrer dans la boucle");
@@ -124,7 +126,7 @@ public class JsonController {
                         objet.setQualite(objetNode.get("qualite").asInt());
                         objet.setQuantite(objetNode.get("quantite").asInt());
                         objets.add(objet);
-                        System.out.println("objet : " +j);
+                        System.out.println("objet : " + j);
                         j++;
                     }
                     newMessage.setObjets(objets);
@@ -134,9 +136,11 @@ public class JsonController {
                 }
             }
 
-            String redirectUrl = "/troc";
+            String redirectUrl = "/message-troc";
             return new ResponseEntity<>("{\"success\": true, \"redirect\": \"" + redirectUrl + "\"}", HttpStatus.OK);
-        } catch (IOException e) {
+        } catch (
+
+        IOException e) {
             return new ResponseEntity<>("{\"success\": false, \"message\": \"Erreur lors de l'enregistrement.\"}",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -347,7 +351,8 @@ public class JsonController {
                 MessageAutor m = messageAutorService.getMessageById(Long.valueOf(msgId));
 
                 if (m != null) {
-                    Contact contact = new Contact(m.getId(), m.getIdTroqueur(), m.getNomAuteur(), m.getMail(), m.getTelephone(),
+                    Contact contact = new Contact(m.getId(), m.getIdTroqueur(), m.getNomAuteur(), m.getMail(),
+                            m.getTelephone(),
                             m.getDate());
                     contactService.ajouterContact(contact); // Ajoute le message dans les contacts
                     messageAutorService.supprimerMessage(Long.valueOf(msgId)); // Supprime le message de la base
@@ -374,7 +379,6 @@ public class JsonController {
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", message);
-
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
