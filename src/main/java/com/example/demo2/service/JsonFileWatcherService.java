@@ -50,42 +50,52 @@ public class JsonFileWatcherService {
 
     public void checkForJsonFiles() {
         File jsonDir = new File(DIRECTORY_PATH);
-        File[] files = jsonDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".json"));
+        File[] files = jsonDir.listFiles();
 
         if (files != null) {
             for (File file : files) {
-                System.out.println("Fichier JSON détecté au démarrage : " + file.getName());
-                try {
-                    String content = new String(Files.readAllBytes(file.toPath()));
-                    JSONObject json = new JSONObject(content);
-                    if (json.has("messages")) {
-                        if (trocValidator.validateJson(json)) {
-                            System.out.println("Le JSON " + file.getName() + " est valide selon TrocValidator.");
-                            addTrocBDD(json);
-                            moveFileToDirectory(file, DIRECTORY_PATH_TROC_VALIDES);
+                if (!file.getName().toLowerCase().endsWith(".json")) {
+                    System.out.println("Le fichier " + file.getName()
+                            + " ne se termine pas par .json");
+                    moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
+                } else if (file.length() > 2048) {
+                    System.out.println("Le fichier " + file.getName() + " est trop grand (> 2 Ko)");
+                    moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
+                } else {
+                    System.out.println("Fichier JSON détecté au démarrage : " + file.getName());
+                    try {
+                        String content = new String(Files.readAllBytes(file.toPath()));
+                        JSONObject json = new JSONObject(content);
+                        if (json.has("messages")) {
+                            if (trocValidator.validateJson(json)) {
+                                System.out.println("Le JSON " + file.getName() + " est valide selon TrocValidator.");
+                                addTrocBDD(json);
+                                moveFileToDirectory(file, DIRECTORY_PATH_TROC_VALIDES);
+                            } else {
+                                System.out.println("Le JSON " + file.getName() + " est invalide selon TrocValidator.");
+                                moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
+                            }
+                        } else if (json.has("MessageDemandeAutorisation")) {
+                            if (autorisationValidator.validateJson(json)) {
+                                System.out
+                                        .println("Le JSON " + file.getName()
+                                                + " est valide selon AutorisationValidator.");
+                                addAutorBDD(json);
+                                moveFileToDirectory(file, DIRECTORY_PATH_AUTOR_VALIDES);
+                            } else {
+                                System.out.println(
+                                        "Le JSON " + file.getName() + " est invalide selon AutorisationValidator.");
+                                moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
+                            }
                         } else {
-                            System.out.println("Le JSON " + file.getName() + " est invalide selon TrocValidator.");
+                            System.err.println("Le JSON " + file.getName() + " ne correspond à aucun schéma");
                             moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
                         }
-                    } else if (json.has("MessageDemandeAutorisation")) {
-                        if (autorisationValidator.validateJson(json)) {
-                            System.out
-                                    .println("Le JSON " + file.getName() + " est valide selon AutorisationValidator.");
-                            addAutorBDD(json);
-                            moveFileToDirectory(file, DIRECTORY_PATH_AUTOR_VALIDES);
-                        } else {
-                            System.out.println(
-                                    "Le JSON " + file.getName() + " est invalide selon AutorisationValidator.");
-                            moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
-                        }
-                    } else {
-                        System.err.println("Le JSON " + file.getName() + " ne correspond à aucun schéma");
-                        moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
+                    } catch (IOException e) {
+                        System.err.println("Erreur dans l'accès aux fichiers json");
+                    } catch (JSONException e) {
+                        System.out.println("Erreur lors du traitement du fichier JSON : " + e.getMessage());
                     }
-                } catch (IOException e) {
-                    System.err.println("Erreur dans l'accès aux fichiers json");
-                } catch (JSONException e) {
-                    System.out.println("Erreur lors du traitement du fichier JSON : " + e.getMessage());
                 }
             }
         }

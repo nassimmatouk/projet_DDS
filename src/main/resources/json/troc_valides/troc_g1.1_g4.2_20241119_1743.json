@@ -1,0 +1,21 @@
+{
+  "idTroqueur": "g1.1",
+  "idDestinataire": "g4.2",
+  "idFichier": "g1.1",
+  "dateFichier": "19-11-2024",
+  "checksum": "3",
+  "messages": [
+    {
+      "dateMessage": "19-11-2024",
+      "statut": "propose",
+      "listeObjet": [
+        {
+          "titre": "velo",
+          "description": "roue",
+          "qualite": 4,
+          "quantite": 1
+        }
+      ]
+    }
+  ]
+}

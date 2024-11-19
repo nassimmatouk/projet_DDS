@@ -136,8 +136,8 @@ public class JsonController {
                 }
             }
 
-            String redirectUrl = "/message-troc";
-            return new ResponseEntity<>("{\"success\": true, \"redirect\": \"" + redirectUrl + "\"}", HttpStatus.OK);
+            //String redirectUrl = "/message-troc";
+            return new ResponseEntity<>("{\"success\": true, \"" + "\"}", HttpStatus.OK);
         } catch (
 
         IOException e) {

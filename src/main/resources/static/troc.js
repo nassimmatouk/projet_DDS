@@ -141,6 +141,8 @@ function sendMessage(event) {
     console.log(JSON.stringify(data, null, 2));
     const jsonString = JSON.stringify(data, null, 2);
     saveJsonToFile(jsonString);
+
+    window.location.href = "/message-troc";
 }
 
 //Autorisation
@@ -183,11 +185,11 @@ function handleSubmitA(event) {
 /****************************** Enregistrement json dans dossier ******************************/
 //Troc
 function saveJsonToFile(jsonString, idMessage) {
-    const params = idMessage && idMessage.length > 0 ? `${idMessage.join(",")}` : '';
-    const url = idMessage ? `/api/save-troc?idMessage=${idMessage}` : '/api/save-troc';
+    const params = idMessage && idMessage.length > 0 ? `?idMessage=${idMessage.join(",")}` : '';
+    const url = `/api/save-troc${params}`;
 
     console.log(url);
-    
+
     fetch(url, {
         method: 'POST',
         headers: {
@@ -198,7 +200,7 @@ function saveJsonToFile(jsonString, idMessage) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Fichier JSON enregistré avec succès.');
+                alert('Fichier envoyé avec succès.');
                 window.location.href = data.redirect;
             } else {
                 alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
@@ -320,14 +322,18 @@ function getSelectedMessageIds() {
 }
 
 
-document.getElementById('deleteSelectedButton').addEventListener('click', function (event) {
-    const selectedMessageIds = getSelectedMessageIds();
-
-    if (selectedMessageIds.length > 0) {
-        document.getElementById('selectedMessages').value = selectedMessageIds.join(',');
-    } else {
-        event.preventDefault();
-        alert("Aucun message sélectionné");
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteButton = document.getElementById('deleteSelectedButton');
+    if (deleteButton) {
+        deleteButton.addEventListener('click', function (event) {
+            const selectedMessageIds = getSelectedMessageIds();
+            if (selectedMessageIds.length > 0) {
+                document.getElementById('selectedMessages').value = selectedMessageIds.join(',');
+            } else {
+                event.preventDefault();
+                alert("Aucun message sélectionné");
+            }
+        });
     }
 });
 
@@ -503,6 +509,13 @@ async function sendSelectedMessages() {
         const jsonString = JSON.stringify(messageData, null, 2);
         saveJsonToFile(jsonString, messageIds);
     }
+
+    console.log("les messages d'erreurs");
+    if (idMessagesFalse.length > 0) {
+        alert(`Les messages suivants sont incomplets et n'ont pas été envoyés : ${idMessagesFalse.join(", ")}`);
+    }
+
+    window.location.href = "/message-troc";
 }
 
 
@@ -582,4 +595,61 @@ function updateMessage(idMessage, dateF, envoi) {
                 alert("Erreur lors de la mise à jour du message.");
             });
     });
+}
+
+
+//Brouillons complets/incomplets
+document.addEventListener('DOMContentLoaded', function () {
+    const selectedMessages = [...document.querySelectorAll('.brouillon-row')].map(row => {
+        const messageId = row.getAttribute('data-message-id');
+        return messageId;
+    });
+    checkMessages(selectedMessages);
+});
+
+async function checkMessages(selectedMessages) {
+    const messagesInfo = [];
+    for (const messageId of selectedMessages) {
+        try {
+            const response = await fetch(`/api/get-message-info/${messageId}`);
+            if (!response.ok) {
+                throw new Error("Erreur lors de la récupération du message.");
+            }
+            const data = await response.json();
+            if (data.success) {
+                messagesInfo.push(data.message);
+            } else {
+                console.error("Erreur:", data.message);
+            }
+        } catch (error) {
+            console.error("Erreur:", error.message);
+        }
+    }
+
+    for (const message of messagesInfo) {
+        let isComplete = true;
+
+        if (!message.idDestinataire || message.idDestinataire == '') {
+            isComplete = false;
+        }
+
+        for (const objet of message.objets) {
+            if (!objet.titre || objet.titre == '' ||
+                !objet.qualite || objet.qualite == 0 ||
+                !objet.quantite || objet.quantite == 0) {
+                isComplete = false;
+            }
+        }
+
+        const messageRow = document.querySelector(`tr[data-message-id='${message.id}']`);
+        if (messageRow) {
+            if (isComplete) {
+                messageRow.classList.add('message-complete');
+                messageRow.classList.remove('message-incomplete');
+            } else {
+                messageRow.classList.add('message-incomplete');
+                messageRow.classList.remove('message-complete');
+            }
+        }
+    }
 }
