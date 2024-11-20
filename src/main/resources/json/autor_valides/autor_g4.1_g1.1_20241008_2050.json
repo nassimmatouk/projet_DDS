@@ -1,0 +1,17 @@
+{
+    "idDestinataire": "g1.1",
+    "idTroqueur": "g4.1",
+    "MessageDemandeAutorisation": {
+        "date": "08-10-2024",
+        "idMessage": "msg_1728413446782",
+        "statutAutorisation": "demande",
+        "coordonnees": {
+            "mail": "h.uibiu@gmail.com",
+            "telephone": "0123456789",
+            "nomAuteur": "l'autre"
+        }
+    },
+    "dateFichier": "08-10-2024",
+    "checksum": "3",
+    "idFichier": "g3.4"
+}
