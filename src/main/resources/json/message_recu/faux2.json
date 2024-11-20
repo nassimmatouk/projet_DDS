@@ -1,0 +1,24 @@
+{
+    "idTroqueur": "g1.1",
+    "idDestinataire": "g2.2",
+    "idFichier": "12345",
+    "dateFichier": "12-34-2024",
+    "checksum": "",
+    "messages": [
+        {
+            "dateMessage": "01-15-2024",
+            "statut": "pending",
+            "listeObjet": [
+                {
+                    "titre": "Épée en fer",
+                    "description": "Une épée solide en fer forgé",
+                    "qualite": 6,
+                    "quantite": "deux"
+                },
+                {
+                    "qualite": 4
+                }
+            ]
+        }
+    ]
+}

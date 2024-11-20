@@ -185,7 +185,10 @@ function handleSubmitA(event) {
 /****************************** Enregistrement json dans dossier ******************************/
 //Troc
 function saveJsonToFile(jsonString, idMessage) {
-    const params = idMessage && idMessage.length > 0 ? `?idMessage=${idMessage.join(",")}` : '';
+    const idMessagesArray = Array.isArray(idMessage) ? idMessage : (idMessage ? [idMessage] : []);
+    console.log(Array.isArray(idMessage));
+    console.log(idMessage);
+    const params = idMessagesArray.length > 0 ? `?idMessage=${idMessagesArray.join(",")}` : '';
     const url = `/api/save-troc${params}`;
 
     console.log(url);
@@ -201,7 +204,6 @@ function saveJsonToFile(jsonString, idMessage) {
         .then(data => {
             if (data.success) {
                 alert('Fichier envoyé avec succès.');
-                window.location.href = data.redirect;
             } else {
                 alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
             }
@@ -400,6 +402,7 @@ function sendSingleMessage(messageId) {
 
                 // Appeler saveJsonToFile avec les données JSON du message
                 if (bool == true) {
+                    console.log("Le message est correct", messageId)
                     const jsonString = JSON.stringify(messageData, null, 2);
                     saveJsonToFile(jsonString, messageId);
                 }
@@ -414,6 +417,7 @@ function sendSingleMessage(messageId) {
             console.error('Erreur:', error);
             alert('Une erreur est survenue.');
         });
+    window.location.href = "/message-troc";
 }
 
 
@@ -507,10 +511,9 @@ async function sendSelectedMessages() {
         });
 
         const jsonString = JSON.stringify(messageData, null, 2);
+        console.log(jsonString);
         saveJsonToFile(jsonString, messageIds);
     }
-
-    console.log("les messages d'erreurs");
     if (idMessagesFalse.length > 0) {
         alert(`Les messages suivants sont incomplets et n'ont pas été envoyés : ${idMessagesFalse.join(", ")}`);
     }

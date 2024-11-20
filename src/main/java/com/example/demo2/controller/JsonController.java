@@ -136,11 +136,10 @@ public class JsonController {
                 }
             }
 
-            //String redirectUrl = "/message-troc";
-            return new ResponseEntity<>("{\"success\": true, \"" + "\"}", HttpStatus.OK);
-        } catch (
-
-        IOException e) {
+            // String redirectUrl = "/message-troc";
+            return new ResponseEntity<>("{\"success\": true}", HttpStatus.OK);
+        } catch (IOException e) {
+            System.out.println("Ca retourne une erreur");
             return new ResponseEntity<>("{\"success\": false, \"message\": \"Erreur lors de l'enregistrement.\"}",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
