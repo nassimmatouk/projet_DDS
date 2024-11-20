@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo2.model.MessageTroc;
 import com.example.demo2.service.MessageTrocService;
+import com.example.demo2.repository.MessageTrocRepository;
 
 @Controller
 public class MessageTrocController {
@@ -18,8 +19,8 @@ public class MessageTrocController {
     @Autowired
     private MessageTrocService messageTrocService;
 
-    //@Autowired
-    //private MessageTrocRepository messageTrocRepository;
+    @Autowired
+    private MessageTrocRepository messageTrocRepository;
 
     @GetMapping("/message-troc")
     public String showMessages(Model model) {
@@ -58,7 +59,7 @@ public class MessageTrocController {
             return "/demande_troc";
         }*/
 
-        /*
+        
         if (idMessage != null) {
             Optional<MessageTroc> messageTroc = messageTrocRepository.findById(idMessage);
             if (messageTroc.isPresent()) {
@@ -66,10 +67,11 @@ public class MessageTrocController {
             } else {
                 model.addAttribute("error", "Message de troc non trouvé");
             }
-            //return "/reponse";
-        }*/
-        //model.addAttribute("idDestinataire", idDestinataire);
-        return "reponse";  
+            return "/reponse";
+        }
+        else {
+            return "message-troc"; 
+        }
     }
 
     

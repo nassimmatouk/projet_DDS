@@ -123,11 +123,21 @@
       }
 
 
-
+      .accepter {
+        all:unset;
+        font-size: 90%;
+        padding: 10px 20px;
+      }
 
       .accepter, .refuser {
         background-color: #f4f4f9;
+        border-radius: 5px;
       }
+
+      .accepter:hover, .refuser:hover {
+        background-color: #c1cfdd;
+      }
+      
     </style>
   </head>
 
@@ -187,7 +197,7 @@
                 <input type="hidden" name="idTroqueur" th:value="${message.idTroqueur}">
                 <input type="hidden" name="idDestinataire" th:value="${message.idDestinataire}">
                 <input type="hidden" name="dateMessage" th:value="${message.dateMessage}">
-                <input class="submit-rep" type="submit" value="Accepter">
+                <input class="accepter submit-rep" type="submit" value="Accepter">
               </form>
           </td>
             <td>
@@ -307,36 +317,7 @@
     <script src="troc.js"></script>
 
     <script>
-        function accepterTroc(buttonElement) {
-            /*const idTroqueur = buttonElement.getAttribute('data-idTroqueur');
-            const idDestinataire = buttonElement.getAttribute('data-idDestinataire');
-            const dateMessage = buttonElement.getAttribute('data-dateMessage');
-            const msgId = buttonElement.getAttribute('data-msgId');
-            console.log("here  : " + idTroqueur +"__"+ idDestinataire +"__"+ dateMessage +"__"+ msgId)
-            fetch('/api/accepter-troc', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    idTroqueur: idTroqueur,
-                    idDestinataire: idDestinataire,
-                    dateMessage: dateMessage,
-                    msgId : msgId,
-                    type : "troc"
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log("Troc réfusé avec succès.");
-                    location.reload(); // Rafraîchit la page pour afficher le nouveau statut
-                } else {
-                    console.log("Échec de refus du troc.");
-                }
-            })
-            .catch(error => console.error('Erreur:', error));*/
-        }
+        function accepterTroc(buttonElement) { }
 
       function refuserTroc(buttonElement) {
         const idTroqueur = buttonElement.getAttribute('data-idTroqueur');

@@ -181,6 +181,35 @@ function handleSubmitA(event) {
 
 
 /****************************** Enregistrement json dans dossier ******************************/
+//Reponse
+function saveJsonToFileRep(jsonString, idMessage) {
+    const params = idMessage && idMessage.length > 0 ? `${idMessage.join(",")}` : '';
+    const url = idMessage ? `/api/save-resp?idMessage=${idMessage}` : '/api/save-resp';
+
+    console.log(url);
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: jsonString
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Fichier JSON enregistré avec succès.');
+                window.location.href = data.redirect;
+            } else {
+                alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors de la tentative d\'enregistrement du fichier.');
+        });
+}
+
 //Troc
 function saveJsonToFile(jsonString, idMessage) {
     const params = idMessage && idMessage.length > 0 ? `${idMessage.join(",")}` : '';
@@ -331,6 +360,15 @@ document.getElementById('deleteSelectedButton').addEventListener('click', functi
     }
 });
 
+function majSendResp(messageId, dateF) { // add idFichier
+    updateMessage(messageId, dateF, true).then(() => {
+        sendSingleMessageResp(messageId);
+    }).catch((error) => {
+        console.error('Erreur lors de la mise à jour :', error);
+        alert('Impossible de mettre à jour le message avant l\'envoi.');
+    });
+}
+
 function majSend(messageId, dateF) {
     updateMessage(messageId, dateF, true).then(() => {
         sendSingleMessage(messageId);
@@ -338,6 +376,76 @@ function majSend(messageId, dateF) {
         console.error('Erreur lors de la mise à jour :', error);
         alert('Impossible de mettre à jour le message avant l\'envoi.');
     });
+}
+
+
+function sendSingleMessageResp(messageId) {
+    console.log("Début de sendSingleMessage");
+    fetch(`/api/get-message-info/${messageId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("On rentre dans l'envoi");
+                // Préparer les données du message
+                const messageData = {
+                    idTroqueur: data.message.idDestinataire,
+                    idDestinataire: data.message.idTroqueur,
+                    idFichier: "g1.1",  // Autres informations nécessaires
+                    dateFichier: data.message.dateFichier,
+                    checksum: generateChecksum(data.message),
+                    messages: []
+                };
+
+                var idDest = data.message.idDestinataire;
+                var bool = true;
+                if (!idDest || idDest.trim() === '') {
+                    alert("Le message n'a pas de destinataire valide");
+                    bool = false;
+                }
+
+                // Récupérer tous les objets du message et les ajouter à la liste
+                const listeObjet = [];
+                data.message.objets.forEach(objet => {
+                    const titre = objet.titre ? objet.titre.trim() : '';
+                    const qualite = objet.qualite ? objet.qualite : '';
+                    const quantite = objet.quantite ? objet.quantite : '';
+
+                    if (titre === '' || qualite === '' || qualite == 0 || quantite === '' || quantite == 0) {
+                        alert("Il manque un des champs suivant à l'objet : Titre, Qualité ou Quantité");
+                        bool = false;
+                    }
+
+                    listeObjet.push({
+                        titre: titre,
+                        description: objet.description,
+                        qualite: parseInt(qualite),
+                        quantite: parseInt(quantite)
+                    });
+                });
+
+                // Ajouter le message avec la liste des objets dans le tableau de messages
+                messageData.messages.push({
+                    dateMessage: data.message.dateMessage,
+                    statut: "accepte",
+                    listeObjet: listeObjet
+                });
+
+                // Appeler saveJsonToFile avec les données JSON du message
+                if (bool == true) {
+                    const jsonString = JSON.stringify(messageData, null, 2);
+                    saveJsonToFileRep(jsonString, messageId);                    
+                }
+                else {
+                    return;
+                }
+            } else {
+                alert('Erreur lors de la récupération du message.');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue.');
+        });
 }
 
 
@@ -396,6 +504,7 @@ function sendSingleMessage(messageId) {
                 if (bool == true) {
                     const jsonString = JSON.stringify(messageData, null, 2);
                     saveJsonToFile(jsonString, messageId);
+                    
                 }
                 else {
                     return;
