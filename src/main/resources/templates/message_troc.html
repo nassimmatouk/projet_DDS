@@ -138,6 +138,14 @@
         background-color: #c1cfdd;
       }
       
+
+      .message-incomplete {
+        background-color: #f8d7da; /* Rouge clair pour les messages incomplets */
+      }
+
+      .message-complete {
+        background-color: #d4edda; /* Vert clair pour les messages complets */
+      }
     </style>
   </head>
 
@@ -242,7 +250,7 @@
       </thead>
       <tbody>
         <th:block th:each="message : ${brouillons}">
-          <tr class="message-row">
+          <tr class="brouillon-row" th:attr="data-message-id=${message.id}">
             <td>
               <input
                 type="checkbox"

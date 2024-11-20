@@ -64,10 +64,13 @@ public class ControllerTroc {
                 model.addAttribute("error", "Message de troc non trouvé");
             }
             return "/edit";
-        } else if (idDestinataire != null) {
-            model.addAttribute("idDestinataire", idDestinataire);
-            return "/demande_troc";
         } else {
+            List<Contact> contacts = contactService.getAllMessages();
+            model.addAttribute("contacts", contacts);
+
+            if (idDestinataire != null) {
+                model.addAttribute("idDestinataire", idDestinataire);
+            }
             return "/demande_troc";
         }
     }
