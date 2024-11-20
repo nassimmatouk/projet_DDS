@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Envoi Troc</title>
+    <style>
+        <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f9;
+        color: #333;
+      }
+
+      header {
+        margin-bottom: 20px;
+      }
+
+      header a {
+        text-decoration: none;
+        color: #007bff;
+        margin-right: 10px;
+      }
+
+      header a:hover {
+        text-decoration: underline;
+      }
+
+      h1 {
+        color: #007bff;
+      }
+
+      form {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: auto;
+      }
+
+      h2 {
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+        color: #007bff;
+      }
+
+      label {
+        font-weight: bold;
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        width: calc(100% - 22px);
+        padding: 8px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+
+      button {
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      .message {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+      }
+
+      .objetsContainer {
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
+
+      .listeObjet {
+        padding: 10px;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+      }
+
+      .objetsContainer button {
+        margin-top: 10px;
+      }
+
+      .message h3 {
+        color: #333;
+        margin-bottom: 10px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        form {
+          padding: 15px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>  
+  <body>
+    <h1>Formulaire de reponses</h1>
+
+    <h2>En-tête</h2>
+      <label for="idDestinataire">ID Destinataire (gX.X):</label>
+      <input type="text" id="idDestinataire" name="idDestinataire" pattern="^g\d\.\d+$" required
+        th:value="${message.idDestinataire != null ? message.idDestinataire : ''}"
+      /><br /><br />
+
+    <h2>Proposition reçu</h2>
+    <div id="messagesContainer">
+        <div class="message">
+          <h3>Liste des objets</h3>
+          <div class="objetsContainer">
+            <div class="listeObjet">
+              <label><strong>Objet</strong></label
+              ><br />
+
+              <label for="titre">Titre de l'objet:</label>
+              <input type="text" name="titre" required 
+              /><br /><br />
+
+              <label for="description">Description de l'objet:</label>
+              <input type="text" name="description"
+              /><br /><br />
+
+              <label for="qualite">Qualité (1-5):</label>
+              <input type="number" name="qualite" min="1" max="5" required
+              /><br /><br />
+
+              <label for="quantite">Quantité:</label>
+              <input type="number" name="quantite" min="1" required
+              /><br /><br />
+
+              <button type="button" onclick="removeObjet(this)">
+                Supprimer cet objet
+              </button>
+            </div>
+          </div>
+          <button type="button" onclick="addObjet(this)">
+            Ajouter un objet</button
+          ><br /><br />
+        </div>
+      </div>
+
+      <!--
+      <div id="messagesContainer">
+        <div class="message">
+          <h3>Liste des objets</h3>
+          <div class="objetsContainer">
+            <div class="listeObjet" th:each="objet : ${message.objets}">
+              <label><strong>Objet</strong></label
+              ><br />
+
+              <label for="titre">Titre de l'objet:</label>
+              <input type="text" name="titre" required
+                    th:value="${objet.titre != null ? objet.titre : ''}"
+              /><br /><br />
+
+              <label for="description">Description de l'objet:</label>
+              <input type="text" name="description"
+                th:value="${objet.description != null ? objet.description : ''}"
+              /><br /><br />
+
+              <label for="qualite">Qualité (1-5):</label>
+              <input type="number" name="qualite" min="1" max="5" required
+                th:value="${objet.qualite != null ? objet.qualite : ''}"
+              /><br /><br />
+
+              <label for="quantite">Quantité:</label>
+              <input type="number" name="quantite" min="1" required
+                th:value="${objet.quantite != null ? objet.quantite : ''}"
+              /><br /><br />
+
+              <button type="button" onclick="removeObjet(this)">
+                Supprimer cet objet
+              </button>
+            </div>
+          </div>
+          <button type="button" onclick="addObjet(this)">
+            Ajouter un objet</button
+          ><br /><br />
+        </div>
+      </div>
+    -->
+
+    <script src="troc.js"></script>
+  </body>
+</html>

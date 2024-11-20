@@ -12,4 +12,7 @@ public interface MessageTrocRepository extends JpaRepository<MessageTroc, Long> 
     List<MessageTroc> findByBrouillonFalse();
 
     List<MessageTroc> findByBrouillonFalseAndEnvoyerFalse();
+
+    List<MessageTroc> findByIdTroqueurAndIdDestinataireAndIdFichierAndDateMessage(
+        String idTroqueur, String idDestinataire, String idFichie, String dateMessage);
 }

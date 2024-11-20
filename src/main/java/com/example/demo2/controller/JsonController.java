@@ -97,7 +97,7 @@ public class JsonController {
                         message.setEnvoyer(true);
                         message.setStatut("propose");
                         messageTrocRepository.save(message);
-                    } catch (Exception e) {
+                    } catch (Exception e) {   
                         System.err.println(e);
                     }
                 }
@@ -385,4 +385,37 @@ public class JsonController {
                     .body(Map.of("success", false, "message", e.getMessage()));
         }
     }
+
+
+
+    @PostMapping("refuser-troc")
+    public ResponseEntity<?> refuserTroc(@RequestBody Map<String, String> requestData) { 
+        try {
+            // Récupérer les informations du JSON envoyé par le script
+            String idTroqueur = requestData.get("idTroqueur");
+            String idDestinataire = requestData.get("idDestinataire");
+            String dateMessage = requestData.get("dateMessage");
+            String msgId = requestData.get("msgId");
+           
+            // Utiliser la méthode refuserTroc pour déplacer le fichier
+            boolean fichierDeplace = jsonFileWatcherService.refuserTroc(idTroqueur, idDestinataire, dateMessage);
+            System.out.println("here  : " + idTroqueur +"__"+ idDestinataire +"__"+ dateMessage +"__"+ msgId); 
+            // Si le fichier a été déplacé avec succès, supprimer le message de la base de données
+            if (fichierDeplace) {
+                //boolean messageSupprime = messageTrocService.supprimerMessageParId(msgId);                  
+                boolean messageSupprime = messageTrocService.supprimerMessages(idTroqueur, idDestinataire, msgId, dateMessage);
+                if (messageSupprime) {
+                    return ResponseEntity.ok(Map.of("success", true, "message", "Troc refusé et mis à jour."));
+                } else {
+                    return ResponseEntity.ok(Map.of("success", false, "message", "Erreur lors de la suppression du message en base de données."));
+                }
+            } else { 
+                return ResponseEntity.ok(Map.of("success", false, "message", "Erreur lors du déplacement du fichier."));
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "Erreur interne : " + e.getMessage()));
+        }
+    }
+
 }

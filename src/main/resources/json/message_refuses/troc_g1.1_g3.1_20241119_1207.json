@@ -1,0 +1,38 @@
+{
+    "idTroqueur": "g1.1",
+    "idDestinataire": "g3.1",
+    "idFichier": "g1.1",
+    "dateFichier": "19-11-2024",
+    "checksum": "3",
+    "messages": [
+      {
+        "dateMessage": "19-11-2024",
+        "statut": "refuse",
+        "listeObjet": [
+          {
+            "titre": "Ecran PC",
+            "description": "Ecran apple 17 pouces",
+            "qualite": 5,
+            "quantite": 1
+
+          }
+        ]
+
+      },
+      {
+        "dateMessage": "19-11-2024",
+        "statut": "refuse",
+        "listeObjet": [
+          {
+            "titre": "Ecran PC",
+            "description": "Ecran hp 32 pouces",
+            "qualite": 5,
+            "quantite": 4
+
+          }
+        ]
+
+      }
+    ]
+
+}

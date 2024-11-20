@@ -121,6 +121,13 @@
       .send-btn:hover {
         background-color: #2980b9; /* Darker blue */
       }
+
+
+
+
+      .accepter, .refuser {
+        background-color: #f4f4f9;
+      }
     </style>
   </head>
 
@@ -141,6 +148,7 @@
           <th>Statut</th>
           <th>Date</th>
           <th>Objets</th>
+          <th colspan="2">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -161,6 +169,35 @@
                   </li>
                 </th:block>
               </ul>
+            </td>
+            <!--
+            <td>
+              <button class="accepter" 
+                th:data-msgId="${message.id}"
+                th:data-idTroqueur="${message.idTroqueur}"
+                th:data-idDestinataire="${message.idDestinataire}"
+                th:data-dateMessage="${message.dateMessage}"
+                onclick="accepterTroc(this)">Accepter
+              </button>
+            </td>
+            -->
+            <td>
+              <form action="/reponse" method="get">
+                <input type="hidden" name="idMessage" th:value="${message.id}">
+                <input type="hidden" name="idTroqueur" th:value="${message.idTroqueur}">
+                <input type="hidden" name="idDestinataire" th:value="${message.idDestinataire}">
+                <input type="hidden" name="dateMessage" th:value="${message.dateMessage}">
+                <input class="submit-rep" type="submit" value="Accepter">
+              </form>
+          </td>
+            <td>
+              <button class="refuser" 
+                th:data-msgId="${message.id}"
+                th:data-idTroqueur="${message.idTroqueur}"
+                th:data-idDestinataire="${message.idDestinataire}"
+                th:data-dateMessage="${message.dateMessage}"
+                onclick="refuserTroc(this)">Refuser
+              </button>
             </td>
           </tr>
           <!-- Séparateur visuel entre les messages -->
@@ -268,5 +305,74 @@
     </button>
 
     <script src="troc.js"></script>
+
+    <script>
+        function accepterTroc(buttonElement) {
+            /*const idTroqueur = buttonElement.getAttribute('data-idTroqueur');
+            const idDestinataire = buttonElement.getAttribute('data-idDestinataire');
+            const dateMessage = buttonElement.getAttribute('data-dateMessage');
+            const msgId = buttonElement.getAttribute('data-msgId');
+            console.log("here  : " + idTroqueur +"__"+ idDestinataire +"__"+ dateMessage +"__"+ msgId)
+            fetch('/api/accepter-troc', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    idTroqueur: idTroqueur,
+                    idDestinataire: idDestinataire,
+                    dateMessage: dateMessage,
+                    msgId : msgId,
+                    type : "troc"
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log("Troc réfusé avec succès.");
+                    location.reload(); // Rafraîchit la page pour afficher le nouveau statut
+                } else {
+                    console.log("Échec de refus du troc.");
+                }
+            })
+            .catch(error => console.error('Erreur:', error));*/
+        }
+
+      function refuserTroc(buttonElement) {
+        const idTroqueur = buttonElement.getAttribute('data-idTroqueur');
+        const idDestinataire = buttonElement.getAttribute('data-idDestinataire');
+        const dateMessage = buttonElement.getAttribute('data-dateMessage');
+        const msgId = buttonElement.getAttribute('data-msgId');
+        console.log("here  : " + idTroqueur +"__"+ idDestinataire +"__"+ dateMessage +"__"+ msgId)
+        fetch('/api/refuser-troc', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                idTroqueur: idTroqueur,
+                idDestinataire: idDestinataire,
+                dateMessage: dateMessage,
+                msgId : msgId,
+                type : "troc"
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("Troc réfusé avec succès.");
+                location.reload(); // Rafraîchit la page pour afficher le nouveau statut
+            } else {
+                console.log("Échec de refus du troc.");
+            }
+        })
+        .catch(error => console.error('Erreur:', error));
+    }
+
+
+
+      
+
+    </script>
   </body>
 </html>
