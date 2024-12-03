@@ -1,0 +1,39 @@
+{
+    "idTroqueur": "g3.1",
+    "idDestinataire": "g1.1",
+    "idFichier": "g3.1",
+    "dateFichier": "13-11-2024",
+    "checksum": "3",
+    "messages": [
+        {
+            "dateMessage": "13-11-2024",
+            "statut": "propose",
+            "listeObjet": [
+                {
+                    "titre": "Vélo",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan, magna non pretium lacinia, nulla nunc fermentum massa, a scelerisque justo augue a nulla. Pellentesque in lectus et erat auctor hendrerit sed quis est.",
+                    "qualite": 5,
+                    "quantite": 1
+                },
+                {
+                    "titre": "Trotinette",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan, magna non pretium lacinia, nulla nunc fermentum massa, a scelerisque justo augue a nulla. Pellentesque in lectus et erat auctor hendrerit sed quis est.",
+                    "qualite": 4,
+                    "quantite": 1
+                },
+                {
+                    "titre": "Skateboard",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan, magna non pretium lacinia, nulla nunc fermentum massa, a scelerisque justo augue a nulla. Pellentesque in lectus et erat auctor hendrerit sed quis est.",
+                    "qualite": 3,
+                    "quantite": 2
+                },
+                {
+                    "titre": "Roller",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan, magna non pretium lacinia, nulla nunc fermentum massa, a scelerisque justo augue a nulla. Pellentesque in lectus et erat auctor hendrerit sed quis est.",
+                    "qualite": 2,
+                    "quantite": 3
+                }
+            ]
+        }
+    ]
+}

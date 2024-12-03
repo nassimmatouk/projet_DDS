@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -69,19 +72,29 @@ public class JsonFileWatcherService {
                         if (json.has("messages")) {
                             if (trocValidator.validateJson(json)) {
                                 System.out.println("Le JSON " + file.getName() + " est valide selon TrocValidator.");
-                                addTrocBDD(json);
-                                moveFileToDirectory(file, DIRECTORY_PATH_TROC_VALIDES);
+                                String dateFichier = json.getString("dateFichier");
+                                if (isMessageExpired(dateFichier)) {
+                                    System.err.println("Fichier rejeté : périmé (date : " + dateFichier + ").");
+                                    moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
+                                } else {
+                                    addTrocBDD(json);
+                                    moveFileToDirectory(file, DIRECTORY_PATH_TROC_VALIDES);
+                                }
                             } else {
                                 System.out.println("Le JSON " + file.getName() + " est invalide selon TrocValidator.");
                                 moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
                             }
                         } else if (json.has("MessageDemandeAutorisation")) {
                             if (autorisationValidator.validateJson(json)) {
-                                System.out
-                                        .println("Le JSON " + file.getName()
-                                                + " est valide selon AutorisationValidator.");
-                                addAutorBDD(json);
-                                moveFileToDirectory(file, DIRECTORY_PATH_AUTOR_VALIDES);
+                                System.out.println(
+                                        "Le JSON " + file.getName() + " est valide selon AutorisationValidator.");
+                                String dateFichier = json.getString("dateFichier");
+                                if (isMessageExpired(dateFichier)) {
+                                    System.err.println("Fichier rejeté : périmé (date : " + dateFichier + ").");
+                                } else {
+                                    addAutorBDD(json);
+                                    moveFileToDirectory(file, DIRECTORY_PATH_AUTOR_VALIDES);
+                                }
                             } else {
                                 System.out.println(
                                         "Le JSON " + file.getName() + " est invalide selon AutorisationValidator.");
@@ -112,6 +125,22 @@ public class JsonFileWatcherService {
 
             for (int i = 0; i < messagesArray.length(); i++) {
                 JSONObject messageJson = messagesArray.getJSONObject(i);
+
+                if (!isMessageValid(messageJson)) {
+                    System.err.println("Message rejeté.");
+                    continue;
+                }
+
+                if (!isAscii(messageJson)) {
+                    System.err.println("Message rejeté : contient des caractères non-ASCII.");
+                    continue;
+                }
+
+                String dateMessage = messageJson.getString("dateMessage");
+                if (isMessageExpired(dateMessage)) {
+                    System.err.println("Message rejeté : périmé (date : " + dateMessage + ").");
+                    continue;
+                }
 
                 MessageTroc messageTroc = new MessageTroc();
                 messageTroc.setIdTroqueur(idTroqueur);
@@ -246,4 +275,103 @@ public class JsonFileWatcherService {
         }
 
     }
+
+    /*----------------------------------Tests sur les messages----------------------------------*/
+
+    private boolean isMessageValid(JSONObject messageJson) {
+        final int MAX_DESCRIPTION_LENGTH = 255;
+        final int MAX_TITLE_LENGTH = 255;
+        final int MAX_MESSAGE_LENGTH = 1000;
+
+        // Vérification de la longueur totale du message
+        if (messageJson.toString().length() > MAX_MESSAGE_LENGTH) {
+            System.err.println("Message rejeté : dépassement de 1000 caractères.");
+            return false;
+        }
+
+        // Vérification des objets dans listeObjet
+        JSONArray objetsArray = messageJson.getJSONArray("listeObjet");
+        for (int i = 0; i < objetsArray.length(); i++) {
+            JSONObject objetJson = objetsArray.getJSONObject(i);
+
+            // Vérification de la longueur du titre
+            String titre = objetJson.optString("titre", "");
+            if (titre.length() > MAX_TITLE_LENGTH) {
+                System.err.println("Objet rejeté : titre trop long (>255 caractères). Titre = " + titre);
+                return false;
+            }
+
+            // Vérification de la longueur de la description
+            String description = objetJson.optString("description", "");
+            if (description.length() > MAX_DESCRIPTION_LENGTH) {
+                System.err.println(
+                        "Objet rejeté : description trop longue (>255 caractères). Description = " + description);
+                return false;
+            }
+        }
+
+        return true; // Le message est valide
+    }
+
+    private boolean isAscii(JSONObject json) {
+        for (String key : json.keySet()) {
+            Object value = json.get(key);
+
+            switch (value) {
+                case String string -> {
+                    // Vérification si la chaîne contient uniquement des caractères ASCII ou des
+                    // accents spécifiques
+                    if (!string.matches("[\\x00-\\x7Fàâäèéêëìíîïòóôöùúûüÿ]*")) {
+                        System.err.println(
+                                "Champ non-ASCII ou accent non autorisé détecté : clé=" + key + ", valeur=" + value);
+                        return false;
+                    }
+                }
+                case JSONObject jSONObject -> {
+                    // Appel récursif pour les objets imbriqués
+                    if (!isAscii(jSONObject)) {
+                        return false;
+                    }
+                }
+                case JSONArray array -> {
+                    for (int i = 0; i < array.length(); i++) {
+                        Object arrayElement = array.get(i);
+                        switch (arrayElement) {
+                            case JSONObject jSONObject -> {
+                                if (!isAscii(jSONObject)) {
+                                    return false;
+                                }
+                            }
+                            case String string -> {
+                                if (!string.matches("[\\x00-\\x7Fàâäèéêëìíîïòóôöùúûüÿ]*")) {
+                                    System.err.println(
+                                            "Élément non-ASCII ou accent non autorisé détecté dans un tableau : valeur="
+                                                    + arrayElement);
+                                    return false;
+                                }
+                            }
+                            default -> {
+                            }
+                        }
+                    }
+                }
+                default -> {
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean isMessageExpired(String dateMessage) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate messageDate = LocalDate.parse(dateMessage, formatter);
+            LocalDate currentDate = LocalDate.now();
+            return messageDate.plusMonths(3).isBefore(currentDate);
+        } catch (DateTimeParseException e) {
+            System.err.println("Format de date invalide : " + dateMessage);
+            return true; // Rejeter si la date est invalide
+        }
+    }
+
 }
