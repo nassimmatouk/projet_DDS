@@ -72,13 +72,18 @@ public class JsonFileWatcherService {
                         if (json.has("messages")) {
                             if (trocValidator.validateJson(json)) {
                                 System.out.println("Le JSON " + file.getName() + " est valide selon TrocValidator.");
-                                String dateFichier = json.getString("dateFichier");
-                                if (isMessageExpired(dateFichier)) {
-                                    System.err.println("Fichier rejeté : périmé (date : " + dateFichier + ").");
-                                    moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
+                                if (isChecksumValid(json)) {
+                                    String dateFichier = json.getString("dateFichier");
+                                    if (isMessageExpired(dateFichier)) {
+                                        System.err.println("Fichier rejeté : périmé (date : " + dateFichier + ").");
+                                        moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
+                                    } else {
+                                        addTrocBDD(json);
+                                        moveFileToDirectory(file, DIRECTORY_PATH_TROC_VALIDES);
+                                    }
                                 } else {
-                                    addTrocBDD(json);
-                                    moveFileToDirectory(file, DIRECTORY_PATH_TROC_VALIDES);
+                                    System.err.println("Checksum invalide pour le fichier " + file.getName());
+                                    moveFileToDirectory(file, DIRECTORY_PATH_INVALIDES);
                                 }
                             } else {
                                 System.out.println("Le JSON " + file.getName() + " est invalide selon TrocValidator.");
@@ -277,6 +282,20 @@ public class JsonFileWatcherService {
     }
 
     /*----------------------------------Tests sur les messages----------------------------------*/
+
+    private boolean isChecksumValid(JSONObject json) {
+        try {
+            int fileChecksum = json.getInt("checksum");
+
+            JSONArray messagesArray = json.getJSONArray("messages");
+            int calculatedChecksum = messagesArray.length();
+
+            return fileChecksum == calculatedChecksum;
+        } catch (JSONException e) {
+            System.err.println("Erreur lors de la vérification du checksum : " + e.getMessage());
+            return false;
+        }
+    }
 
     private boolean isMessageValid(JSONObject messageJson) {
         final int MAX_DESCRIPTION_LENGTH = 255;

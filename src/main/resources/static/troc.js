@@ -78,8 +78,9 @@ function removeMessage(button) {
 
 
 /****************************** Génération checksum et formatage date ******************************/
-function generateChecksum(data) {
-    return "3";
+function generateChecksum(messages) {
+    // Renvoie le nombre de messages dans le tableau
+    return messages.length.toString();
 }
 
 function formatDate(date) {
@@ -102,7 +103,6 @@ function sendMessage(event) {
         idDestinataire: formData.get('idDestinataire'),
         idFichier: "g1.1",
         dateFichier: formatDate(new Date()),
-        checksum: generateChecksum(formData),
         messages: []
     };
 
@@ -138,6 +138,7 @@ function sendMessage(event) {
             listeObjet: listeObjet
         });
     }
+    data.checksum = generateChecksum(data.messages);
     console.log(JSON.stringify(data, null, 2));
     const jsonString = JSON.stringify(data, null, 2);
     saveJsonToFile(jsonString);
@@ -251,7 +252,6 @@ function saveMessage(event) {
         idDestinataire: formData.get('idDestinataire'),
         idFichier: "g1.1",
         dateFichier: formatDate(new Date()),
-        checksum: generateChecksum(formData),
         messages: []
     };
 
@@ -312,8 +312,11 @@ function saveMessage(event) {
 
 function checkAll() {
     const checkboxes = document.querySelectorAll('.selectMessage');
+    const selectAllCheckbox = document.getElementById('selectAll');
+
+    // Si "selectAll" est coché, coche toutes les cases, sinon décoche-les
     checkboxes.forEach(checkbox => {
-        checkbox.checked = checkbox.checked ? false : true;
+        checkbox.checked = selectAllCheckbox.checked;
     });
 }
 
@@ -362,7 +365,7 @@ function sendSingleMessage(messageId) {
                     idDestinataire: data.message.idDestinataire,
                     idFichier: "g1.1",  // Autres informations nécessaires
                     dateFichier: data.message.dateFichier,
-                    checksum: generateChecksum(data.message),
+                    checksum: "1",
                     messages: []
                 };
 
@@ -532,7 +535,6 @@ function updateMessage(idMessage, dateF, envoi) {
         idDestinataire: formData.get('idDestinataire'),
         idFichier: "g1.1",
         dateFichier: dateF,
-        checksum: generateChecksum(formData),
         messages: []
     };
 

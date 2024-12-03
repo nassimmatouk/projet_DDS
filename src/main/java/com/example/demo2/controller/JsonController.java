@@ -102,7 +102,6 @@ public class JsonController {
                     }
                 }
             } else {
-                System.out.println("avant de rentrer dans la boucle");
                 int i = 1;
                 int j = 1;
                 for (JsonNode messageNode : rootNode.get("messages")) {
