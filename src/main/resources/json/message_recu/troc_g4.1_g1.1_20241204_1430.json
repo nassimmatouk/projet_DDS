@@ -1,0 +1,21 @@
+{
+    "idTroqueur": "g4.1",
+    "idDestinataire": "g1.1",
+    "idFichier": "g4.1",
+    "dateFichier": "02-12-2024",
+    "checksum": "1",
+    "messages": [
+        {
+            "dateMessage": "02-12-2024",
+            "statut": "propose",
+            "listeObjet": [
+                {
+                    "titre": "Jeu de société",
+                    "description": "Catan : édition spéciale",
+                    "qualite": 4,
+                    "quantite": 1
+                }
+            ]
+        }
+    ]
+}

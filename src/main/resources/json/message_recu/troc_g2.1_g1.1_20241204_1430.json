@@ -1,0 +1,33 @@
+{
+    "idTroqueur": "g2.1",
+    "idDestinataire": "g1.1",
+    "idFichier": "g2.1",
+    "dateFichier": "25-11-2024",
+    "checksum": "2",
+    "messages": [
+        {
+            "dateMessage": "25-11-2024",
+            "statut": "propose",
+            "listeObjet": [
+                {
+                    "titre": "Table de jardin",
+                    "description": "Table en bois pour extérieur",
+                    "qualite": 4,
+                    "quantite": 1
+                }
+            ]
+        },
+        {
+            "dateMessage": "27-11-2024",
+            "statut": "propose",
+            "listeObjet": [
+                {
+                    "titre": "Table de jardin",
+                    "description": "Table en bois pour extérieur - légèrement usée",
+                    "qualite": 3,
+                    "quantite": 1
+                }
+            ]
+        }
+    ]
+}
