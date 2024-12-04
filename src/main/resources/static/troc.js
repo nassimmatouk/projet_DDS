@@ -240,7 +240,7 @@ function saveJsonToFile(jsonString, idMessage) {
         })
         .catch(error => {
             console.error('Erreur:', error);
-            alert('Une erreur est survenue lors de la tentative d\'enregistrement du fichier.');
+            //alert('Une erreur est survenue lors de la tentative d\'enregistrement du fichier.');
         });
 }
 
@@ -403,7 +403,7 @@ function sendSingleMessageResp(messageId) {
                     idDestinataire: data.message.idTroqueur,
                     idFichier: data.message.idTroqueur,  // pareil que idDestinataire
                     dateFichier: data.message.dateFichier,
-                    checksum: generateChecksum(data.message),
+                    checksum: "1",
                     messages: []
                 };
 

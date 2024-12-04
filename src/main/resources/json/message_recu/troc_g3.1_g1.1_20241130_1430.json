@@ -1,0 +1,17 @@
+{
+    "idDestinataire": "g1.1",
+    "idTroqueur": "g3.1",
+    "dateFichier": "30-11-2024",
+    "checksum": "1",
+    "messages": [{
+        "listeObjet": [{
+            "titre": "Lampadaire",
+            "description": "Lampadaire moderne noir",
+            "qualite": 5,
+            "quantite": 1
+        }],
+        "statut": "refuse",
+        "dateMessage": "30-11-2024"
+    }],
+    "idFichier": "g3.1"
+}
