@@ -386,8 +386,7 @@ public class JsonController {
         }
     }
 
-
-
+    
     @PostMapping("refuser-troc")
     public ResponseEntity<?> refuserTroc(@RequestBody Map<String, String> requestData) { 
         try {
@@ -395,29 +394,30 @@ public class JsonController {
             String idTroqueur = requestData.get("idTroqueur");
             String idDestinataire = requestData.get("idDestinataire");
             String dateMessage = requestData.get("dateMessage");
+            String description = requestData.get("descriptionObj"); // Récupérer la description du message
             String msgId = requestData.get("msgId");
-           
+
             // Utiliser la méthode refuserTroc pour déplacer le fichier
-            boolean fichierDeplace = jsonFileWatcherService.refuserTroc(idTroqueur, idDestinataire, dateMessage);
-             
+            boolean fichierDeplace = jsonFileWatcherService.refuserTroc(idTroqueur, idDestinataire, dateMessage, description);
+            
             // Si le fichier a été déplacé avec succès, supprimer le message de la base de données
-            if (fichierDeplace) { System.out.println("hereDep  : " + idTroqueur +"__"+ idDestinataire +"__"+ dateMessage +"__"+ msgId);
-                //boolean messageSupprime = messageTrocService.supprimerMessageParId(msgId);                  
-                boolean messageSupprime = messageTrocService.supprimerMessages(idTroqueur, idDestinataire, msgId, dateMessage);
+            if (fichierDeplace) { 
+                System.out.println("hereDep  : " + idTroqueur +"__"+ idDestinataire +"__"+ dateMessage +"__"+ msgId);
+                boolean messageSupprime = messageTrocService.supprimerMessageParId(msgId);                  
                 if (messageSupprime) {
                     return ResponseEntity.ok(Map.of("success", true, "message", "Troc refusé et mis à jour."));
                 } else {
                     return ResponseEntity.ok(Map.of("success", false, "message", "Erreur lors de la suppression du message en base de données."));
                 }
-            } else { 
+            } else {  
                 return ResponseEntity.ok(Map.of("success", false, "message", "Erreur lors du déplacement du fichier."));
             }
-
         } catch (Exception e) {
             return ResponseEntity.status(500).body(Map.of("success", false, "message", "Erreur interne : " + e.getMessage()));
         }
     }
 
+    
     @PostMapping("/save-resp")
     public ResponseEntity<String> saveResp(@RequestBody String jsonData,
             @RequestParam(value = "idMessage", required = false) List<Long> idMessages) {
@@ -430,7 +430,7 @@ public class JsonController {
 
             if (!jsonDir.exists()) {
                 jsonDir.mkdir();
-            }
+            } 
 
             String fileName = generateFileName("rep", "g1.1", idDestinataire);
 

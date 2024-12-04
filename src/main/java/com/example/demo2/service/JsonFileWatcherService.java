@@ -4,14 +4,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +34,7 @@ public class JsonFileWatcherService {
     private static final String DIRECTORY_PATH_TROC_VALIDES = "src/main/resources/json/troc_valides";
     private static final String DIRECTORY_PATH_AUTOR_VALIDES = "src/main/resources/json/autor_valides";
 
-    private static final String DIRECTORY_TROC_ACCEPTES = "src/main/resources/json/message_accepter";
+    //private static final String DIRECTORY_TROC_ACCEPTES = "src/main/resources/json/message_accepter";
     private static final String DIRECTORY_TROC_REFUSES = "src/main/resources/json/message_refuses";
 
     @Autowired
@@ -51,10 +49,9 @@ public class JsonFileWatcherService {
     @Autowired
     private MessageAutorRepository autorisationRepository;
 
-    @PostConstruct
+    @PostConstruct  
     public void init() {
         checkForJsonFiles();
-        //refuserTroc("troc_g1.1_g1.6_20241023_1658.json");
     }
 
     public void checkForJsonFiles() {
@@ -108,54 +105,8 @@ public class JsonFileWatcherService {
                 }
             }
         }
-    }
+    }    
     
-    private void addTrocBDD(JSONObject json) {
-        try {
-            String idTroqueur = json.getString("idTroqueur");
-            String idFichier = json.getString("idFichier");
-            String dateFichier = json.getString("dateFichier");
-            String idDestinataire = json.getString("idDestinataire");
-
-            JSONArray messagesArray = json.getJSONArray("messages");
-
-            for (int i = 0; i < messagesArray.length(); i++) {
-                JSONObject messageJson = messagesArray.getJSONObject(i);
-
-                MessageTroc messageTroc = new MessageTroc();
-                messageTroc.setIdTroqueur(idTroqueur);
-                messageTroc.setIdDestinataire(idDestinataire);
-                messageTroc.setIdFichier(idFichier);
-                messageTroc.setDateFichier(dateFichier);
-                messageTroc.setDateMessage(messageJson.getString("dateMessage"));
-                messageTroc.setStatut(messageJson.getString("statut"));
-
-                JSONArray objetsArray = messageJson.getJSONArray("listeObjet");
-                List<MessageTroc.ObjetTroc> objetsTroc = new ArrayList<>();
-
-                for (int j = 0; j < objetsArray.length(); j++) {
-                    JSONObject objetJson = objetsArray.getJSONObject(j);
-                    MessageTroc.ObjetTroc objetTroc = new MessageTroc.ObjetTroc();
-
-                    objetTroc.setTitre(objetJson.getString("titre"));
-                    objetTroc.setDescription(objetJson.getString("description"));
-                    objetTroc.setQualite(objetJson.getInt("qualite"));
-                    objetTroc.setQuantite(objetJson.getInt("quantite"));
-                    objetsTroc.add(objetTroc);
-                }
-                messageTroc.setObjets(objetsTroc);
-                messageTroc.setBrouillon(false);
-                messageTroc.setEnvoyer(false);
-                trocRepository.save(messageTroc);
-
-                System.out.println("\nMessage Troc ajouté à la base de données : " + messageTroc.getId() + "\n");
-            }
-
-        } catch (JSONException e) {
-            System.err.println("Erreur lors du traitement du fichier JSON : " + e.getMessage());
-        }
-    }
-    /*
     private void addTrocBDD(JSONObject json) {
         try {
             String idTroqueur = json.getString("idTroqueur");
@@ -171,18 +122,31 @@ public class JsonFileWatcherService {
                 String dateMessage = messageJson.getString("dateMessage");
                 String statut = messageJson.getString("statut");
     
-                // Vérification de l'existence dans la base de données
-                Optional<MessageTroc> existingMessageTroc = trocRepository
-                    .findByIdTroqueurAndIdDestinataireAndIdFichierAndDateMessage(
-                        idTroqueur, idDestinataire, idFichier, dateMessage);
-    
-                if (existingMessageTroc.isPresent()) {
-                    System.out.println("\nMessage Troc déjà présent dans la base de données : " 
-                                       + existingMessageTroc.get().getId());
-                    continue; // Passer à l'itération suivante pour éviter la duplication
+                // Construire la liste des descriptions d'objets à partir du message JSON
+                JSONArray objetsArray = messageJson.getJSONArray("listeObjet");
+                List<String> objetsDescriptions = new ArrayList<>();
+                for (int j = 0; j < objetsArray.length(); j++) {
+                    objetsDescriptions.add(objetsArray.getJSONObject(j).getString("description"));
                 }
     
-                // Création d'un nouvel enregistrement si aucune correspondance n'est trouvée
+                // Vérifier si un message similaire existe déjà
+                List<MessageTroc> existingMessages = trocRepository.findByCriteriaWithObjects(
+                    idTroqueur, idDestinataire, idFichier, dateMessage, statut
+                );
+    
+                boolean alreadyExists = existingMessages.stream().anyMatch(existingMessage -> {
+                    List<String> existingDescriptions = existingMessage.getObjets().stream()
+                        .map(MessageTroc.ObjetTroc::getDescription)
+                        .collect(Collectors.toList());
+                    return existingDescriptions.containsAll(objetsDescriptions) && objetsDescriptions.containsAll(existingDescriptions);
+                });
+    
+                if (alreadyExists) {
+                    System.out.println("\nMessage Troc déjà présent dans la base de données.\n");
+                    continue; // Passer au message suivant
+                }
+    
+                // Si le message n'existe pas, on le sauvegarde
                 MessageTroc messageTroc = new MessageTroc();
                 messageTroc.setIdTroqueur(idTroqueur);
                 messageTroc.setIdDestinataire(idDestinataire);
@@ -191,13 +155,11 @@ public class JsonFileWatcherService {
                 messageTroc.setDateMessage(dateMessage);
                 messageTroc.setStatut(statut);
     
-                JSONArray objetsArray = messageJson.getJSONArray("listeObjet");
+                // Ajouter les objets au message
                 List<MessageTroc.ObjetTroc> objetsTroc = new ArrayList<>();
-    
                 for (int j = 0; j < objetsArray.length(); j++) {
                     JSONObject objetJson = objetsArray.getJSONObject(j);
                     MessageTroc.ObjetTroc objetTroc = new MessageTroc.ObjetTroc();
-    
                     objetTroc.setTitre(objetJson.getString("titre"));
                     objetTroc.setDescription(objetJson.getString("description"));
                     objetTroc.setQualite(objetJson.getInt("qualite"));
@@ -208,17 +170,17 @@ public class JsonFileWatcherService {
                 messageTroc.setBrouillon(false);
                 messageTroc.setEnvoyer(false);
     
-                // Enregistrement dans la base de données
                 trocRepository.save(messageTroc);
-    
                 System.out.println("\nMessage Troc ajouté à la base de données : " + messageTroc.getId() + "\n");
             }
     
         } catch (JSONException e) {
             System.err.println("Erreur lors du traitement du fichier JSON : " + e.getMessage());
         }
-    }*/ 
-       
+    }
+    
+
+    
     private void addAutorBDD(JSONObject json) {
 
         String idTroqueur = json.getString("idTroqueur");
@@ -366,55 +328,98 @@ public class JsonFileWatcherService {
             System.err.println("Erreur lors de la modification ou du déplacement du fichier JSON : " + e.getMessage());
         }
     }
-    
-    public boolean refuserTroc(String idTroqueur, String idDestinataire, String dateMessage) {
+
+    public boolean refuserTroc(String idTroqueur, String idDestinataire, String dateMessage, String description) {
         // 1. Convertir la date de jj-mm-aaaa à aaaaMMjj
         String dateFormatee = convertirDate(dateMessage);
         if (dateFormatee == null) {
             System.err.println("Format de date incorrect : " + dateMessage);
             return false;
         }
-
+    
         // 2. Construire le préfixe pour la recherche de fichier
         String prefix = "troc_" + idTroqueur + "_" + idDestinataire + "_" + dateFormatee;
         System.out.println("prefix : " + prefix);
-
+    
         // 3. Rechercher le fichier JSON correspondant
         File fichierSource = rechercherFichierJson(prefix);
         if (fichierSource == null) {
             System.err.println("Aucun fichier ne correspond au préfixe : " + prefix);
             return false;
         }
-
+    
         try {
             // 4. Lire et parser le contenu JSON
             JSONObject json = lireFichierJson(fichierSource);
-
-            // 5. Mettre à jour le statut du JSON
-            JSONObject jsonModifie = mettreAJourStatut(json);
-
-            // 6. Formater et afficher le JSON mis à jour
-            String jsonFormate = formaterJson(jsonModifie);
-
-            // Afficher le JSON reconstruit
-            System.out.println("\n\n\nJsonModifie : \n");
-            System.out.println(jsonFormate);
-            System.out.println("\n\n\n");
-
-            // 7. Sauvegarder les modifications dans le fichier original
-            sauvegarderJson(fichierSource, jsonFormate);
-
-            // 8. Déplacer le fichier vers le répertoire des messages refusés
-            moveFileToDirectory(fichierSource, DIRECTORY_TROC_REFUSES);
-
-            System.out.println("Fichier déplacé vers les refusés : " + fichierSource.getName());
+    
+            // Vérifier si le fichier contient des messages
+            JSONArray messagesArray = json.getJSONArray("messages");
+            if (messagesArray.length() == 0) {
+                System.err.println("Le fichier ne contient aucun message.");
+                return false;
+            }
+    
+            // 5. Identifier et mettre à jour le message à refuser
+            int messageIndex = -1;
+            for (int i = 0; i < messagesArray.length(); i++) {
+                JSONObject message = messagesArray.getJSONObject(i);
+    
+                // Vérifier la date et la description du premier objet
+                if (message.getString("dateMessage").equals(dateMessage)) {
+                    JSONArray listeObjet = message.getJSONArray("listeObjet");
+                    if (listeObjet.length() > 0) {
+                        JSONObject premierObjet = listeObjet.getJSONObject(0);
+                        if (premierObjet.getString("description").equals(description)) {
+                            messageIndex = i;
+                            message.put("statut", "refuse");
+                            break;
+                        }
+                    }
+                }
+            }
+    
+            if (messageIndex == -1) {
+                System.err.println("Message avec date " + dateMessage + " et description \"" + description + "\" introuvable.");
+                return false;
+            }
+    
+            if (messagesArray.length() == 1) {
+                // 6a. Si le fichier contient un seul message, déplacer le fichier entier
+                sauvegarderJson(fichierSource, json.toString(4));
+                moveFileToDirectory(fichierSource, DIRECTORY_TROC_REFUSES);
+                System.out.println("Fichier déplacé vers les refusés : " + fichierSource.getName());
+            } else {
+                // 6b. Si le fichier contient plusieurs messages, créer un nouveau fichier pour le message refusé
+                JSONObject messageRefuse = messagesArray.getJSONObject(messageIndex);
+    
+                // Supprimer le message refusé du fichier d'origine
+                messagesArray.remove(messageIndex);
+                sauvegarderJson(fichierSource, json.toString(4));
+    
+                // Créer un nouveau fichier pour le message refusé
+                JSONObject jsonMessageRefuse = new JSONObject();
+                jsonMessageRefuse.put("idTroqueur", json.getString("idTroqueur"));
+                jsonMessageRefuse.put("idDestinataire", json.getString("idDestinataire"));
+                jsonMessageRefuse.put("idFichier", json.getString("idFichier"));
+                jsonMessageRefuse.put("dateFichier", json.getString("dateFichier"));
+                jsonMessageRefuse.put("messages", new JSONArray().put(messageRefuse));
+    
+                String nouveauNomFichier = fichierSource.getName().replace(".json", "_" + messageIndex + ".json");
+                File nouveauFichier = new File(DIRECTORY_TROC_REFUSES, nouveauNomFichier);
+                sauvegarderJson(nouveauFichier, jsonMessageRefuse.toString(4));
+    
+                System.out.println("Message refusé sauvegardé dans un nouveau fichier : " + nouveauFichier.getName());
+            }
+    
             return true;
-
+    
         } catch (IOException | JSONException e) {
             System.err.println("Erreur lors du traitement du fichier JSON : " + e.getMessage());
             return false;
         }
     }
+    
+    
 
     // 1. Convertir la date de jj-mm-aaaa à aaaaMMjj
     private String convertirDate(String dateMessage) {
@@ -509,22 +514,7 @@ public class JsonFileWatcherService {
         try (FileWriter fileWriter = new FileWriter(fichier)) {
             fileWriter.write(contenuJson); // Sauvegarder avec l'ordre respecté
         }
-    }
-    /*
-    // 8. Déplacer le fichier vers un autre répertoire
-    private void moveFileToDirectory(File file, String targetDirectory) throws IOException {
-        File targetDir = new File(targetDirectory);
-        if (!targetDir.exists()) {
-            targetDir.mkdirs();
-        }
-        Files.move(file.toPath(), new File(targetDir, file.getName()).toPath(), StandardCopyOption.REPLACE_EXISTING);
-    }*/  
-
-    
-    
-    
-    
-                
+    }              
     
     
     

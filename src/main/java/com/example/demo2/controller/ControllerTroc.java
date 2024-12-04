@@ -17,7 +17,7 @@ import com.example.demo2.service.ContactService;
 @Controller
 public class ControllerTroc {
 
-    @Autowired
+    @Autowired 
     private ContactService contactService;
 
     @Autowired

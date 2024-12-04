@@ -136,6 +136,7 @@
 
       .accepter:hover, .refuser:hover {
         background-color: #c1cfdd;
+        cursor: pointer;
       }
       
 
@@ -214,6 +215,7 @@
                 th:data-idTroqueur="${message.idTroqueur}"
                 th:data-idDestinataire="${message.idDestinataire}"
                 th:data-dateMessage="${message.dateMessage}"
+                th:data-descriptionObj="${message.objets[0].description}"
                 onclick="refuserTroc(this)">Refuser
               </button>
             </td>
@@ -332,7 +334,9 @@
         const idDestinataire = buttonElement.getAttribute('data-idDestinataire');
         const dateMessage = buttonElement.getAttribute('data-dateMessage');
         const msgId = buttonElement.getAttribute('data-msgId');
-        console.log("here  : " + idTroqueur +"__"+ idDestinataire +"__"+ dateMessage +"__"+ msgId)
+        const descriptionObj = buttonElement.getAttribute('data-descriptionObj');
+        descriptionObj
+        console.log("here  : " + idTroqueur +"__"+ idDestinataire +"__"+ dateMessage +"__"+ msgId+"__"+descriptionObj)
         fetch('/api/refuser-troc', {
             method: 'POST',
             headers: {
@@ -343,6 +347,7 @@
                 idDestinataire: idDestinataire,
                 dateMessage: dateMessage,
                 msgId : msgId,
+                descriptionObj : descriptionObj,
                 type : "troc"
             })
         })

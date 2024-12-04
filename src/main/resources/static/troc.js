@@ -396,7 +396,7 @@ function sendSingleMessageResp(messageId) {
                 const messageData = {
                     idTroqueur: data.message.idDestinataire,
                     idDestinataire: data.message.idTroqueur,
-                    idFichier: "g1.1",  // Autres informations nécessaires
+                    idFichier: data.message.idTroqueur,  // pareil que idDestinataire
                     dateFichier: data.message.dateFichier,
                     checksum: generateChecksum(data.message),
                     messages: []
