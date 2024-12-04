@@ -17,7 +17,7 @@ import com.example.demo2.service.ContactService;
 @Controller
 public class ControllerTroc {
 
-    @Autowired
+    @Autowired 
     private ContactService contactService;
 
     @Autowired
@@ -63,11 +63,16 @@ public class ControllerTroc {
             } else {
                 model.addAttribute("error", "Message de troc non trouvé");
             }
+            List<Contact> contacts = contactService.getAllMessages();
+            model.addAttribute("contacts", contacts);
             return "/edit";
-        } else if (idDestinataire != null) {
-            model.addAttribute("idDestinataire", idDestinataire);
-            return "/demande_troc";
         } else {
+            List<Contact> contacts = contactService.getAllMessages();
+            model.addAttribute("contacts", contacts);
+
+            if (idDestinataire != null) {
+                model.addAttribute("idDestinataire", idDestinataire);
+            }
             return "/demande_troc";
         }
     }

@@ -34,7 +34,7 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20240303</version> 
+			<version>20240303</version>
 		</dependency>
 
 		<dependency>
@@ -63,7 +63,7 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -83,7 +83,42 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<!-- Plugin pour la gestion des dépendances -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.2</version>
+			</plugin>
 		</plugins>
-		
 	</build>
+	
+	<profiles>
+		<profile>
+			<id>uml-generation</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.plantuml</groupId>
+						<artifactId>maven-plantuml-plugin</artifactId>
+						<version>1.2</version>
+						<configuration>
+							<configFile>${project.basedir}/src/main/resources/plantuml.cfg</configFile>
+							<outputDirectory>${project.build.directory}/plantuml</outputDirectory> <!-- Répertoire de sortie -->
+						</configuration>
+						<executions>
+							<execution>
+								<phase>compile</phase> <!-- Changer la phase à generate-sources -->
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>

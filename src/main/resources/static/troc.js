@@ -78,8 +78,9 @@ function removeMessage(button) {
 
 
 /****************************** Génération checksum et formatage date ******************************/
-function generateChecksum(data) {
-    return "3";
+function generateChecksum(messages) {
+    // Renvoie le nombre de messages dans le tableau
+    return messages.length.toString();
 }
 
 function formatDate(date) {
@@ -102,7 +103,6 @@ function sendMessage(event) {
         idDestinataire: formData.get('idDestinataire'),
         idFichier: "g1.1",
         dateFichier: formatDate(new Date()),
-        checksum: generateChecksum(formData),
         messages: []
     };
 
@@ -138,9 +138,12 @@ function sendMessage(event) {
             listeObjet: listeObjet
         });
     }
+    data.checksum = generateChecksum(data.messages);
     console.log(JSON.stringify(data, null, 2));
     const jsonString = JSON.stringify(data, null, 2);
     saveJsonToFile(jsonString);
+
+    window.location.href = "/message-troc";
 }
 
 //Autorisation
@@ -181,10 +184,10 @@ function handleSubmitA(event) {
 
 
 /****************************** Enregistrement json dans dossier ******************************/
-//Troc
-function saveJsonToFile(jsonString, idMessage) {
+//Reponse
+function saveJsonToFileRep(jsonString, idMessage) {
     const params = idMessage && idMessage.length > 0 ? `${idMessage.join(",")}` : '';
-    const url = idMessage ? `/api/save-troc?idMessage=${idMessage}` : '/api/save-troc';
+    const url = idMessage ? `/api/save-resp?idMessage=${idMessage}` : '/api/save-resp';
 
     console.log(url);
     
@@ -200,6 +203,37 @@ function saveJsonToFile(jsonString, idMessage) {
             if (data.success) {
                 alert('Fichier JSON enregistré avec succès.');
                 window.location.href = data.redirect;
+            } else {
+                alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors de la tentative d\'enregistrement du fichier.');
+        });
+}
+
+//Troc
+function saveJsonToFile(jsonString, idMessage) {
+    const idMessagesArray = Array.isArray(idMessage) ? idMessage : (idMessage ? [idMessage] : []);
+    console.log(Array.isArray(idMessage));
+    console.log(idMessage);
+    const params = idMessagesArray.length > 0 ? `?idMessage=${idMessagesArray.join(",")}` : '';
+    const url = `/api/save-troc${params}`;
+
+    console.log(url);
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: jsonString
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Fichier envoyé avec succès.');
             } else {
                 alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
             }
@@ -247,7 +281,6 @@ function saveMessage(event) {
         idDestinataire: formData.get('idDestinataire'),
         idFichier: "g1.1",
         dateFichier: formatDate(new Date()),
-        checksum: generateChecksum(formData),
         messages: []
     };
 
@@ -308,8 +341,11 @@ function saveMessage(event) {
 
 function checkAll() {
     const checkboxes = document.querySelectorAll('.selectMessage');
+    const selectAllCheckbox = document.getElementById('selectAll');
+
+    // Si "selectAll" est coché, coche toutes les cases, sinon décoche-les
     checkboxes.forEach(checkbox => {
-        checkbox.checked = checkbox.checked ? false : true;
+        checkbox.checked = selectAllCheckbox.checked;
     });
 }
 
@@ -320,16 +356,29 @@ function getSelectedMessageIds() {
 }
 
 
-document.getElementById('deleteSelectedButton').addEventListener('click', function (event) {
-    const selectedMessageIds = getSelectedMessageIds();
-
-    if (selectedMessageIds.length > 0) {
-        document.getElementById('selectedMessages').value = selectedMessageIds.join(',');
-    } else {
-        event.preventDefault();
-        alert("Aucun message sélectionné");
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteButton = document.getElementById('deleteSelectedButton');
+    if (deleteButton) {
+        deleteButton.addEventListener('click', function (event) {
+            const selectedMessageIds = getSelectedMessageIds();
+            if (selectedMessageIds.length > 0) {
+                document.getElementById('selectedMessages').value = selectedMessageIds.join(',');
+            } else {
+                event.preventDefault();
+                alert("Aucun message sélectionné");
+            }
+        });
     }
 });
+
+function majSendResp(messageId, dateF) { // add idFichier
+    updateMessage(messageId, dateF, true).then(() => {
+        sendSingleMessageResp(messageId);
+    }).catch((error) => {
+        console.error('Erreur lors de la mise à jour :', error);
+        alert('Impossible de mettre à jour le message avant l\'envoi.');
+    });
+}
 
 function majSend(messageId, dateF) {
     updateMessage(messageId, dateF, true).then(() => {
@@ -338,6 +387,76 @@ function majSend(messageId, dateF) {
         console.error('Erreur lors de la mise à jour :', error);
         alert('Impossible de mettre à jour le message avant l\'envoi.');
     });
+}
+
+
+function sendSingleMessageResp(messageId) {
+    console.log("Début de sendSingleMessage");
+    fetch(`/api/get-message-info/${messageId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                console.log("On rentre dans l'envoi");
+                // Préparer les données du message
+                const messageData = {
+                    idTroqueur: data.message.idDestinataire,
+                    idDestinataire: data.message.idTroqueur,
+                    idFichier: data.message.idTroqueur,  // pareil que idDestinataire
+                    dateFichier: data.message.dateFichier,
+                    checksum: generateChecksum(data.message),
+                    messages: []
+                };
+
+                var idDest = data.message.idDestinataire;
+                var bool = true;
+                if (!idDest || idDest.trim() === '') {
+                    alert("Le message n'a pas de destinataire valide");
+                    bool = false;
+                }
+
+                // Récupérer tous les objets du message et les ajouter à la liste
+                const listeObjet = [];
+                data.message.objets.forEach(objet => {
+                    const titre = objet.titre ? objet.titre.trim() : '';
+                    const qualite = objet.qualite ? objet.qualite : '';
+                    const quantite = objet.quantite ? objet.quantite : '';
+
+                    if (titre === '' || qualite === '' || qualite == 0 || quantite === '' || quantite == 0) {
+                        alert("Il manque un des champs suivant à l'objet : Titre, Qualité ou Quantité");
+                        bool = false;
+                    }
+
+                    listeObjet.push({
+                        titre: titre,
+                        description: objet.description,
+                        qualite: parseInt(qualite),
+                        quantite: parseInt(quantite)
+                    });
+                });
+
+                // Ajouter le message avec la liste des objets dans le tableau de messages
+                messageData.messages.push({
+                    dateMessage: data.message.dateMessage,
+                    statut: "accepte",
+                    listeObjet: listeObjet
+                });
+
+                // Appeler saveJsonToFile avec les données JSON du message
+                if (bool == true) {
+                    const jsonString = JSON.stringify(messageData, null, 2);
+                    saveJsonToFileRep(jsonString, messageId);                    
+                }
+                else {
+                    return;
+                }
+            } else {
+                alert('Erreur lors de la récupération du message.');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue.');
+        });
 }
 
 
@@ -354,7 +473,7 @@ function sendSingleMessage(messageId) {
                     idDestinataire: data.message.idDestinataire,
                     idFichier: "g1.1",  // Autres informations nécessaires
                     dateFichier: data.message.dateFichier,
-                    checksum: generateChecksum(data.message),
+                    checksum: "1",
                     messages: []
                 };
 
@@ -394,8 +513,10 @@ function sendSingleMessage(messageId) {
 
                 // Appeler saveJsonToFile avec les données JSON du message
                 if (bool == true) {
+                    console.log("Le message est correct", messageId)
                     const jsonString = JSON.stringify(messageData, null, 2);
                     saveJsonToFile(jsonString, messageId);
+                    
                 }
                 else {
                     return;
@@ -408,6 +529,7 @@ function sendSingleMessage(messageId) {
             console.error('Erreur:', error);
             alert('Une erreur est survenue.');
         });
+    window.location.href = "/message-troc";
 }
 
 
@@ -501,8 +623,14 @@ async function sendSelectedMessages() {
         });
 
         const jsonString = JSON.stringify(messageData, null, 2);
+        console.log(jsonString);
         saveJsonToFile(jsonString, messageIds);
     }
+    if (idMessagesFalse.length > 0) {
+        alert(`Les messages suivants sont incomplets et n'ont pas été envoyés : ${idMessagesFalse.join(", ")}`);
+    }
+
+    window.location.href = "/message-troc";
 }
 
 
@@ -516,7 +644,6 @@ function updateMessage(idMessage, dateF, envoi) {
         idDestinataire: formData.get('idDestinataire'),
         idFichier: "g1.1",
         dateFichier: dateF,
-        checksum: generateChecksum(formData),
         messages: []
     };
 
@@ -582,4 +709,61 @@ function updateMessage(idMessage, dateF, envoi) {
                 alert("Erreur lors de la mise à jour du message.");
             });
     });
+}
+
+
+//Brouillons complets/incomplets
+document.addEventListener('DOMContentLoaded', function () {
+    const selectedMessages = [...document.querySelectorAll('.brouillon-row')].map(row => {
+        const messageId = row.getAttribute('data-message-id');
+        return messageId;
+    });
+    checkMessages(selectedMessages);
+});
+
+async function checkMessages(selectedMessages) {
+    const messagesInfo = [];
+    for (const messageId of selectedMessages) {
+        try {
+            const response = await fetch(`/api/get-message-info/${messageId}`);
+            if (!response.ok) {
+                throw new Error("Erreur lors de la récupération du message.");
+            }
+            const data = await response.json();
+            if (data.success) {
+                messagesInfo.push(data.message);
+            } else {
+                console.error("Erreur:", data.message);
+            }
+        } catch (error) {
+            console.error("Erreur:", error.message);
+        }
+    }
+
+    for (const message of messagesInfo) {
+        let isComplete = true;
+
+        if (!message.idDestinataire || message.idDestinataire == '') {
+            isComplete = false;
+        }
+
+        for (const objet of message.objets) {
+            if (!objet.titre || objet.titre == '' ||
+                !objet.qualite || objet.qualite == 0 ||
+                !objet.quantite || objet.quantite == 0) {
+                isComplete = false;
+            }
+        }
+
+        const messageRow = document.querySelector(`tr[data-message-id='${message.id}']`);
+        if (messageRow) {
+            if (isComplete) {
+                messageRow.classList.add('message-complete');
+                messageRow.classList.remove('message-incomplete');
+            } else {
+                messageRow.classList.add('message-incomplete');
+                messageRow.classList.remove('message-complete');
+            }
+        }
+    }
 }

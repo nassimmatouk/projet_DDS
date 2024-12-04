@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Envoi Troc</title>
+    <title>Reponse Troc</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -40,11 +40,18 @@
         margin: auto;
       }
 
+      h2, h3 {
+        color: #007bff;
+      }
+
       h2 {
+        text-align: center;
+      }
+
+      h3 {
         border-bottom: 2px solid #007bff;
         padding-bottom: 5px;
         margin-bottom: 15px;
-        color: #007bff;
       }
 
       label {
@@ -74,7 +81,7 @@
         background-color: #0056b3;
       }
 
-      .message {
+      .message, .messageRep {
         background-color: #f9f9f9;
         padding: 15px;
         border-radius: 8px;
@@ -82,12 +89,12 @@
         border: 1px solid #ddd;
       }
 
-      .objetsContainer {
+      .objetsContainer, .objetsContainer {
         margin-top: 10px;
         margin-bottom: 20px;
       }
 
-      .listeObjet {
+      .listeObjet, .listeObjetRep {
         padding: 10px;
         background-color: #e9ecef;
         border-radius: 5px;
@@ -115,19 +122,6 @@
           width: 100%;
         }
       }
-      select {
-        width: calc(100% - 22px);
-        padding: 8px;
-        margin-bottom: 15px;
-        border-radius: 4px;
-        border: 1px solid #ccc;
-        background-color: #fff;
-      }
-
-      select:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-      }
     </style>
   </head>
 
@@ -137,58 +131,81 @@
       <a href="/autorisation">Contacts</a>
     </header>
 
-    <h1>Formulaire message troc</h1>
-    <form
-      id="jsonForm"
-      th:onsubmit="event.preventDefault(); majSend([[${message.id}]], [[${message.dateFichier}]]);"
-    >
-      <h2>En-tête</h2>
+    <h1>Formulaire de reponse troc</h1>
+    <form id="jsonForm" th:onsubmit="event.preventDefault(); majSend([[${message.id}]], [[${message.dateFichier}]]);">
+      <h2>Proposition reçu</h2>
+      <h3>En-tête</h3>
       <label for="idDestinataire">ID Destinataire (gX.X):</label>
-      <select id="idDestinataire" name="idDestinataire" required>
-        <option value="">Sélectionner un destinataire</option></select
-      ><br /><br />
+      <input
+        type="text" id="idDestinataire" name="idDestinataire" pattern="^g\d\.\d+$" required readonly
+        th:value="${message.idDestinataire != null ? message.idDestinataire : ''}"
+      /><br />
 
-      <h2>Messages</h2>
-      <div id="messagesContainer">
-        <div class="message">
-          <h3>Liste des objets</h3>
-          <div class="objetsContainer">
-            <div class="listeObjet" th:each="objet : ${message.objets}">
+      <h3>Messages</h3>
+      <div id="messagesContainerRep">
+        <div class="messageRep">
+          <h4>Liste des objets</h4>
+          <div class="objetsContainerRep">
+            <div class="listeObjetRep" th:each="objet : ${message.objets}">
               <label><strong>Objet</strong></label
               ><br />
 
               <label for="titre">Titre de l'objet:</label>
-              <input
-                type="text"
-                name="titre"
-                required
+              <input type="text" name="titre" required readonly
                 th:value="${objet.titre != null ? objet.titre : ''}"
               /><br /><br />
 
               <label for="description">Description de l'objet:</label>
-              <input
-                type="text"
-                name="description"
+              <input type="text" name="description" readonly
                 th:value="${objet.description != null ? objet.description : ''}"
               /><br /><br />
 
               <label for="qualite">Qualité (1-5):</label>
-              <input
-                type="number"
-                name="qualite"
-                min="1"
-                max="5"
-                required
+              <input type="number" name="qualite" min="1" max="5" required readonly
                 th:value="${objet.qualite != null ? objet.qualite : ''}"
               /><br /><br />
 
               <label for="quantite">Quantité:</label>
-              <input
-                type="number"
-                name="quantite"
-                min="1"
-                required
+              <input type="number" name="quantite" min="1" required readonly
                 th:value="${objet.quantite != null ? objet.quantite : ''}"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <br><hr><br>
+      
+      <h2>Renseigné votre reponse</h2>
+      <h3>En-tête</h3>
+      <label for="idTroqueur">ID Troqueur (gX.X):</label>
+      <input
+        type="text" id="idTroqueur" name="idTroqueur" pattern="^g\d\.\d+$" required readonly
+        th:value="${message.idTroqueur != null ? message.idTroqueur : ''}"
+      /><br />
+
+      <h3>Messages</h3>
+      <div id="messagesContainer">
+        <div class="message">
+          <h4>Liste des objets</h4>
+          <div class="objetsContainer">
+            <div class="listeObjet">
+              <label><strong>Objet</strong></label
+              ><br />
+
+              <label for="titre">Titre de l'objet:</label>
+              <input type="text" name="titre" required 
+              /><br /><br />
+
+              <label for="description">Description de l'objet:</label>
+              <input type="text" name="description" 
+              /><br /><br />
+
+              <label for="qualite">Qualité (1-5):</label>
+              <input type="number" name="qualite" min="1" max="5" required 
+              /><br /><br />
+
+              <label for="quantite">Quantité:</label>
+              <input type="number" name="quantite" min="1" required 
               /><br /><br />
 
               <button type="button" onclick="removeObjet(this)">
@@ -202,38 +219,14 @@
         </div>
       </div>
 
+
       <br /><br />
       <button type="submit">Envoyer message</button>
-      <button
-        type="button"
-        th:onclick="updateMessage([[${message.id}]], [[${message.dateFichier}]], false)"
-      >
+      <!--
+      <button type="button" th:onclick="updateMessage([[${message.id}]], [[${message.dateFichier}]], false)">
         Enregistrer message
-      </button>
+      </button>-->
     </form>
     <script src="troc.js"></script>
-    <script th:inline="javascript">
-      document.addEventListener("DOMContentLoaded", function () {
-        const contacts = [[${contacts}]];
-        const preselectedDestinataire = [[${message != null ? message.idDestinataire : idDestinataire}]];
-
-        const select = document.getElementById("idDestinataire");
-
-        contacts.forEach((contact) => {
-          console.log(contact);
-          const option = document.createElement("option");
-          option.value = contact.idTroqueur;
-          option.textContent = contact.nomAuteur
-            ? contact.nomAuteur
-            : contact.idTroqueur;
-
-          if (preselectedDestinataire && preselectedDestinataire === contact.idTroqueur) {
-            option.selected = true; // Marquer l'option comme sélectionnée
-          }
-
-          select.appendChild(option);
-        });
-      });
-    </script>
   </body>
 </html>

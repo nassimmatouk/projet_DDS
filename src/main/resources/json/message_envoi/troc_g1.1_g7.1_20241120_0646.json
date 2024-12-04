@@ -1,0 +1,21 @@
+{
+  "idTroqueur": "g1.1",
+  "idDestinataire": "g7.1",
+  "idFichier": "g1.1",
+  "dateFichier": "20-11-2024",
+  "checksum": "3",
+  "messages": [
+    {
+      "dateMessage": "20-11-2024",
+      "statut": "propose",
+      "listeObjet": [
+        {
+          "titre": "Imprimente",
+          "description": "Imprimente hp coleur",
+          "qualite": 3,
+          "quantite": 1
+        }
+      ]
+    }
+  ]
+}

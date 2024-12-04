@@ -97,12 +97,11 @@ public class JsonController {
                         message.setEnvoyer(true);
                         message.setStatut("propose");
                         messageTrocRepository.save(message);
-                    } catch (Exception e) {
+                    } catch (Exception e) {   
                         System.err.println(e);
                     }
                 }
             } else {
-                System.out.println("avant de rentrer dans la boucle");
                 int i = 1;
                 int j = 1;
                 for (JsonNode messageNode : rootNode.get("messages")) {
@@ -136,11 +135,10 @@ public class JsonController {
                 }
             }
 
-            String redirectUrl = "/message-troc";
-            return new ResponseEntity<>("{\"success\": true, \"redirect\": \"" + redirectUrl + "\"}", HttpStatus.OK);
-        } catch (
-
-        IOException e) {
+            // String redirectUrl = "/message-troc";
+            return new ResponseEntity<>("{\"success\": true}", HttpStatus.OK);
+        } catch (IOException e) {
+            System.out.println("Ca retourne une erreur");
             return new ResponseEntity<>("{\"success\": false, \"message\": \"Erreur lors de l'enregistrement.\"}",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -385,4 +383,118 @@ public class JsonController {
                     .body(Map.of("success", false, "message", e.getMessage()));
         }
     }
+
+    
+    @PostMapping("refuser-troc")
+    public ResponseEntity<?> refuserTroc(@RequestBody Map<String, String> requestData) { 
+        try {
+            // Récupérer les informations du JSON envoyé par le script
+            String idTroqueur = requestData.get("idTroqueur");
+            String idDestinataire = requestData.get("idDestinataire");
+            String dateMessage = requestData.get("dateMessage");
+            String description = requestData.get("descriptionObj"); // Récupérer la description du message
+            String msgId = requestData.get("msgId");
+
+            // Utiliser la méthode refuserTroc pour déplacer le fichier
+            boolean fichierDeplace = jsonFileWatcherService.refuserTroc(idTroqueur, idDestinataire, dateMessage, description);
+            
+            // Si le fichier a été déplacé avec succès, supprimer le message de la base de données
+            if (fichierDeplace) { 
+                System.out.println("hereDep  : " + idTroqueur +"__"+ idDestinataire +"__"+ dateMessage +"__"+ msgId);
+                boolean messageSupprime = messageTrocService.supprimerMessageParId(msgId);                  
+                if (messageSupprime) {
+                    return ResponseEntity.ok(Map.of("success", true, "message", "Troc refusé et mis à jour."));
+                } else {
+                    return ResponseEntity.ok(Map.of("success", false, "message", "Erreur lors de la suppression du message en base de données."));
+                }
+            } else {  
+                return ResponseEntity.ok(Map.of("success", false, "message", "Erreur lors du déplacement du fichier."));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("success", false, "message", "Erreur interne : " + e.getMessage()));
+        }
+    }
+
+    
+    @PostMapping("/save-resp")
+    public ResponseEntity<String> saveResp(@RequestBody String jsonData,
+            @RequestParam(value = "idMessage", required = false) List<Long> idMessages) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(jsonData);
+            String idDestinataire = rootNode.get("idDestinataire").asText();
+
+            File jsonDir = new File("src/main/resources/json/messages_reponses");
+
+            if (!jsonDir.exists()) {
+                jsonDir.mkdir();
+            } 
+
+            String fileName = generateFileName("rep", "g1.1", idDestinataire);
+
+            File jsonFile = new File(jsonDir, fileName);
+
+            try (FileWriter fileWriter = new FileWriter(jsonFile)) {
+                fileWriter.write(jsonData);
+            }
+
+            if (idMessages != null && !idMessages.isEmpty()) { System.out.println("\n\nINidm...\n\n");
+                for (Long idMessage : idMessages) {
+                    try {
+                        MessageTroc message = messageTrocRepository.findById(idMessage)
+                                .orElseThrow(() -> new Exception("Message non trouvé"));
+                        message.setBrouillon(false);
+                        message.setEnvoyer(true);
+                        message.setStatut("accepte");
+                        messageTrocRepository.save(message);
+                    } catch (Exception e) {   
+                        System.err.println(e);
+                    }
+                }
+            } else {
+                System.out.println("avant de rentrer dans la boucle");
+                int i = 1;
+                int j = 1;
+                for (JsonNode messageNode : rootNode.get("messages")) {
+                    System.out.println("message : " + i);
+                    MessageTroc newMessage = new MessageTroc();
+                    newMessage.setIdDestinataire(idDestinataire);
+                    newMessage.setIdTroqueur("g1.1");
+                    newMessage.setIdFichier("g1.1");
+                    newMessage.setDateFichier(rootNode.get("dateFichier").asText());
+                    newMessage.setDateMessage(messageNode.get("dateMessage").asText());
+                    newMessage.setStatut("accepte");
+                    newMessage.setBrouillon(false);
+                    newMessage.setEnvoyer(true);
+
+                    // Remplir la liste des objets
+                    List<MessageTroc.ObjetTroc> objets = new ArrayList<>();
+                    for (JsonNode objetNode : messageNode.get("listeObjet")) {
+                        MessageTroc.ObjetTroc objet = new MessageTroc.ObjetTroc();
+                        objet.setTitre(objetNode.get("titre").asText());
+                        objet.setDescription(objetNode.get("description").asText());
+                        objet.setQualite(objetNode.get("qualite").asInt());
+                        objet.setQuantite(objetNode.get("quantite").asInt());
+                        objets.add(objet);
+                        System.out.println("objet : " + j);
+                        j++;
+                    }
+                    newMessage.setObjets(objets);
+
+                    messageTrocRepository.save(newMessage);
+                    i++;
+                }
+            }
+
+            String redirectUrl = "/message-troc";
+            return new ResponseEntity<>("{\"success\": true, \"redirect\": \"" + redirectUrl + "\"}", HttpStatus.OK);
+        } catch (
+
+        IOException e) {
+            return new ResponseEntity<>("{\"success\": false, \"message\": \"Erreur lors de l'enregistrement.\"}",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

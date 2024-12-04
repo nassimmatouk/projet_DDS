@@ -1,18 +1,18 @@
 {
   "idTroqueur": "g2.1",
   "idDestinataire": "g1.1",
-  "idFichier": "g2.1",
-  "dateFichier": "23-10-2024",
+  "idFichier": "g1.1",
+  "dateFichier": "20-11-2024",
   "checksum": "3",
   "messages": [
     {
-      "dateMessage": "23-10-2024",
+      "dateMessage": "20-11-2024",
       "statut": "propose",
       "listeObjet": [
         {
-          "titre": "clavier",
-          "description": "Clavier neuf, apple",
-          "qualite": 5,
+          "titre": "Guitare",
+          "description": "Guitare - taille normale - neuf",
+          "qualite": 4,
           "quantite": 1
         }
       ]

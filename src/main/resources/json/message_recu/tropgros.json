@@ -1,0 +1,530 @@
+{
+  "messages": [
+    {
+      "id": 1,
+      "idTroqueur": "user1",
+      "idDestinataire": "user2",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T10:00:00",
+      "objets": [
+        {
+          "titre": "Objet 1",
+          "description": "Description de l'objet 1",
+          "qualite": 5,
+          "quantite": 10
+        },
+        {
+          "titre": "Objet 2",
+          "description": "Description de l'objet 2",
+          "qualite": 4,
+          "quantite": 8
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "idTroqueur": "user3",
+      "idDestinataire": "user4",
+      "statut": "Envoyé",
+      "dateMessage": "2024-11-19T11:00:00",
+      "objets": [
+        {
+          "titre": "Objet A",
+          "description": "Description de l'objet A",
+          "qualite": 3,
+          "quantite": 15
+        },
+        {
+          "titre": "Objet B",
+          "description": "Description de l'objet B",
+          "qualite": 2,
+          "quantite": 5
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "idTroqueur": "user5",
+      "idDestinataire": "user6",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T12:00:00",
+      "objets": [
+        {
+          "titre": "Objet X",
+          "description": "Description de l'objet X",
+          "qualite": 5,
+          "quantite": 12
+        },
+        {
+          "titre": "Objet Y",
+          "description": "Description de l'objet Y",
+          "qualite": 4,
+          "quantite": 18
+        }
+      ]
+    }
+  ],
+
+  "messages2": [
+    {
+      "id": 1,
+      "idTroqueur": "user1",
+      "idDestinataire": "user2",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T10:00:00",
+      "objets": [
+        {
+          "titre": "Objet 1",
+          "description": "Description de l'objet 1",
+          "qualite": 5,
+          "quantite": 10
+        },
+        {
+          "titre": "Objet 2",
+          "description": "Description de l'objet 2",
+          "qualite": 4,
+          "quantite": 8
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "idTroqueur": "user3",
+      "idDestinataire": "user4",
+      "statut": "Envoyé",
+      "dateMessage": "2024-11-19T11:00:00",
+      "objets": [
+        {
+          "titre": "Objet A",
+          "description": "Description de l'objet A",
+          "qualite": 3,
+          "quantite": 15
+        },
+        {
+          "titre": "Objet B",
+          "description": "Description de l'objet B",
+          "qualite": 2,
+          "quantite": 5
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "idTroqueur": "user5",
+      "idDestinataire": "user6",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T12:00:00",
+      "objets": [
+        {
+          "titre": "Objet X",
+          "description": "Description de l'objet X",
+          "qualite": 5,
+          "quantite": 12
+        },
+        {
+          "titre": "Objet Y",
+          "description": "Description de l'objet Y",
+          "qualite": 4,
+          "quantite": 18
+        }
+      ]
+    }
+  ],
+
+  "messages3": [
+    {
+      "id": 1,
+      "idTroqueur": "user1",
+      "idDestinataire": "user2",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T10:00:00",
+      "objets": [
+        {
+          "titre": "Objet 1",
+          "description": "Description de l'objet 1",
+          "qualite": 5,
+          "quantite": 10
+        },
+        {
+          "titre": "Objet 2",
+          "description": "Description de l'objet 2",
+          "qualite": 4,
+          "quantite": 8
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "idTroqueur": "user3",
+      "idDestinataire": "user4",
+      "statut": "Envoyé",
+      "dateMessage": "2024-11-19T11:00:00",
+      "objets": [
+        {
+          "titre": "Objet A",
+          "description": "Description de l'objet A",
+          "qualite": 3,
+          "quantite": 15
+        },
+        {
+          "titre": "Objet B",
+          "description": "Description de l'objet B",
+          "qualite": 2,
+          "quantite": 5
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "idTroqueur": "user5",
+      "idDestinataire": "user6",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T12:00:00",
+      "objets": [
+        {
+          "titre": "Objet X",
+          "description": "Description de l'objet X",
+          "qualite": 5,
+          "quantite": 12
+        },
+        {
+          "titre": "Objet Y",
+          "description": "Description de l'objet Y",
+          "qualite": 4,
+          "quantite": 18
+        }
+      ]
+    }
+  ],
+
+  "messages4": [
+    {
+      "id": 1,
+      "idTroqueur": "user1",
+      "idDestinataire": "user2",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T10:00:00",
+      "objets": [
+        {
+          "titre": "Objet 1",
+          "description": "Description de l'objet 1",
+          "qualite": 5,
+          "quantite": 10
+        },
+        {
+          "titre": "Objet 2",
+          "description": "Description de l'objet 2",
+          "qualite": 4,
+          "quantite": 8
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "idTroqueur": "user3",
+      "idDestinataire": "user4",
+      "statut": "Envoyé",
+      "dateMessage": "2024-11-19T11:00:00",
+      "objets": [
+        {
+          "titre": "Objet A",
+          "description": "Description de l'objet A",
+          "qualite": 3,
+          "quantite": 15
+        },
+        {
+          "titre": "Objet B",
+          "description": "Description de l'objet B",
+          "qualite": 2,
+          "quantite": 5
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "idTroqueur": "user5",
+      "idDestinataire": "user6",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T12:00:00",
+      "objets": [
+        {
+          "titre": "Objet X",
+          "description": "Description de l'objet X",
+          "qualite": 5,
+          "quantite": 12
+        },
+        {
+          "titre": "Objet Y",
+          "description": "Description de l'objet Y",
+          "qualite": 4,
+          "quantite": 18
+        }
+      ]
+    }
+  ],
+
+  "messages5": [
+    {
+      "id": 1,
+      "idTroqueur": "user1",
+      "idDestinataire": "user2",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T10:00:00",
+      "objets": [
+        {
+          "titre": "Objet 1",
+          "description": "Description de l'objet 1",
+          "qualite": 5,
+          "quantite": 10
+        },
+        {
+          "titre": "Objet 2",
+          "description": "Description de l'objet 2",
+          "qualite": 4,
+          "quantite": 8
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "idTroqueur": "user3",
+      "idDestinataire": "user4",
+      "statut": "Envoyé",
+      "dateMessage": "2024-11-19T11:00:00",
+      "objets": [
+        {
+          "titre": "Objet A",
+          "description": "Description de l'objet A",
+          "qualite": 3,
+          "quantite": 15
+        },
+        {
+          "titre": "Objet B",
+          "description": "Description de l'objet B",
+          "qualite": 2,
+          "quantite": 5
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "idTroqueur": "user5",
+      "idDestinataire": "user6",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T12:00:00",
+      "objets": [
+        {
+          "titre": "Objet X",
+          "description": "Description de l'objet X",
+          "qualite": 5,
+          "quantite": 12
+        },
+        {
+          "titre": "Objet Y",
+          "description": "Description de l'objet Y",
+          "qualite": 4,
+          "quantite": 18
+        }
+      ]
+    }
+  ],
+
+  "messages6": [
+    {
+      "id": 1,
+      "idTroqueur": "user1",
+      "idDestinataire": "user2",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T10:00:00",
+      "objets": [
+        {
+          "titre": "Objet 1",
+          "description": "Description de l'objet 1",
+          "qualite": 5,
+          "quantite": 10
+        },
+        {
+          "titre": "Objet 2",
+          "description": "Description de l'objet 2",
+          "qualite": 4,
+          "quantite": 8
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "idTroqueur": "user3",
+      "idDestinataire": "user4",
+      "statut": "Envoyé",
+      "dateMessage": "2024-11-19T11:00:00",
+      "objets": [
+        {
+          "titre": "Objet A",
+          "description": "Description de l'objet A",
+          "qualite": 3,
+          "quantite": 15
+        },
+        {
+          "titre": "Objet B",
+          "description": "Description de l'objet B",
+          "qualite": 2,
+          "quantite": 5
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "idTroqueur": "user5",
+      "idDestinataire": "user6",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T12:00:00",
+      "objets": [
+        {
+          "titre": "Objet X",
+          "description": "Description de l'objet X",
+          "qualite": 5,
+          "quantite": 12
+        },
+        {
+          "titre": "Objet Y",
+          "description": "Description de l'objet Y",
+          "qualite": 4,
+          "quantite": 18
+        }
+      ]
+    }
+  ],
+
+  "messages7": [
+    {
+      "id": 1,
+      "idTroqueur": "user1",
+      "idDestinataire": "user2",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T10:00:00",
+      "objets": [
+        {
+          "titre": "Objet 1",
+          "description": "Description de l'objet 1",
+          "qualite": 5,
+          "quantite": 10
+        },
+        {
+          "titre": "Objet 2",
+          "description": "Description de l'objet 2",
+          "qualite": 4,
+          "quantite": 8
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "idTroqueur": "user3",
+      "idDestinataire": "user4",
+      "statut": "Envoyé",
+      "dateMessage": "2024-11-19T11:00:00",
+      "objets": [
+        {
+          "titre": "Objet A",
+          "description": "Description de l'objet A",
+          "qualite": 3,
+          "quantite": 15
+        },
+        {
+          "titre": "Objet B",
+          "description": "Description de l'objet B",
+          "qualite": 2,
+          "quantite": 5
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "idTroqueur": "user5",
+      "idDestinataire": "user6",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T12:00:00",
+      "objets": [
+        {
+          "titre": "Objet X",
+          "description": "Description de l'objet X",
+          "qualite": 5,
+          "quantite": 12
+        },
+        {
+          "titre": "Objet Y",
+          "description": "Description de l'objet Y",
+          "qualite": 4,
+          "quantite": 18
+        }
+      ]
+    }
+  ],
+
+  "messages8": [
+    {
+      "id": 1,
+      "idTroqueur": "user1",
+      "idDestinataire": "user2",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T10:00:00",
+      "objets": [
+        {
+          "titre": "Objet 1",
+          "description": "Description de l'objet 1",
+          "qualite": 5,
+          "quantite": 10
+        },
+        {
+          "titre": "Objet 2",
+          "description": "Description de l'objet 2",
+          "qualite": 4,
+          "quantite": 8
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "idTroqueur": "user3",
+      "idDestinataire": "user4",
+      "statut": "Envoyé",
+      "dateMessage": "2024-11-19T11:00:00",
+      "objets": [
+        {
+          "titre": "Objet A",
+          "description": "Description de l'objet A",
+          "qualite": 3,
+          "quantite": 15
+        },
+        {
+          "titre": "Objet B",
+          "description": "Description de l'objet B",
+          "qualite": 2,
+          "quantite": 5
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "idTroqueur": "user5",
+      "idDestinataire": "user6",
+      "statut": "En attente",
+      "dateMessage": "2024-11-19T12:00:00",
+      "objets": [
+        {
+          "titre": "Objet X",
+          "description": "Description de l'objet X",
+          "qualite": 5,
+          "quantite": 12
+        },
+        {
+          "titre": "Objet Y",
+          "description": "Description de l'objet Y",
+          "qualite": 4,
+          "quantite": 18
+        }
+      ]
+    }
+  ]
+}
+
