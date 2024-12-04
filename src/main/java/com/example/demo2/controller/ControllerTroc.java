@@ -63,6 +63,8 @@ public class ControllerTroc {
             } else {
                 model.addAttribute("error", "Message de troc non trouvé");
             }
+            List<Contact> contacts = contactService.getAllMessages();
+            model.addAttribute("contacts", contacts);
             return "/edit";
         } else {
             List<Contact> contacts = contactService.getAllMessages();

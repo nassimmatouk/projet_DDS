@@ -1,0 +1,21 @@
+{
+    "idTroqueur": "g3.1",
+    "idDestinataire": "g1.1",
+    "idFichier": "g3.1",
+    "dateFichier": "13-11-2024",
+    "checksum": "1",
+    "messages": [
+        {
+            "dateMessage": "13-11-2024",
+            "statut": "propose",
+            "listeObjet": [
+                {
+                    "titre": "velo",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean accumsan, magna id tincidunt vestibulum, metus tortor fermentum augue, nec cursus elit sapien euismod eros. Integer sed orci nec neque tincidunt aliquam. Sed aliquet quam id varius laoreet. Pellentesque id urna magna. Integer id dolor velit. Donec pharetra, mauris nec faucibus consequat, nisi nulla auctor lectus, non mollis metus nulla nec sapien. Vestibulum eget bibendum nunc. Integer maximus convallis risus sed elementum. Maecenas id dui ac arcu lacinia sagittis. Praesent nec lectus tincidunt, elementum justo non, dignissim neque. Cras tristique lorem purus, a cursus libero fermentum in. Fusce dictum id neque vitae tincidunt.",
+                    "qualite": 1,
+                    "quantite": 1
+                }
+            ]
+        }
+    ]
+}

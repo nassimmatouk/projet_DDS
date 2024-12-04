@@ -104,7 +104,7 @@ public class MessageTroc {
         this.envoyer = envoyer;
     }
 
-    @Embeddable // indique que cette classe peut être intégrée dans une autre entité JPA
+    @Embeddable 
     public static class ObjetTroc {
         private String titre;
         private String description;

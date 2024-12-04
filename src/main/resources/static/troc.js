@@ -78,8 +78,9 @@ function removeMessage(button) {
 
 
 /****************************** Génération checksum et formatage date ******************************/
-function generateChecksum(data) {
-    return "3";
+function generateChecksum(messages) {
+    // Renvoie le nombre de messages dans le tableau
+    return messages.length.toString();
 }
 
 function formatDate(date) {
@@ -102,7 +103,6 @@ function sendMessage(event) {
         idDestinataire: formData.get('idDestinataire'),
         idFichier: "g1.1",
         dateFichier: formatDate(new Date()),
-        checksum: generateChecksum(formData),
         messages: []
     };
 
@@ -138,6 +138,7 @@ function sendMessage(event) {
             listeObjet: listeObjet
         });
     }
+    data.checksum = generateChecksum(data.messages);
     console.log(JSON.stringify(data, null, 2));
     const jsonString = JSON.stringify(data, null, 2);
     saveJsonToFile(jsonString);
@@ -214,7 +215,10 @@ function saveJsonToFileRep(jsonString, idMessage) {
 
 //Troc
 function saveJsonToFile(jsonString, idMessage) {
-    const params = idMessage && idMessage.length > 0 ? `?idMessage=${idMessage.join(",")}` : '';
+    const idMessagesArray = Array.isArray(idMessage) ? idMessage : (idMessage ? [idMessage] : []);
+    console.log(Array.isArray(idMessage));
+    console.log(idMessage);
+    const params = idMessagesArray.length > 0 ? `?idMessage=${idMessagesArray.join(",")}` : '';
     const url = `/api/save-troc${params}`;
 
     console.log(url);
@@ -230,7 +234,6 @@ function saveJsonToFile(jsonString, idMessage) {
         .then(data => {
             if (data.success) {
                 alert('Fichier envoyé avec succès.');
-                window.location.href = data.redirect;
             } else {
                 alert('Erreur lors de l\'enregistrement du fichier : ' + data.message);
             }
@@ -278,7 +281,6 @@ function saveMessage(event) {
         idDestinataire: formData.get('idDestinataire'),
         idFichier: "g1.1",
         dateFichier: formatDate(new Date()),
-        checksum: generateChecksum(formData),
         messages: []
     };
 
@@ -339,8 +341,11 @@ function saveMessage(event) {
 
 function checkAll() {
     const checkboxes = document.querySelectorAll('.selectMessage');
+    const selectAllCheckbox = document.getElementById('selectAll');
+
+    // Si "selectAll" est coché, coche toutes les cases, sinon décoche-les
     checkboxes.forEach(checkbox => {
-        checkbox.checked = checkbox.checked ? false : true;
+        checkbox.checked = selectAllCheckbox.checked;
     });
 }
 
@@ -468,7 +473,7 @@ function sendSingleMessage(messageId) {
                     idDestinataire: data.message.idDestinataire,
                     idFichier: "g1.1",  // Autres informations nécessaires
                     dateFichier: data.message.dateFichier,
-                    checksum: generateChecksum(data.message),
+                    checksum: "1",
                     messages: []
                 };
 
@@ -508,6 +513,7 @@ function sendSingleMessage(messageId) {
 
                 // Appeler saveJsonToFile avec les données JSON du message
                 if (bool == true) {
+                    console.log("Le message est correct", messageId)
                     const jsonString = JSON.stringify(messageData, null, 2);
                     saveJsonToFile(jsonString, messageId);
                     
@@ -523,6 +529,7 @@ function sendSingleMessage(messageId) {
             console.error('Erreur:', error);
             alert('Une erreur est survenue.');
         });
+    window.location.href = "/message-troc";
 }
 
 
@@ -616,10 +623,9 @@ async function sendSelectedMessages() {
         });
 
         const jsonString = JSON.stringify(messageData, null, 2);
+        console.log(jsonString);
         saveJsonToFile(jsonString, messageIds);
     }
-
-    console.log("les messages d'erreurs");
     if (idMessagesFalse.length > 0) {
         alert(`Les messages suivants sont incomplets et n'ont pas été envoyés : ${idMessagesFalse.join(", ")}`);
     }
@@ -638,7 +644,6 @@ function updateMessage(idMessage, dateF, envoi) {
         idDestinataire: formData.get('idDestinataire'),
         idFichier: "g1.1",
         dateFichier: dateF,
-        checksum: generateChecksum(formData),
         messages: []
     };
 

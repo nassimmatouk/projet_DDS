@@ -102,7 +102,6 @@ public class JsonController {
                     }
                 }
             } else {
-                System.out.println("avant de rentrer dans la boucle");
                 int i = 1;
                 int j = 1;
                 for (JsonNode messageNode : rootNode.get("messages")) {
@@ -136,11 +135,10 @@ public class JsonController {
                 }
             }
 
-            //String redirectUrl = "/message-troc";
-            return new ResponseEntity<>("{\"success\": true, \"" + "\"}", HttpStatus.OK);
-        } catch (
-
-        IOException e) {
+            // String redirectUrl = "/message-troc";
+            return new ResponseEntity<>("{\"success\": true}", HttpStatus.OK);
+        } catch (IOException e) {
+            System.out.println("Ca retourne une erreur");
             return new ResponseEntity<>("{\"success\": false, \"message\": \"Erreur lors de l'enregistrement.\"}",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }

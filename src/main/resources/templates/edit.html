@@ -115,6 +115,19 @@
           width: 100%;
         }
       }
+      select {
+        width: calc(100% - 22px);
+        padding: 8px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+      }
+
+      select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+      }
     </style>
   </head>
 
@@ -125,17 +138,15 @@
     </header>
 
     <h1>Formulaire message troc</h1>
-    <form id="jsonForm" th:onsubmit="event.preventDefault(); majSend([[${message.id}]], [[${message.dateFichier}]]);">
+    <form
+      id="jsonForm"
+      th:onsubmit="event.preventDefault(); majSend([[${message.id}]], [[${message.dateFichier}]]);"
+    >
       <h2>En-tête</h2>
       <label for="idDestinataire">ID Destinataire (gX.X):</label>
-      <input
-        type="text"
-        id="idDestinataire"
-        name="idDestinataire"
-        pattern="^g\d\.\d+$"
-        required
-        th:value="${message.idDestinataire != null ? message.idDestinataire : ''}"
-      /><br /><br />
+      <select id="idDestinataire" name="idDestinataire" required>
+        <option value="">Sélectionner un destinataire</option></select
+      ><br /><br />
 
       <h2>Messages</h2>
       <div id="messagesContainer">
@@ -193,10 +204,36 @@
 
       <br /><br />
       <button type="submit">Envoyer message</button>
-      <button type="button" th:onclick="updateMessage([[${message.id}]], [[${message.dateFichier}]], false)">
+      <button
+        type="button"
+        th:onclick="updateMessage([[${message.id}]], [[${message.dateFichier}]], false)"
+      >
         Enregistrer message
       </button>
     </form>
     <script src="troc.js"></script>
+    <script th:inline="javascript">
+      document.addEventListener("DOMContentLoaded", function () {
+        const contacts = [[${contacts}]];
+        const preselectedDestinataire = [[${message != null ? message.idDestinataire : idDestinataire}]];
+
+        const select = document.getElementById("idDestinataire");
+
+        contacts.forEach((contact) => {
+          console.log(contact);
+          const option = document.createElement("option");
+          option.value = contact.idTroqueur;
+          option.textContent = contact.nomAuteur
+            ? contact.nomAuteur
+            : contact.idTroqueur;
+
+          if (preselectedDestinataire && preselectedDestinataire === contact.idTroqueur) {
+            option.selected = true; // Marquer l'option comme sélectionnée
+          }
+
+          select.appendChild(option);
+        });
+      });
+    </script>
   </body>
 </html>

@@ -1,0 +1,21 @@
+{
+    "idTroqueur": "g3.1",
+    "idDestinataire": "g1.1",
+    "idFichier": "g3.1",
+    "dateFichier": "13-11-2024",
+    "checksum": "1",
+    "messages": [
+        {
+            "dateMessage": "13-11-2024",
+            "statut": "propose",
+            "listeObjet": [
+                {
+                    "titre": "velo",
+                    "description": "vélo 🚴",
+                    "qualite": 1,
+                    "quantite": 1
+                }
+            ]
+        }
+    ]
+}
